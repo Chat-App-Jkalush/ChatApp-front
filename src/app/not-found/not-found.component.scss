@@ -1,0 +1,32 @@
+.not-found-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  background: #fafafa;
+}
+
+mat-card {
+  padding: 2rem 2.5rem;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.not-found-title {
+  font-size: 5rem;
+  color: #e57373;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+mat-card-subtitle {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #757575;
+}
+
+mat-card-content p {
+  margin: 1.5rem 0;
+  color: #616161;
+}
