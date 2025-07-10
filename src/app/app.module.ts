@@ -23,10 +23,10 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { RegisterComponent } from './components/register/register.component';
 import { HomeComponent } from './components/home/home.component';
 import { MatModule } from './mat.module';
-import { ChatComponent } from './components/chat/chat.component';
-import { ChatsComponent } from './components/chats/chats.component';
-import { ContactsComponent } from './components/contacts/contacts.component';
-import { ContactComponent } from './components/contact/contact.component';
+import { ChatComponent } from './components/home/child components/chats/child components/chat/chat.component';
+import { ChatsComponent } from './components/home/child components/chats/chats.component';
+import { ContactsComponent } from './components/home/child components/contacts/contacts.component';
+import { ContactComponent } from './components/home/child components/contacts/child components/contact/contact.component';
 
 @NgModule({
   declarations: [
