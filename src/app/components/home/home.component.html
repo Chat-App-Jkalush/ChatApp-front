@@ -10,12 +10,23 @@
         <mat-button-toggle-group name="navBar" [(value)]="tab" class="nav-tabs">
           <mat-button-toggle value="chats">
             <mat-icon>chat</mat-icon>
+            <mat-label>Chats</mat-label>
           </mat-button-toggle>
           <mat-button-toggle value="contacts">
             <mat-icon>contacts</mat-icon>
+            <mat-label>Contacts</mat-label>
           </mat-button-toggle>
           <mat-button-toggle value="addContact">
             <mat-icon>person_add</mat-icon>
+            <mat-label>Add Contact</mat-label>
+          </mat-button-toggle>
+          <mat-button-toggle value="addGroup">
+            <mat-icon>group_add</mat-icon>
+            <mat-label>Add Group</mat-label>
+          </mat-button-toggle>
+          <mat-button-toggle value="settings">
+            <mat-icon>settings</mat-icon>
+            <mat-label>Settings</mat-label>
           </mat-button-toggle>
         </mat-button-toggle-group>
       </div>
