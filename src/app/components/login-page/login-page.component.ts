@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoginDto } from '../../../../common/dto/user.dto';
-import { UsersApiService } from '../api/usersApi.service';
+import { LoginDto } from '../../../../../common/dto/user.dto';
+import { UsersApiService } from '../../api/usersApi.service';
 
 @Component({
   selector: 'app-login-page',

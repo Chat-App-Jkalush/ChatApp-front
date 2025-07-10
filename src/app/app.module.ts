@@ -18,12 +18,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { App } from './app';
-import { LoginPageComponent } from './login-page/login-page.component';
-import { NotFoundComponent } from './not-found/not-found.component';
+import { LoginPageComponent } from './components/login-page/login-page.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 import { MatDivider, MatDividerModule } from '@angular/material/divider';
+import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
-  declarations: [App, LoginPageComponent, NotFoundComponent],
+  declarations: [App, LoginPageComponent, NotFoundComponent, RegisterComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
