@@ -1,35 +1,33 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private _user: any = null;
+  private _user = signal<any>(null);
 
   constructor() {
-    const userJson = localStorage.getItem('user');
-    if (userJson) {
-      this._user = JSON.parse(userJson);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const userJson = localStorage.getItem('user');
+      if (userJson) {
+        this._user.set(JSON.parse(userJson));
+      }
     }
   }
 
   setUser(user: any) {
-    this._user = user;
-    localStorage.setItem('user', JSON.stringify(user));
+    this._user.set(user);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('user', JSON.stringify(user));
+    }
   }
 
-  get user() {
-    return this._user;
-  }
-
-  get chats(): Record<string, string> {
-    return this._user?.chats ?? {};
-  }
-
-  get chatNames(): string[] {
-    return Object.values(this.chats);
-  }
+  user = this._user.asReadonly();
+  chats = computed(() => this._user()?.chats ?? {});
+  chatNames = computed(() => Object.values(this.chats()) as string[]);
 
   clearUser() {
-    this._user = null;
-    localStorage.removeItem('user');
+    this._user.set(null);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.removeItem('user');
+    }
   }
 }

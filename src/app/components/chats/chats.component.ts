@@ -13,6 +13,6 @@ export class ChatsComponent implements OnInit {
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    this.chats = this.userService.chatNames;
+    this.chats = this.userService.chatNames();
   }
 }
