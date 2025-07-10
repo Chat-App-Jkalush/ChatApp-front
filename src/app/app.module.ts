@@ -20,11 +20,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { App } from './app';
 import { LoginComponent } from './components/login-page/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
-import { MatDivider, MatDividerModule } from '@angular/material/divider';
 import { RegisterComponent } from './components/register/register.component';
 import { HomeComponent } from './components/home/home.component';
-import { MatGridList, MatGridListModule } from '@angular/material/grid-list';
 import { MatModule } from './mat.module';
+import { ChatComponent } from './components/chat/chat.component';
+import { ChatsComponent } from './components/chats/chats.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +33,8 @@ import { MatModule } from './mat.module';
     NotFoundComponent,
     RegisterComponent,
     HomeComponent,
+    ChatComponent,
+    ChatsComponent,
   ],
   imports: [
     BrowserModule,
