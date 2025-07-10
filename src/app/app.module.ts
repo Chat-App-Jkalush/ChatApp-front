@@ -23,6 +23,8 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { MatDivider, MatDividerModule } from '@angular/material/divider';
 import { RegisterComponent } from './components/register/register.component';
 import { HomeComponent } from './components/home/home.component';
+import { MatGridList, MatGridListModule } from '@angular/material/grid-list';
+import { MatModule } from './mat.module';
 
 @NgModule({
   declarations: [
@@ -35,14 +37,9 @@ import { HomeComponent } from './components/home/home.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MatCardModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MatDividerModule,
+    MatModule,
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
