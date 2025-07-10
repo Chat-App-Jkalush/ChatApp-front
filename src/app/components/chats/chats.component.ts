@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-chats',
@@ -6,7 +7,12 @@ import { Component } from '@angular/core';
   templateUrl: './chats.component.html',
   styleUrls: ['./chats.component.scss'],
 })
-export class ChatsComponent {
-  constructor() {}
-  chats: string[] = ['Chat 1', 'Chat 2', 'Chat 3'];
+export class ChatsComponent implements OnInit {
+  chats: string[] = [];
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.chats = this.userService.chatNames;
+  }
 }
