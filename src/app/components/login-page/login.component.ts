@@ -2,17 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginDto } from '../../../../../common/dto/user.dto';
 import { UsersApiService } from '../../api/usersApi.service';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login-page',
+  selector: 'app-login',
   standalone: false,
-  templateUrl: './login-page.component.html',
-  styleUrls: ['./login-page.component.scss'],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
-export class LoginPageComponent implements OnInit {
+export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private userApi: UsersApiService) {}
+  constructor(
+    private fb: FormBuilder,
+    private userApi: UsersApiService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loginForm = this.fb.group({
@@ -27,7 +32,7 @@ export class LoginPageComponent implements OnInit {
     }
     this.userApi.login(this.loginForm.value as LoginDto).subscribe({
       next: (response) => {
-        console.log('Login successful:', response);
+        this.router.navigate(['/home']);
       },
       error: (error) => {
         console.error('Login failed:', error);

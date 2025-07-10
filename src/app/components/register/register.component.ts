@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsersApiService } from '../../api/usersApi.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -9,7 +10,11 @@ import { UsersApiService } from '../../api/usersApi.service';
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent implements OnInit {
-  constructor(private fb: FormBuilder, private userApi: UsersApiService) {}
+  constructor(
+    private fb: FormBuilder,
+    private userApi: UsersApiService,
+    private router: Router
+  ) {}
   registerForm!: FormGroup;
 
   ngOnInit(): void {
@@ -25,7 +30,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.invalid) return;
     this.userApi.register(this.registerForm.value).subscribe({
       next: (response) => {
-        console.log('Registration successful:', response);
+        this.router.navigate(['/home']);
       },
       error: (error) => {
         console.error('Registration failed:', error);
