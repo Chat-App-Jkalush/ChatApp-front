@@ -23,6 +23,7 @@ export class UserService {
   user = this._user.asReadonly();
   chats = computed(() => this._user()?.chats ?? {});
   chatNames = computed(() => Object.values(this.chats()) as string[]);
+  contacts = computed(() => this._user()?.contacts ?? []);
 
   clearUser() {
     this._user.set(null);

@@ -20,11 +20,10 @@
         </mat-button-toggle-group>
       </div>
 
-      <!-- Content Area -->
       <div class="content-area">
         <app-chats *ngIf="tab === 'chats'"></app-chats>
-        <!-- <app-contacts *ngIf="tab === 'contacts'"></app-contacts>
-        <app-add-contact *ngIf="tab === 'addContact'"></app-add-contact> -->
+        <app-contacts *ngIf="tab === 'contacts'"></app-contacts>
+        <!-- <app-add-contact *ngIf="tab === 'addContact'"></app-add-contact> -->
       </div>
     </div>
   </mat-grid-tile>

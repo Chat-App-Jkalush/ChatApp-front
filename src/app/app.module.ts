@@ -25,6 +25,8 @@ import { HomeComponent } from './components/home/home.component';
 import { MatModule } from './mat.module';
 import { ChatComponent } from './components/chat/chat.component';
 import { ChatsComponent } from './components/chats/chats.component';
+import { ContactsComponent } from './components/contacts/contacts.component';
+import { ContactComponent } from './components/contact/contact.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { ChatsComponent } from './components/chats/chats.component';
     HomeComponent,
     ChatComponent,
     ChatsComponent,
+    ContactsComponent,
+    ContactComponent,
   ],
   imports: [
     BrowserModule,
