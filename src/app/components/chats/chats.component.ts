@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./chats.component.scss'],
 })
 export class ChatsComponent {
+  constructor() {}
   chats: string[] = ['Chat 1', 'Chat 2', 'Chat 3'];
 }

@@ -1,3 +1,4 @@
-<div *ngFor="let chat of chats">
-  <app-chat [chatName]="chat"></app-chat>
+<div class="chats-container">
+  <app-chat *ngFor="let chat of chats" [chatName]="chat" class="chat-item">
+  </app-chat>
 </div>

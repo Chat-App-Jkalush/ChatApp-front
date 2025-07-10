@@ -1,19 +1,32 @@
-<mat-grid-list cols="4" rowHeight="1:1">
-  <mat-grid-tile colspan="1">
-    <mat-button-toggle-group name="navBar" [(value)]="tab">
-      <mat-button-toggle value="chats">
-        <mat-icon>chat</mat-icon>
-      </mat-button-toggle>
-      <mat-button-toggle value="contacts">
-        <mat-icon>contacts</mat-icon>
-      </mat-button-toggle>
-      <mat-button-toggle value="addContact">
-        <mat-icon>person_add</mat-icon>
-      </mat-button-toggle>
-    </mat-button-toggle-group>
-    <app-chats *ngIf="tab === 'chats'"></app-chats>
-    <!-- <app-contacts *ngIf="tab === 'contacts'"></app-contacts>
-    <app-add-contact *ngIf="tab === 'addContact'"></app-add-contact> -->
+<mat-grid-list
+  cols="4"
+  rowHeight="1:1"
+  gutterSize="0px"
+  class="full-height-grid"
+>
+  <mat-grid-tile colspan="1" class="chat-section with-border">
+    <div class="chat-container">
+      <div class="nav-header">
+        <mat-button-toggle-group name="navBar" [(value)]="tab" class="nav-tabs">
+          <mat-button-toggle value="chats">
+            <mat-icon>chat</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle value="contacts">
+            <mat-icon>contacts</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle value="addContact">
+            <mat-icon>person_add</mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      <!-- Content Area -->
+      <div class="content-area">
+        <app-chats *ngIf="tab === 'chats'"></app-chats>
+        <!-- <app-contacts *ngIf="tab === 'contacts'"></app-contacts>
+        <app-add-contact *ngIf="tab === 'addContact'"></app-add-contact> -->
+      </div>
+    </div>
   </mat-grid-tile>
-  <mat-grid-tile colspan="3"> </mat-grid-tile>
+  <mat-grid-tile colspan="3"></mat-grid-tile>
 </mat-grid-list>

@@ -1,8 +1,66 @@
+:root {
+  margin: 0 !important;
+  padding: 0 !important;
+}
 html,
 body {
+  margin: 0;
+  padding: 0;
   height: 100%;
 }
-body {
+
+app-root {
+  display: block;
+  height: 100vh;
+  width: 100vw;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  padding: 0;
+}
+
+app-home {
+  display: block;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
+mat-grid-list {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+mat-grid-tile {
+  overflow: visible !important;
+}
+
+.mat-grid-tile-content {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.mat-grid-list {
+  padding: 0 !important;
+}
+
+.content-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content-area::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.content-area::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.content-area::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+mat-grid-tile > figure {
+  margin: 0 !important;
+  padding: 0 !important;
 }

@@ -1,0 +1,12 @@
+.chats-container {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.chat-item {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+}
