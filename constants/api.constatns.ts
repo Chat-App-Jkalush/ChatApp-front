@@ -11,4 +11,10 @@ export const API_ENDPOINT = {
     ADD: '/contacts/add',
     PAGINATED: '/contacts/paginated',
   },
+  CHATS: {
+    PAGINATED: '/chats/paginated',
+    UPDATE_USER_CHATS: '/chats/update-user-chats',
+    ADD_USER_TO_CHAT: '/chats/add-user-to-chat',
+    CREATE: '/chats',
+  },
 };
