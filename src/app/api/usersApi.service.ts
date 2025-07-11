@@ -30,4 +30,13 @@ export class UsersApiService {
       }
     );
   }
+
+  getPaginatedChats(userName: string, page: number, pageSize: number) {
+    return this.client.get<{ chats: string[]; total: number }>(
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.USERS.PAGINATED_CHATS}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
+      {
+        withCredentials: true,
+      }
+    );
+  }
 }
