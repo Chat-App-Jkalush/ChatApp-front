@@ -5,8 +5,10 @@ export const API_ENDPOINT = {
     REGISTER: '/auth/register',
   },
   USERS: {
-    ADD_CONTACT: '/users/add-contact',
     PAGINATED_CHATS: '/users/paginated-chats',
-    PAGINATED_CONTACTS: '/users/paginated-contacts',
+  },
+  CONTACTS: {
+    ADD: '/contacts/add',
+    PAGINATED: '/contacts/paginated',
   },
 };

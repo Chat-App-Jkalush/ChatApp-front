@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersApiService } from '../../../../api/usersApi.service';
 import { UserService } from '../../../../services/user.service';
+import { ContactApiService } from '../../../../api/contactApi.service';
 
 @Component({
   selector: 'app-contacts',
@@ -16,7 +17,7 @@ export class ContactsComponent implements OnInit {
   pageIndex = 0;
 
   constructor(
-    private usersApiService: UsersApiService,
+    private contactApi: ContactApiService,
     private userService: UserService
   ) {}
 
@@ -32,7 +33,7 @@ export class ContactsComponent implements OnInit {
   }
 
   loadContacts() {
-    this.usersApiService
+    this.contactApi
       .getPaginatedContacts(this.userName, this.pageIndex + 1, this.pageSize)
       .subscribe((res) => {
         this.contacts = res.contacts;
