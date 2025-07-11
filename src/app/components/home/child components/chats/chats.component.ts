@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { UsersApiService } from '../../../../api/usersApi.service';
 import { UserService } from '../../../../services/user.service';
 
@@ -21,8 +21,10 @@ export class ChatsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userName = this.userService.userName;
-    this.loadChats();
+    this.userService.userName$.subscribe((userName) => {
+      this.userName = userName;
+      this.loadChats();
+    });
   }
 
   onPageChange(event: any) {
@@ -32,6 +34,7 @@ export class ChatsComponent implements OnInit {
   }
 
   loadChats() {
+    if (!this.userName) return;
     this.usersApiService
       .getPaginatedChats(this.userName, this.pageIndex + 1, this.pageSize)
       .subscribe((res) => {
