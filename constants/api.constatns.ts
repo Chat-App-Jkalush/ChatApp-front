@@ -17,4 +17,8 @@ export const API_ENDPOINT = {
     ADD_USER_TO_CHAT: '/chats/add-user-to-chat',
     CREATE: '/chats',
   },
+  USER_COOKIE: {
+    SAVE: '/user-cookie/save',
+    GET: '/user-cookie/get',
+  },
 };
