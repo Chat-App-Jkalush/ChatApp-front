@@ -27,6 +27,7 @@ import { ChatComponent } from './components/home/child components/chats/child co
 import { ChatsComponent } from './components/home/child components/chats/chats.component';
 import { ContactsComponent } from './components/home/child components/contacts/contacts.component';
 import { ContactComponent } from './components/home/child components/contacts/child components/contact/contact.component';
+import { onInit, OnInitProvider } from './providers/onInit.provider';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { ContactComponent } from './components/home/child components/contacts/ch
     provideBrowserGlobalErrorListeners(),
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch()),
+    OnInitProvider,
   ],
   bootstrap: [App],
 })

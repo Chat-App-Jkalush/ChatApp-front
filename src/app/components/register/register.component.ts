@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsersApiService } from '../../api/usersApi.service';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { UserCookieApiService } from '../../api/userCookieApi.service';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +15,7 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userApi: UsersApiService,
+    private userCookieApi: UserCookieApiService,
     private router: Router,
     private userService: UserService
   ) {}
@@ -32,8 +34,26 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.invalid) return;
     this.userApi.register(this.registerForm.value).subscribe({
       next: (response) => {
-        this.userService.setUserName(response.userName);
-        this.router.navigate(['/home']);
+        const cookie = document.cookie
+          .split('; ')
+          .find((row) => row.startsWith('token='))
+          ?.split('=')[1];
+        if (cookie) {
+          this.userCookieApi.saveUserCookie(response, cookie).subscribe({
+            next: () => {
+              this.userService.setUserName(response.userName);
+              this.router.navigate(['/home']);
+            },
+            error: (error) => {
+              console.error('Failed to save user cookie:', error);
+              this.userService.setUserName(response.userName);
+              this.router.navigate(['/home']);
+            },
+          });
+        } else {
+          this.userService.setUserName(response.userName);
+          this.router.navigate(['/home']);
+        }
       },
       error: (error) => {
         console.error('Registration failed:', error);

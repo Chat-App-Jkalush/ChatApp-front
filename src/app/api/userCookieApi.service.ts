@@ -12,7 +12,7 @@ export class UserCookieApiService {
   saveUserCookie(userDetails: any, cookie: string): Observable<any> {
     return this.client.post(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.USER_COOKIE.SAVE}`,
-      { userDetails, cookie },
+      { ...userDetails, cookie },
       { withCredentials: true }
     );
   }

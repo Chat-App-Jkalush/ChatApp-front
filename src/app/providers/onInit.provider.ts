@@ -1,4 +1,4 @@
-import { Provider, APP_INITIALIZER } from '@angular/core';
+import { APP_INITIALIZER, Provider } from '@angular/core';
 import { UserCookieApiService } from '../api/userCookieApi.service';
 import { UserService } from '../services/user.service';
 
@@ -7,6 +7,9 @@ export function onInit(
   userService: UserService
 ) {
   return () => {
+    if (typeof document === 'undefined') {
+      return Promise.resolve();
+    }
     const cookie = document.cookie
       .split('; ')
       .find((row) => row.startsWith('token='))
