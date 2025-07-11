@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private _userName = signal<string | null>(null);
+  private _userName = signal<string>('');
 
   constructor() {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -25,7 +25,7 @@ export class UserService {
   }
 
   clearUserName() {
-    this._userName.set(null);
+    this._userName.set('');
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.removeItem('userName');
     }

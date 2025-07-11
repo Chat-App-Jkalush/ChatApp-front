@@ -1,4 +1,14 @@
 <div class="chats-container">
-  <app-chat *ngFor="let chat of chats" [chatName]="chat" class="chat-item">
-  </app-chat>
+  <app-chat
+    *ngFor="let chat of chats"
+    [chatName]="chat"
+    class="chat-item"
+  ></app-chat>
 </div>
+<mat-paginator
+  [length]="totalChats"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPageChange($event)"
+>
+</mat-paginator>
