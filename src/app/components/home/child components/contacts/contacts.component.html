@@ -1,3 +1,10 @@
+<mat-paginator
+  [length]="totalContacts"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPageChange($event)"
+>
+</mat-paginator>
 <div class="contacts-container">
   <app-contact
     *ngFor="let contact of contacts"

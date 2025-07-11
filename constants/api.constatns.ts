@@ -1,5 +1,3 @@
-import { U } from '@angular/cdk/keycodes';
-
 export const API_ENDPOINT = {
   BASE: 'http://localhost:3000',
   AUTH: {
@@ -9,5 +7,6 @@ export const API_ENDPOINT = {
   USERS: {
     ADD_CONTACT: '/users/add-contact',
     PAGINATED_CHATS: '/users/paginated-chats',
+    PAGINATED_CONTACTS: '/users/paginated-contacts',
   },
 };

@@ -39,4 +39,13 @@ export class UsersApiService {
       }
     );
   }
+
+  getPaginatedContacts(userName: string, page: number, pageSize: number) {
+    return this.client.get<{ contacts: string[]; total: number }>(
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.USERS.PAGINATED_CONTACTS}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
+      {
+        withCredentials: true,
+      }
+    );
+  }
 }
