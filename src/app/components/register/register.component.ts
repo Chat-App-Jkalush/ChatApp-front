@@ -32,7 +32,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.invalid) return;
     this.userApi.register(this.registerForm.value).subscribe({
       next: (response) => {
-        this.userService.setUser(response);
+        this.userService.setUserName(response.userName);
         this.router.navigate(['/home']);
       },
       error: (error) => {

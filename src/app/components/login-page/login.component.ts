@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
     }
     this.userApi.login(this.loginForm.value as LoginDto).subscribe({
       next: (response) => {
-        this.userService.setUser(response);
+        this.userService.setUserName(response.userName);
         this.router.navigate(['/home']);
       },
       error: (error) => {
