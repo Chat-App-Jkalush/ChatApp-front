@@ -6,19 +6,14 @@ import {
   EventEmitter,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ContactApiService } from '../../../../api/contactApi.service';
-import { UserService } from '../../../../services/user.service';
 import { PageEvent } from '@angular/material/paginator';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  Subject,
-  takeUntil,
-  of,
-} from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { ContactService } from '../../../../services/contact.service';
+import { UserService } from '../../../../services/user.service';
 import { ChatManagementService } from '../../../../services/chatManagment.service';
-import { catchError, map } from 'rxjs/operators';
+import { filterContacts } from '../../../../helpers/contactFilter.helper';
+
 @Component({
   selector: 'app-add-chat',
   standalone: false,
@@ -44,7 +39,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private contactApi: ContactApiService,
+    private contactService: ContactService,
     private chatManagement: ChatManagementService,
     private userService: UserService
   ) {}
@@ -76,9 +71,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((userName) => {
         this.userName = userName;
-        if (userName) {
-          this.loadContacts();
-        }
+        if (userName) this.loadContacts();
       });
   }
 
@@ -86,7 +79,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((searchTerm) => {
-        this.filterContacts(searchTerm || '');
+        this.filteredContacts = filterContacts(this.contacts, searchTerm || '');
       });
   }
 
@@ -94,31 +87,18 @@ export class AddChatComponent implements OnInit, OnDestroy {
     if (!this.userName) return;
     this.loading = true;
     this.errorMessage = '';
-    this.contactApi
-      .getPaginatedContacts(this.userName, this.pageIndex + 1, this.pageSize)
-      .pipe(
-        catchError((error) => {
-          this.errorMessage = 'Failed to load contacts. Please try again.';
-          return of({ contacts: [], total: 0 });
-        }),
-        takeUntil(this.destroy$)
-      )
+    this.contactService
+      .getContacts(this.userName, this.pageIndex, this.pageSize)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res) => {
         this.contacts = res.contacts || [];
         this.totalContacts = res.total || 0;
-        this.filterContacts(this.searchControl.value || '');
+        this.filteredContacts = filterContacts(
+          this.contacts,
+          this.searchControl.value || ''
+        );
         this.loading = false;
       });
-  }
-
-  private filterContacts(searchTerm: string): void {
-    if (!searchTerm.trim()) {
-      this.filteredContacts = this.contacts.slice();
-      return;
-    }
-    this.filteredContacts = this.contacts.filter((contact) =>
-      contact.toLowerCase().includes(searchTerm.toLowerCase())
-    );
   }
 
   onPageChange(event: PageEvent): void {
@@ -128,8 +108,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
   }
 
   onParticipantSelected(event: MatAutocompleteSelectedEvent): void {
-    const participant = event.option.value;
-    this.addParticipant(participant);
+    this.addParticipant(event.option.value);
     this.searchControl.setValue('');
   }
 
