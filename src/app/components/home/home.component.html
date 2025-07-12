@@ -20,9 +20,9 @@
             <mat-icon>person_add</mat-icon>
             <mat-label>Add Contact</mat-label>
           </mat-button-toggle>
-          <mat-button-toggle value="addGroup">
+          <mat-button-toggle value="addChat">
             <mat-icon>group_add</mat-icon>
-            <mat-label>Add Group</mat-label>
+            <mat-label>Add Chat</mat-label>
           </mat-button-toggle>
           <mat-button-toggle value="settings">
             <mat-icon>settings</mat-icon>
@@ -36,6 +36,7 @@
         <app-contacts *ngIf="tab === 'contacts'"></app-contacts>
         <app-add-contacts *ngIf="tab === 'addContact'"></app-add-contacts>
         <app-settings *ngIf="tab === 'settings'"></app-settings>
+        <app-add-chat *ngIf="tab === 'addChat'"></app-add-chat>
       </div>
     </div>
   </mat-grid-tile>

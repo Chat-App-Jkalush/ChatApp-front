@@ -26,6 +26,7 @@ import { OnInitProvider } from './providers/onInit.provider';
 import { AddContactComponent } from './components/home/child components/add-contacts/child components/add-contact/add-contact.component';
 import { AddContactsComponent } from './components/home/child components/add-contacts/add-contacts.component';
 import { SettingsComponent } from './components/home/child components/settings/settings.component';
+import { AddChatComponent } from './components/home/child components/add-chat/add-chat.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { SettingsComponent } from './components/home/child components/settings/s
     AddContactComponent,
     AddContactsComponent,
     SettingsComponent,
+    AddChatComponent,
   ],
   imports: [
     BrowserModule,
