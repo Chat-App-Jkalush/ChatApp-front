@@ -1,0 +1,34 @@
+<div class="settings-form">
+  <h2 class="settings-title">Update User</h2>
+  <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="userName" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="firstName" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Last Name</mat-label>
+      <input matInput formControlName="lastName" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" />
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="settingsForm.invalid || loading"
+    >
+      Save Changes
+    </button>
+  </form>
+  <button mat-stroked-button color="warn" class="logout-btn" (click)="logout()">
+    Log Out
+  </button>
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+</div>
