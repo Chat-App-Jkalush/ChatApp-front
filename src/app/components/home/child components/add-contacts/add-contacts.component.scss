@@ -1,0 +1,31 @@
+.contact-row {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.avatar {
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+mat-icon {
+  font-size: 32px;
+  color: #1976d2;
+}
+
+.contact-content {
+  flex: 1;
+}
+
+.contact-name {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+button {
+  margin-left: 16px;
+}

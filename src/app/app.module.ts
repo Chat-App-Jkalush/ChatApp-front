@@ -28,6 +28,8 @@ import { ChatsComponent } from './components/home/child components/chats/chats.c
 import { ContactsComponent } from './components/home/child components/contacts/contacts.component';
 import { ContactComponent } from './components/home/child components/contacts/child components/contact/contact.component';
 import { onInit, OnInitProvider } from './providers/onInit.provider';
+import { AddContactComponent } from './components/home/child components/add-contacts/child components/add-contact/add-contact.component';
+import { AddContactsComponent } from './components/home/child components/add-contacts/add-contacts.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import { onInit, OnInitProvider } from './providers/onInit.provider';
     ChatsComponent,
     ContactsComponent,
     ContactComponent,
+    AddContactComponent,
+    AddContactsComponent,
   ],
   imports: [
     BrowserModule,
