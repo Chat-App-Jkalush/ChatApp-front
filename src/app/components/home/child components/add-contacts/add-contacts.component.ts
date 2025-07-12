@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersApiService } from '../../../../api/usersApi.service';
 import { UserService } from '../../../../services/user.service';
+import { ContactApiService } from '../../../../api/contactApi.service';
 
 @Component({
   selector: 'app-add-contacts',
@@ -16,7 +17,8 @@ export class AddContactsComponent implements OnInit {
 
   constructor(
     private usersApiService: UsersApiService,
-    private userService: UserService
+    private userService: UserService,
+    private contactApi: ContactApiService
   ) {}
 
   ngOnInit(): void {
@@ -43,6 +45,14 @@ export class AddContactsComponent implements OnInit {
   }
 
   addContact(userName: string) {
-    console.log('Add contact:', userName);
+    this.contactApi.addContact(this.userService.userName, userName).subscribe({
+      next: (res) => {
+        console.log('Contact added successfully:', res);
+        this.users = this.users.filter((user) => user.userName !== userName);
+      },
+      error: (err) => {
+        console.error('Error adding contact:', err);
+      },
+    });
   }
 }
