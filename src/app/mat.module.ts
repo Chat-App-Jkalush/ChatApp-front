@@ -10,6 +10,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatSpinner } from '@angular/material/progress-spinner';
 
 const MaterialModules = [
   MatCardModule,
@@ -23,6 +26,9 @@ const MaterialModules = [
   MatPaginatorModule,
   MatOptionModule,
   MatSelectModule,
+  MatAutocompleteModule,
+  MatChipsModule,
+  MatSpinner,
 ];
 
 @NgModule({
