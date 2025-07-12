@@ -25,6 +25,7 @@ import { ContactComponent } from './components/home/child components/contacts/ch
 import { OnInitProvider } from './providers/onInit.provider';
 import { AddContactComponent } from './components/home/child components/add-contacts/child components/add-contact/add-contact.component';
 import { AddContactsComponent } from './components/home/child components/add-contacts/add-contacts.component';
+import { SettingsComponent } from './components/home/child components/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { AddContactsComponent } from './components/home/child components/add-con
     ContactComponent,
     AddContactComponent,
     AddContactsComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,
