@@ -1,4 +1,5 @@
 <div class="settings-form">
+  <h2 class="settings-title">Update User</h2>
   <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="fill">
       <mat-label>Username</mat-label>
@@ -25,6 +26,9 @@
       Save Changes
     </button>
   </form>
+  <button mat-stroked-button color="warn" class="logout-btn" (click)="logout()">
+    Log Out
+  </button>
   <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
   <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 </div>

@@ -3,6 +3,7 @@ export const API_ENDPOINT = {
   AUTH: {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
+    LOGOUT: '/auth/logout',
   },
   USERS: {
     PAGINATED_CHATS: '/users/paginated-chats',

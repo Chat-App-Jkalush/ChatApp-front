@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsersApiService } from '../../../../api/usersApi.service';
 import { UserService } from '../../../../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -18,7 +19,8 @@ export class SettingsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private usersApi: UsersApiService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -44,6 +46,13 @@ export class SettingsComponent implements OnInit {
       error: (err) => {
         this.errorMessage = 'Failed to update profile.';
         this.loading = false;
+      },
+    });
+  }
+  logout() {
+    this.usersApi.logOut().subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
       },
     });
   }

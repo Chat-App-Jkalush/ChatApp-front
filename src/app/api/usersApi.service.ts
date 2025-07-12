@@ -59,4 +59,14 @@ export class UsersApiService {
       { withCredentials: true }
     );
   }
+
+  logOut(): Observable<void> {
+    return this.client.post<void>(
+      API_ENDPOINT.BASE + API_ENDPOINT.AUTH.LOGOUT,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+  }
 }
