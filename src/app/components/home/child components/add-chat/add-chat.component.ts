@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContactApiService } from '../../../../api/contactApi.service';
-import { ChatApiService } from '../../../../api/chatApi.service';
 import { UserService } from '../../../../services/user.service';
 import { PageEvent } from '@angular/material/paginator';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -16,12 +15,10 @@ import {
   distinctUntilChanged,
   Subject,
   takeUntil,
-  catchError,
   of,
-  forkJoin,
-  timeout,
 } from 'rxjs';
-
+import { ChatManagementService } from '../../../../services/chatManagment.service';
+import { catchError, map } from 'rxjs/operators';
 @Component({
   selector: 'app-add-chat',
   standalone: false,
@@ -34,24 +31,21 @@ export class AddChatComponent implements OnInit, OnDestroy {
 
   addChatForm!: FormGroup;
   searchControl = new FormControl('');
-
   contacts: string[] = [];
   filteredContacts: string[] = [];
   selectedParticipants: string[] = [];
   totalContacts = 0;
   pageSize = 10;
   pageIndex = 0;
-
   userName = '';
   loading = false;
   errorMessage = '';
   successMessage = '';
-
   private destroy$ = new Subject<void>();
 
   constructor(
     private contactApi: ContactApiService,
-    private chatApi: ChatApiService,
+    private chatManagement: ChatManagementService,
     private userService: UserService
   ) {}
 
@@ -98,30 +92,22 @@ export class AddChatComponent implements OnInit, OnDestroy {
 
   loadContacts(): void {
     if (!this.userName) return;
-
     this.loading = true;
     this.errorMessage = '';
-
     this.contactApi
       .getPaginatedContacts(this.userName, this.pageIndex + 1, this.pageSize)
       .pipe(
         catchError((error) => {
           this.errorMessage = 'Failed to load contacts. Please try again.';
-          console.error('Error loading contacts:', error);
           return of({ contacts: [], total: 0 });
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe({
-        next: (res) => {
-          this.contacts = res.contacts || [];
-          this.totalContacts = res.total || 0;
-          this.filterContacts(this.searchControl.value || '');
-          this.loading = false;
-        },
-        error: () => {
-          this.loading = false;
-        },
+      .subscribe((res) => {
+        this.contacts = res.contacts || [];
+        this.totalContacts = res.total || 0;
+        this.filterContacts(this.searchControl.value || '');
+        this.loading = false;
       });
   }
 
@@ -130,7 +116,6 @@ export class AddChatComponent implements OnInit, OnDestroy {
       this.filteredContacts = this.contacts.slice();
       return;
     }
-
     this.filteredContacts = this.contacts.filter((contact) =>
       contact.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -140,11 +125,6 @@ export class AddChatComponent implements OnInit, OnDestroy {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     this.loadContacts();
-  }
-
-  onSearchChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.searchControl.setValue(target.value);
   }
 
   onParticipantSelected(event: MatAutocompleteSelectedEvent): void {
@@ -194,63 +174,23 @@ export class AddChatComponent implements OnInit, OnDestroy {
       this.markFormGroupTouched();
       return;
     }
-
+    this.clearMessages();
+    this.loading = true;
     const chatName = this.addChatForm.get('chatName')?.value;
     const creator = this.userName;
     const participants = Array.from(
       new Set([creator, ...this.selectedParticipants])
     );
-
-    this.clearMessages();
-    this.loading = true;
-
-    console.log('Creating chat:', {
-      chatName,
-      participants,
-      createdBy: creator,
-    });
-
-    this.chatApi
-      .createChat(chatName, participants)
-      .pipe(
-        takeUntil(this.destroy$),
-        catchError((error) => {
-          this.errorMessage = 'Failed to create chat. Please try again.';
-          this.loading = false;
-          console.error('Error creating chat:', error);
-          return of(null);
-        })
-      )
-      .subscribe((res) => {
-        if (res && res.chatId && res.chatName) {
-          const updateRequests = participants.map((userName) =>
-            this.chatApi
-              .updateUserChats(userName, res.chatId, res.chatName)
-              .pipe(
-                timeout(5000), // Prevent hanging requests
-                catchError((error) => {
-                  console.error(
-                    `Error updating chats for user ${userName}:`,
-                    error
-                  );
-                  return of(null);
-                })
-              )
-          );
-          forkJoin(updateRequests).subscribe({
-            next: () => {
-              this.successMessage = 'Chat created and added to users!';
-              this.loading = false;
-              this.resetForm();
-            },
-            error: (error) => {
-              this.errorMessage = 'Failed to update user chats.';
-              this.loading = false;
-            },
-          });
+    this.chatManagement
+      .createChatAndUpdateUsers(chatName, participants)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
+        this.loading = false;
+        if (result.success) {
+          this.successMessage = result.message;
+          this.resetForm();
         } else {
-          this.errorMessage = 'Failed to create chat. Please try again.';
-          this.loading = false;
+          this.errorMessage = result.message;
         }
       });
   }
