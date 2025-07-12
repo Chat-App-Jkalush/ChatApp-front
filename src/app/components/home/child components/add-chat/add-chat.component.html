@@ -1,0 +1,144 @@
+<form class="add-chat-form" [formGroup]="addChatForm" (ngSubmit)="onSubmit()">
+  <h2 class="add-chat-title">Create New Chat</h2>
+  
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <span>Loading...</span>
+  </div>
+
+  <!-- Success Message -->
+  <div class="success-message" *ngIf="successMessage" role="alert">
+    <mat-icon>check_circle</mat-icon>
+    {{ successMessage }}
+  </div>
+
+  <div class="error-message" *ngIf="errorMessage" role="alert">
+    <mat-icon>error</mat-icon>
+    {{ errorMessage }}
+  </div>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Chat Name</mat-label>
+    <input 
+      matInput 
+      formControlName="chatName" 
+      placeholder="Enter chat name"
+      maxlength="50"
+      aria-describedby="chat-name-hint"
+    />
+    <mat-hint id="chat-name-hint">Give your chat a memorable name</mat-hint>
+    <mat-error *ngIf="addChatForm.get('chatName')?.hasError('required')">
+      Chat name is required
+    </mat-error>
+    <mat-error *ngIf="addChatForm.get('chatName')?.hasError('minlength')">
+      Chat name must be at least 3 characters
+    </mat-error>
+  </mat-form-field>
+
+  <div class="participants-section">
+    <mat-form-field appearance="outline">
+      <mat-label>Search Participants</mat-label>
+      <input 
+        matInput 
+        [formControl]="searchControl"
+        placeholder="Type to search contacts..."
+        (input)="onSearchChange($event)"
+        [matAutocomplete]="auto"
+      />
+      <mat-autocomplete 
+        #auto="matAutocomplete"
+        [displayWith]="displayFn"
+        (optionSelected)="onParticipantSelected($event)"
+      >
+        <mat-option *ngFor="let contact of filteredContacts" [value]="contact">
+          {{ contact }}
+        </mat-option>
+        <mat-option *ngIf="filteredContacts.length === 0 && searchControl.value" disabled>
+          No contacts found
+        </mat-option>
+      </mat-autocomplete>
+      <mat-hint>Search and select participants for your chat</mat-hint>
+    </mat-form-field>
+
+    <div class="selected-participants" *ngIf="selectedParticipants.length > 0">
+      <h3>Selected Participants ({{ selectedParticipants.length }})</h3>
+      <div class="participant-chips">
+        <mat-chip-set>
+          <mat-chip 
+            *ngFor="let participant of selectedParticipants" 
+            [removable]="true"
+            (removed)="removeParticipant(participant)"
+          >
+            {{ participant }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+    </div>
+
+    <div class="field-error" *ngIf="addChatForm.get('participants')?.hasError('required') && addChatForm.get('participants')?.touched">
+      <mat-icon>error</mat-icon>
+      At least one participant is required
+    </div>
+  </div>
+
+  <div class="browse-contacts" *ngIf="!searchControl.value">
+    <h3>Browse All Contacts</h3>
+    <div class="contacts-grid">
+      <button 
+        type="button"
+        mat-stroked-button
+        *ngFor="let contact of contacts"
+        [class.selected]="isParticipantSelected(contact)"
+        (click)="toggleParticipant(contact)"
+        [attr.aria-pressed]="isParticipantSelected(contact)"
+      >
+        <mat-icon *ngIf="isParticipantSelected(contact)">check</mat-icon>
+        {{ contact }}
+      </button>
+    </div>
+    
+    <mat-paginator
+      [length]="totalContacts"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+      [hidePageSize]="false"
+      [showFirstLastButtons]="true"
+    >
+    </mat-paginator>
+  </div>
+
+  <div class="form-actions">
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="addChatForm.invalid || loading"
+      [attr.aria-describedby]="addChatForm.invalid ? 'form-errors' : null"
+    >
+      <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
+      <span>{{ loading ? 'Creating...' : 'Create Chat' }}</span>
+    </button>
+    
+    <button
+      mat-button
+      type="button"
+      (click)="onCancel()"
+      [disabled]="loading"
+    >
+      Cancel
+    </button>
+  </div>
+
+  <div id="form-errors" class="form-errors" *ngIf="addChatForm.invalid && addChatForm.touched" role="alert">
+    <h4>Please fix the following errors:</h4>
+    <ul>
+      <li *ngIf="addChatForm.get('chatName')?.hasError('required')">Chat name is required</li>
+      <li *ngIf="addChatForm.get('chatName')?.hasError('minlength')">Chat name must be at least 3 characters</li>
+      <li *ngIf="addChatForm.get('participants')?.hasError('required')">At least one participant is required</li>
+    </ul>
+  </div>
+</form>

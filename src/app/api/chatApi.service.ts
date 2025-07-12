@@ -9,7 +9,7 @@ export class ChatApiService {
   constructor(private client: HttpClient) {}
 
   getPaginatedChats(userName: string, page: number, pageSize: number) {
-    return this.client.get<{ chats: string[]; total: number }>(
+    return this.client.get<{ chats: any[]; total: number }>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.PAGINATED}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
       { withCredentials: true }
     );
@@ -32,7 +32,7 @@ export class ChatApiService {
   }
 
   createChat(chatName: string, participants: string[] = []) {
-    return this.client.post(
+    return this.client.post<{ chatId: string; chatName: string }>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.CREATE}`,
       { chatName, participants },
       { withCredentials: true }
