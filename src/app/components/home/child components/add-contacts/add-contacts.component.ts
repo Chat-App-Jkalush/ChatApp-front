@@ -1,14 +1,48 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UsersApiService } from '../../../../api/usersApi.service';
+import { UserService } from '../../../../services/user.service';
 
 @Component({
   selector: 'app-add-contacts',
   standalone: false,
   templateUrl: './add-contacts.component.html',
-  styleUrl: './add-contacts.component.scss',
+  styleUrls: ['./add-contacts.component.scss'],
 })
-export class AddContactsComponent {
-  contactName = '';
-  addContact(name: string) {
-    console.log('Add contact:', name);
+export class AddContactsComponent implements OnInit {
+  users: any[] = [];
+  totalUsers = 0;
+  pageSize = 10;
+  pageIndex = 0;
+
+  constructor(
+    private usersApiService: UsersApiService,
+    private userService: UserService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  onPageChange(event: any) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadUsers();
+  }
+
+  loadUsers() {
+    this.usersApiService
+      .getPaginatedUsers(
+        this.userService.userName,
+        this.pageIndex + 1,
+        this.pageSize
+      )
+      .subscribe((res) => {
+        this.users = res.users;
+        this.totalUsers = res.total;
+      });
+  }
+
+  addContact(userName: string) {
+    console.log('Add contact:', userName);
   }
 }

@@ -1,11 +1,15 @@
-<div class="contact-row">
-  <div class="avatar">
-    <mat-icon>person_add</mat-icon>
-  </div>
-  <div class="contact-content">
-    <div class="contact-name">{{ contactName }}</div>
-  </div>
-  <button mat-raised-button color="primary" (click)="addContact(contactName)">
-    Add
-  </button>
+<mat-paginator
+  [length]="totalUsers"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPageChange($event)"
+>
+</mat-paginator>
+<div class="users-container">
+  <app-add-contact
+    *ngFor="let user of users"
+    [contactName]="user.userName"
+    (add)="addContact($event)"
+    class="contact-item"
+  ></app-add-contact>
 </div>

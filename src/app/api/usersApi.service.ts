@@ -39,4 +39,11 @@ export class UsersApiService {
       }
     );
   }
+
+  getPaginatedUsers(userName: string, page: number, pageSize: number) {
+    return this.client.get<{ users: any[]; total: number }>(
+      `${API_ENDPOINT.BASE}/users/paginated-users?userName=${userName}&page=${page}&pageSize=${pageSize}`,
+      { withCredentials: true }
+    );
+  }
 }

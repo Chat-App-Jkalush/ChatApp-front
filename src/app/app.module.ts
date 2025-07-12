@@ -1,14 +1,9 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { NgModule } from '@angular/core';
 import {
   BrowserModule,
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
 import {
   HttpClientModule,
   provideHttpClient,
@@ -27,7 +22,7 @@ import { ChatComponent } from './components/home/child components/chats/child co
 import { ChatsComponent } from './components/home/child components/chats/chats.component';
 import { ContactsComponent } from './components/home/child components/contacts/contacts.component';
 import { ContactComponent } from './components/home/child components/contacts/child components/contact/contact.component';
-import { onInit, OnInitProvider } from './providers/onInit.provider';
+import { OnInitProvider } from './providers/onInit.provider';
 import { AddContactComponent } from './components/home/child components/add-contacts/child components/add-contact/add-contact.component';
 import { AddContactsComponent } from './components/home/child components/add-contacts/add-contacts.component';
 
@@ -53,7 +48,6 @@ import { AddContactsComponent } from './components/home/child components/add-con
     MatModule,
   ],
   providers: [
-    provideBrowserGlobalErrorListeners(),
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch()),
     OnInitProvider,
