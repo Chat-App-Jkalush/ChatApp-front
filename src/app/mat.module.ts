@@ -8,6 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatOptionModule } from '@angular/material/core';
 
 const MaterialModules = [
   MatCardModule,
@@ -19,6 +20,7 @@ const MaterialModules = [
   MatGridListModule,
   MatButtonToggleModule,
   MatPaginatorModule,
+  MatOptionModule,
 ];
 
 @NgModule({

@@ -32,11 +32,13 @@
       </div>
 
       <div class="content-area">
-        <app-chats *ngIf="tab === 'chats'"></app-chats>
-        <app-contacts *ngIf="tab === 'contacts'"></app-contacts>
-        <app-add-contacts *ngIf="tab === 'addContact'"></app-add-contacts>
-        <app-settings *ngIf="tab === 'settings'"></app-settings>
-        <app-add-chat *ngIf="tab === 'addChat'"></app-add-chat>
+        <div class="content-area">
+          <app-chats *ngIf="tab === 'chats'"></app-chats>
+          <app-contacts *ngIf="tab === 'contacts'"></app-contacts>
+          <app-add-contacts *ngIf="tab === 'addContact'"></app-add-contacts>
+          <app-add-chat *ngIf="tab === 'addChat'"></app-add-chat>
+          <app-settings *ngIf="tab === 'settings'"></app-settings>
+        </div>
       </div>
     </div>
   </mat-grid-tile>

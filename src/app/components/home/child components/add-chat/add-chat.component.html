@@ -1,0 +1,24 @@
+<form [formGroup]="addChatForm" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="fill">
+    <mat-label>Chat Name</mat-label>
+    <input matInput formControlName="chatName" placeholder="Enter chat name" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Participants</mat-label>
+    <mat-select formControlName="participants" multiple>
+      <mat-option *ngFor="let contact of contacts" [value]="contact.userName">
+        {{ contact.userName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    [disabled]="addChatForm.invalid"
+  >
+    Create Chat
+  </button>
+</form>
