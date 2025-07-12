@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContactApiService } from '../../../../api/contactApi.service';
+import { ChatApiService } from '../../../../api/chatApi.service';
 import { UserService } from '../../../../services/user.service';
 import { PageEvent } from '@angular/material/paginator';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -17,6 +18,8 @@ import {
   takeUntil,
   catchError,
   of,
+  forkJoin,
+  timeout,
 } from 'rxjs';
 
 @Component({
@@ -48,6 +51,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
 
   constructor(
     private contactApi: ContactApiService,
+    private chatApi: ChatApiService,
     private userService: UserService
   ) {}
 
@@ -191,28 +195,64 @@ export class AddChatComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const chatData = {
-      chatName: this.addChatForm.get('chatName')?.value,
-      participants: this.selectedParticipants,
-      createdBy: this.userName,
-    };
+    const chatName = this.addChatForm.get('chatName')?.value;
+    const creator = this.userName;
+    const participants = Array.from(
+      new Set([creator, ...this.selectedParticipants])
+    );
 
     this.clearMessages();
     this.loading = true;
 
-    setTimeout(() => {
-      try {
-        this.successMessage = 'Chat created successfully!';
-        this.chatCreated.emit(chatData);
-        this.resetForm();
-      } catch (error) {
-        this.errorMessage = 'Failed to create chat. Please try again.';
-      } finally {
-        this.loading = false;
-      }
-    }, 1000);
+    console.log('Creating chat:', {
+      chatName,
+      participants,
+      createdBy: creator,
+    });
 
-    console.log('Creating chat:', chatData);
+    this.chatApi
+      .createChat(chatName, participants)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError((error) => {
+          this.errorMessage = 'Failed to create chat. Please try again.';
+          this.loading = false;
+          console.error('Error creating chat:', error);
+          return of(null);
+        })
+      )
+      .subscribe((res) => {
+        if (res && res.chatId && res.chatName) {
+          const updateRequests = participants.map((userName) =>
+            this.chatApi
+              .updateUserChats(userName, res.chatId, res.chatName)
+              .pipe(
+                timeout(5000), // Prevent hanging requests
+                catchError((error) => {
+                  console.error(
+                    `Error updating chats for user ${userName}:`,
+                    error
+                  );
+                  return of(null);
+                })
+              )
+          );
+          forkJoin(updateRequests).subscribe({
+            next: () => {
+              this.successMessage = 'Chat created and added to users!';
+              this.loading = false;
+              this.resetForm();
+            },
+            error: (error) => {
+              this.errorMessage = 'Failed to update user chats.';
+              this.loading = false;
+            },
+          });
+        } else {
+          this.errorMessage = 'Failed to create chat. Please try again.';
+          this.loading = false;
+        }
+      });
   }
 
   onCancel(): void {
