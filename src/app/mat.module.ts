@@ -9,17 +9,20 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
 
+const MaterialModules = [
+  MatCardModule,
+  MatButtonModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatIconModule,
+  MatDividerModule,
+  MatGridListModule,
+  MatButtonToggleModule,
+  MatPaginatorModule,
+];
+
 @NgModule({
-  exports: [
-    MatCardModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatDividerModule,
-    MatGridListModule,
-    MatButtonToggleModule,
-    MatPaginatorModule,
-  ],
+  imports: MaterialModules,
+  exports: MaterialModules,
 })
 export class MatModule {}

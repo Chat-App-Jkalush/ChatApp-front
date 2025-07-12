@@ -1,11 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-add-contact',
   standalone: false,
   templateUrl: './add-contact.component.html',
-  styleUrl: './add-contact.component.scss'
+  styleUrls: ['./add-contact.component.scss'],
 })
 export class AddContactComponent {
+  @Input() contactName: string = '';
+  @Output() add = new EventEmitter<string>();
 
+  addContact() {
+    this.add.emit(this.contactName);
+  }
 }
