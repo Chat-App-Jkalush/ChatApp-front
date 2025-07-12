@@ -46,4 +46,17 @@ export class UsersApiService {
       { withCredentials: true }
     );
   }
+
+  updateUser(profile: {
+    userName: string;
+    firstName: string;
+    lastName: string;
+    password: string;
+  }) {
+    return this.client.put<UserResponse>(
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.USERS.UPDATE}`,
+      profile,
+      { withCredentials: true }
+    );
+  }
 }

@@ -6,6 +6,7 @@ export const API_ENDPOINT = {
   },
   USERS: {
     PAGINATED_CHATS: '/users/paginated-chats',
+    UPDATE: '/users/update',
   },
   CONTACTS: {
     ADD: '/contacts/add',
