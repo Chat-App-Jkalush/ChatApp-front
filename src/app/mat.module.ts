@@ -9,6 +9,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 const MaterialModules = [
   MatCardModule,
@@ -21,6 +22,7 @@ const MaterialModules = [
   MatButtonToggleModule,
   MatPaginatorModule,
   MatOptionModule,
+  MatSelectModule,
 ];
 
 @NgModule({
