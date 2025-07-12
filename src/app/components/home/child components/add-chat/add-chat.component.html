@@ -1,4 +1,5 @@
-<form [formGroup]="addChatForm" (ngSubmit)="onSubmit()">
+<form class="add-chat-form" [formGroup]="addChatForm" (ngSubmit)="onSubmit()">
+  <h2 class="add-chat-title">Create New Chat</h2>
   <mat-form-field appearance="fill">
     <mat-label>Chat Name</mat-label>
     <input matInput formControlName="chatName" placeholder="Enter chat name" />
