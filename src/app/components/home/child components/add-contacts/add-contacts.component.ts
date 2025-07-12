@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersApiService } from '../../../../api/usersApi.service';
+import { UserService } from '../../../../services/user.service';
 
 @Component({
   selector: 'app-add-contacts',
@@ -13,7 +14,10 @@ export class AddContactsComponent implements OnInit {
   pageSize = 10;
   pageIndex = 0;
 
-  constructor(private usersApiService: UsersApiService) {}
+  constructor(
+    private usersApiService: UsersApiService,
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -27,12 +31,15 @@ export class AddContactsComponent implements OnInit {
 
   loadUsers() {
     this.usersApiService
-      .getPaginatedUsers(this.pageIndex + 1, this.pageSize)
+      .getPaginatedUsers(
+        this.userService.userName,
+        this.pageIndex + 1,
+        this.pageSize
+      )
       .subscribe((res) => {
         this.users = res.users;
         this.totalUsers = res.total;
       });
-    console.log('Loaded users:', this.users);
   }
 
   addContact(userName: string) {
