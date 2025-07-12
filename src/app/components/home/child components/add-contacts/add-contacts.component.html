@@ -1,3 +1,10 @@
+<mat-paginator
+  [length]="totalUsers"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 20]"
+  (page)="onPageChange($event)"
+>
+</mat-paginator>
 <div class="users-container">
   <app-add-contact
     *ngFor="let user of users"
@@ -6,11 +13,3 @@
     class="contact-item"
   ></app-add-contact>
 </div>
-
-<mat-paginator
-  [length]="totalUsers"
-  [pageSize]="pageSize"
-  [pageSizeOptions]="[5, 10, 20]"
-  (page)="onPageChange($event)"
->
-</mat-paginator>
