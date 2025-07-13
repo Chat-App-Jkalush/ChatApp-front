@@ -7,7 +7,12 @@
   <mat-grid-tile colspan="1" class="chat-section with-border">
     <div class="chat-container">
       <div class="nav-header">
-        <mat-button-toggle-group name="navBar" [(value)]="tab" class="nav-tabs">
+        <mat-button-toggle-group
+          name="navBar"
+          [(value)]="tab"
+          class="nav-tabs"
+          style="overflow-x: auto; white-space: nowrap"
+        >
           <mat-button-toggle value="chats">
             <mat-icon>chat</mat-icon>
             <mat-label>Chats</mat-label>
@@ -30,7 +35,6 @@
           </mat-button-toggle>
         </mat-button-toggle-group>
       </div>
-
       <div class="content-area">
         <div class="content-area">
           <app-chats *ngIf="tab === 'chats'"></app-chats>
