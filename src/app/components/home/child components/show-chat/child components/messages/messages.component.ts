@@ -1,6 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  OnInit,
+} from '@angular/core';
 import { messageInfoResponse } from '../../../../../../../../../common/Ro/message.ro';
-import { RefreshDataService } from '../../../../../../services/refreshData.service';
 import { MessageApiService } from '../../../../../../api/messageApi.service';
 
 @Component({
@@ -9,24 +14,30 @@ import { MessageApiService } from '../../../../../../api/messageApi.service';
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.scss'],
 })
-export class MessagesComponent implements OnInit {
-  userName: string = '';
+export class MessagesComponent implements OnInit, OnChanges {
+  @Input() chatId: string | null = null;
+  @Input() userName: string = '';
   messages: messageInfoResponse[] = [];
 
-  constructor(
-    private refreshDataService: RefreshDataService,
-    private messageApi: MessageApiService
-  ) {}
+  constructor(private messageApi: MessageApiService) {}
 
-  async ngOnInit(): Promise<void> {
-    this.userName = this.refreshDataService.userName;
-    const chatId = this.refreshDataService.latestChatId;
-    if (chatId) {
-      try {
-        this.messages = await this.messageApi.getAllByChatId(chatId);
-      } catch (error) {
-        this.messages = [];
-      }
+  ngOnInit(): void {
+    if (this.chatId) {
+      this.loadMessages();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['chatId'] && this.chatId) {
+      this.loadMessages();
+    }
+  }
+
+  private async loadMessages(): Promise<void> {
+    try {
+      this.messages = await this.messageApi.getAllByChatId(this.chatId!);
+    } catch (error) {
+      this.messages = [];
     }
   }
 }
