@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { API_ENDPOINT } from '../../../constants/api.constatns';
+import { API_ENDPOINT } from '../../constants/api.constatns';
 import { chatType } from '../../../../common/enums/chat.enum';
 
 @Injectable({
@@ -39,6 +39,13 @@ export class ChatApiService {
     return this.client.post<{ chatId: string; chatName: string }>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.CREATE}`,
       { chatName, participants, type },
+      { withCredentials: true }
+    );
+  }
+
+  getChatById(chatId: string) {
+    return this.client.get<{ chatId: string; chatName: string; type: string }>(
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.PAGINATED}/${chatId}`,
       { withCredentials: true }
     );
   }

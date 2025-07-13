@@ -1,8 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { UsersApiService } from '../../../../api/usersApi.service';
-import { UserService } from '../../../../services/user.service';
 import { ChatApiService } from '../../../../api/chatApi.service';
 import { ChatListItem } from '../../../../models/chat/chat.model';
+import { RefreshDataService } from '../../../../services/refreshData.service';
 
 @Component({
   selector: 'app-chats',
@@ -21,12 +20,12 @@ export class ChatsComponent implements OnInit {
   pageIndex = 0;
 
   constructor(
-    private userService: UserService,
+    private refreshDataService: RefreshDataService,
     private chatApi: ChatApiService
   ) {}
 
   ngOnInit(): void {
-    this.userService.userName$.subscribe((userName) => {
+    this.refreshDataService.userName$.subscribe((userName) => {
       this.userName = userName;
       this.loadChats();
     });

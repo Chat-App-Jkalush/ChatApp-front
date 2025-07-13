@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoginDto, RegisterDto } from '../../../../common/dto/user.dto';
 import { Observable } from 'rxjs';
 import { UserResponse } from '../../../../common/Ro/user.ro';
-import { API_ENDPOINT } from '../../../constants/api.constatns';
+import { API_ENDPOINT } from '../../constants/api.constatns';
 
 @Injectable({
   providedIn: 'root',

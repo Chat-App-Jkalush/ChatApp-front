@@ -1,10 +1,10 @@
 import { APP_INITIALIZER, Provider } from '@angular/core';
 import { UserCookieApiService } from '../api/userCookieApi.service';
-import { UserService } from '../services/user.service';
+import { RefreshDataService } from '../services/refreshData.service';
 
 export function onInit(
   userCookieApi: UserCookieApiService,
-  userService: UserService
+  refreshDataService: RefreshDataService
 ) {
   return () => {
     if (typeof document === 'undefined') {
@@ -20,7 +20,10 @@ export function onInit(
         .toPromise()
         .then((data) => {
           if (data?.userDetails?.userName) {
-            userService.setUserName(data.userDetails.userName);
+            refreshDataService.setUserName(data.userDetails.userName);
+          }
+          if (data?.userDetails?.latestChatId) {
+            refreshDataService.setLatestChatId(data.userDetails.latestChatId);
           }
         });
     }
@@ -31,6 +34,6 @@ export function onInit(
 export const OnInitProvider: Provider = {
   provide: APP_INITIALIZER,
   useFactory: onInit,
-  deps: [UserCookieApiService, UserService],
+  deps: [UserCookieApiService, RefreshDataService],
   multi: true,
 };
