@@ -11,6 +11,7 @@
   margin: 0;
   padding: 0;
 }
+
 .chat-section,
 .chat-container,
 .nav-header,
@@ -72,16 +73,26 @@
 .content-area > * {
   direction: ltr;
 }
+
 ::ng-deep mat-grid-tile {
   padding: 0 !important;
 }
+
 ::ng-deep mat-grid-tile > figure {
   margin: 0 !important;
   padding: 0 !important;
 }
+
 ::ng-deep .chat-section .mat-grid-tile-content {
   display: block;
 }
+
 .with-border {
   border-right: 1px solid #222;
+}
+
+@media (max-width: 600px) {
+  .nav-header {
+    padding: 8px;
+  }
 }
