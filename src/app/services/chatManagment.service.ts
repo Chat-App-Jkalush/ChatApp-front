@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ChatApiService } from '../api/chatApi.service';
 import { Observable, forkJoin, of } from 'rxjs';
 import { catchError, timeout, switchMap, map } from 'rxjs/operators';
+import { chatType } from '../../../../common/enums/chat.enum';
 
 @Injectable({ providedIn: 'root' })
 export class ChatManagementService {
@@ -11,9 +12,10 @@ export class ChatManagementService {
 
   createChatAndUpdateUsers(
     chatName: string,
-    participants: string[]
+    participants: string[],
+    type: chatType
   ): Observable<{ success: boolean; message: string }> {
-    return this.chatApi.createChat(chatName, participants).pipe(
+    return this.chatApi.createChat(chatName, participants, type).pipe(
       switchMap((res) => {
         if (!res || !res.chatId || !res.chatName) {
           return of({ success: false, message: 'Failed to create chat.' });

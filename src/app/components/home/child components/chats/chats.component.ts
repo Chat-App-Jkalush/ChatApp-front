@@ -1,6 +1,13 @@
-import { Component, OnInit, effect } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UsersApiService } from '../../../../api/usersApi.service';
 import { UserService } from '../../../../services/user.service';
+import { ChatApiService } from '../../../../api/chatApi.service';
+
+interface ChatListItem {
+  chatId: string;
+  chatName: string;
+  type: string;
+}
 
 @Component({
   selector: 'app-chats',
@@ -10,14 +17,15 @@ import { UserService } from '../../../../services/user.service';
 })
 export class ChatsComponent implements OnInit {
   userName = '';
-  chats: string[] = [];
+  chats: ChatListItem[] = [];
   totalChats = 0;
   pageSize = 10;
   pageIndex = 0;
 
   constructor(
     private usersApiService: UsersApiService,
-    private userService: UserService
+    private userService: UserService,
+    private chatApi: ChatApiService
   ) {}
 
   ngOnInit(): void {
@@ -35,7 +43,7 @@ export class ChatsComponent implements OnInit {
 
   loadChats() {
     if (!this.userName) return;
-    this.usersApiService
+    this.chatApi
       .getPaginatedChats(this.userName, this.pageIndex + 1, this.pageSize)
       .subscribe((res) => {
         this.chats = res.chats;

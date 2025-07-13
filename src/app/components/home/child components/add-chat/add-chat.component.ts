@@ -13,6 +13,7 @@ import { ContactService } from '../../../../services/contact.service';
 import { UserService } from '../../../../services/user.service';
 import { ChatManagementService } from '../../../../services/chatManagment.service';
 import { filterContacts } from '../../../../helpers/contactFilter.helper';
+import { chatType } from '../../../../../../../common/enums/chat.enum';
 
 @Component({
   selector: 'app-add-chat',
@@ -160,8 +161,10 @@ export class AddChatComponent implements OnInit, OnDestroy {
     const participants = Array.from(
       new Set([creator, ...this.selectedParticipants])
     );
+    const type = participants.length === 2 ? chatType.DM : chatType.GROUP;
+
     this.chatManagement
-      .createChatAndUpdateUsers(chatName, participants)
+      .createChatAndUpdateUsers(chatName, participants, type)
       .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         this.loading = false;

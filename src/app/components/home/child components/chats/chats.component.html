@@ -5,10 +5,12 @@
   (page)="onPageChange($event)"
 >
 </mat-paginator>
+
 <div class="chats-container">
   <app-chat
     *ngFor="let chat of chats"
-    [chatName]="chat"
+    [chatName]="chat.chatName"
+    [chatType]="chat.type"
     class="chat-item"
   ></app-chat>
 </div>
