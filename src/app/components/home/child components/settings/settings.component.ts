@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsersApiService } from '../../../../api/usersApi.service';
-import { UserService } from '../../../../services/refreshData.service';
+import { RefreshDataService } from '../../../../services/refreshData.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,13 +19,13 @@ export class SettingsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private usersApi: UsersApiService,
-    private userService: UserService,
+    private refreshDataService: RefreshDataService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.settingsForm = this.fb.group({
-      userName: [this.userService.userName, Validators.required],
+      userName: [this.refreshDataService.userName, Validators.required],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       password: ['', Validators.required],
@@ -41,7 +41,7 @@ export class SettingsComponent implements OnInit {
       next: () => {
         this.successMessage = 'Profile updated successfully!';
         this.loading = false;
-        this.userService.setUserName(this.settingsForm.value.userName);
+        this.refreshDataService.setUserName(this.settingsForm.value.userName);
       },
       error: (err) => {
         this.errorMessage = 'Failed to update profile.';

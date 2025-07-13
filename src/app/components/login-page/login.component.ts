@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginDto } from '../../../../../common/dto/user.dto';
 import { UsersApiService } from '../../api/usersApi.service';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/refreshData.service';
+import { RefreshDataService } from '../../services/refreshData.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private userApi: UsersApiService,
     private router: Router,
-    private userService: UserService
+    private refreshDataService: RefreshDataService
   ) {}
 
   ngOnInit() {
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
     }
     this.userApi.login(this.loginForm.value as LoginDto).subscribe({
       next: (response) => {
-        this.userService.setUserName(response.userName);
+        this.refreshDataService.setUserName(response.userName);
         this.router.navigate(['/home']);
       },
       error: (error) => {

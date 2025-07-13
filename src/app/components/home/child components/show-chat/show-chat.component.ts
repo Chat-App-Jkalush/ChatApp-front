@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { ChatApiService } from '../../../../api/chatApi.service';
 import { RefreshDataService } from '../../../../services/refreshData.service';
+import { messageInfoResponse } from '../../../../../../../common/Ro/message.ro';
 
 @Component({
   selector: 'app-show-chat',
@@ -18,6 +19,7 @@ export class ShowChatComponent implements OnInit, OnChanges {
   @Input() chat: any;
   latestChatId: string | null = null;
   userName: string = '';
+  messages: messageInfoResponse[] = [];
 
   constructor(
     private chatApi: ChatApiService,
