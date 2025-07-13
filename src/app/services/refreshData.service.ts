@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class RefreshDataService {
   private _userName$ = new BehaviorSubject<string>('');
-  private _latestChatIdSubject = new BehaviorSubject<string | null>(null);
+  private _latestChatIdSubject = new BehaviorSubject<string>('');
 
   constructor() {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -57,7 +57,7 @@ export class RefreshDataService {
   }
 
   clearLatestChatId() {
-    this._latestChatIdSubject.next(null);
+    this._latestChatIdSubject.next('');
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.removeItem('latestChatId');
     }

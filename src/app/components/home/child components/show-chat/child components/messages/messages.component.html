@@ -1,0 +1,6 @@
+<div
+  *ngFor="let message of messages"
+  [ngClass]="{ 'message-row': true, me: message.sender === userName }"
+>
+  <app-message [message]="message"></app-message>
+</div>
