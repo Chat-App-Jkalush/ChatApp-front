@@ -10,10 +10,10 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { ContactService } from '../../../../services/contact.service';
-import { UserService } from '../../../../services/user.service';
 import { ChatManagementService } from '../../../../services/chatManagment.service';
 import { filterContacts } from '../../../../helpers/contactFilter.helper';
 import { chatType } from '../../../../../../../common/enums/chat.enum';
+import { RefreshDataService } from '../../../../services/refreshData.service';
 
 @Component({
   selector: 'app-add-chat',
@@ -42,7 +42,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
   constructor(
     private contactService: ContactService,
     private chatManagement: ChatManagementService,
-    private userService: UserService
+    private refreshDataService: RefreshDataService
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +68,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
   }
 
   private setupUserSubscription(): void {
-    this.userService.userName$
+    this.refreshDataService.userName$
       .pipe(takeUntil(this.destroy$))
       .subscribe((userName) => {
         this.userName = userName;

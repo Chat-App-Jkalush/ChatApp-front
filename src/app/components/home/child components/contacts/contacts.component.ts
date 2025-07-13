@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UsersApiService } from '../../../../api/usersApi.service';
-import { UserService } from '../../../../services/user.service';
 import { ContactApiService } from '../../../../api/contactApi.service';
-import { Event } from '@angular/router';
+import { RefreshDataService } from '../../../../services/refreshData.service';
 
 @Component({
   selector: 'app-contacts',
@@ -19,11 +17,11 @@ export class ContactsComponent implements OnInit {
 
   constructor(
     private contactApi: ContactApiService,
-    private userService: UserService
+    private refreshDataService: RefreshDataService
   ) {}
 
   ngOnInit(): void {
-    this.userName = this.userService.userName;
+    this.userName = this.refreshDataService.userName;
     this.loadContacts();
   }
 

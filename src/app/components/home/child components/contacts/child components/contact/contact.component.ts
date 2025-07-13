@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ContactApiService } from '../../../../../../api/contactApi.service';
 import { RemoveContactDto } from '../../../../../../../../../backend/dist/common/dto/contact.dto';
-import { UserService } from '../../../../../../services/user.service';
+import { RefreshDataService } from '../../../../../../services/refreshData.service';
 
 @Component({
   selector: 'app-contact',
@@ -12,7 +12,7 @@ import { UserService } from '../../../../../../services/user.service';
 export class ContactComponent {
   constructor(
     private contactApi: ContactApiService,
-    private userService: UserService
+    private refreshDataService: RefreshDataService
   ) {}
   @Input()
   contactName: string = '';
@@ -22,7 +22,7 @@ export class ContactComponent {
 
   onRemoveContact() {
     const dto: RemoveContactDto = {
-      userName: this.userService.userName,
+      userName: this.refreshDataService.userName,
       contactName: this.contactName,
     };
     this.contactApi.removeContact(dto).subscribe({

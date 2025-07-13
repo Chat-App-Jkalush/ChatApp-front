@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersApiService } from '../../../../api/usersApi.service';
-import { UserService } from '../../../../services/user.service';
 import { ContactApiService } from '../../../../api/contactApi.service';
+import { RefreshDataService } from '../../../../services/refreshData.service';
 
 @Component({
   selector: 'app-add-contacts',
@@ -17,7 +17,7 @@ export class AddContactsComponent implements OnInit {
 
   constructor(
     private usersApiService: UsersApiService,
-    private userService: UserService,
+    private refreshDataService: RefreshDataService,
     private contactApi: ContactApiService
   ) {}
 
@@ -34,7 +34,7 @@ export class AddContactsComponent implements OnInit {
   loadUsers() {
     this.usersApiService
       .getPaginatedUsers(
-        this.userService.userName,
+        this.refreshDataService.userName,
         this.pageIndex + 1,
         this.pageSize
       )
@@ -45,14 +45,16 @@ export class AddContactsComponent implements OnInit {
   }
 
   addContact(userName: string) {
-    this.contactApi.addContact(this.userService.userName, userName).subscribe({
-      next: (res) => {
-        console.log('Contact added successfully:', res);
-        this.users = this.users.filter((user) => user.userName !== userName);
-      },
-      error: (err) => {
-        console.error('Error adding contact:', err);
-      },
-    });
+    this.contactApi
+      .addContact(this.refreshDataService.userName, userName)
+      .subscribe({
+        next: (res) => {
+          console.log('Contact added successfully:', res);
+          this.users = this.users.filter((user) => user.userName !== userName);
+        },
+        error: (err) => {
+          console.error('Error adding contact:', err);
+        },
+      });
   }
 }

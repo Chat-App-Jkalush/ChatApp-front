@@ -19,9 +19,11 @@ export const API_ENDPOINT = {
     UPDATE_USER_CHATS: '/chats/update-user-chats',
     ADD_USER_TO_CHAT: '/chats/add-user-to-chat',
     CREATE: '/chats',
+    GET_BY_ID: '/chats/paginated',
   },
   USER_COOKIE: {
     SAVE: '/user-cookie/save',
     GET: '/user-cookie/get',
+    SET_LATEST_CHAT: '/user-cookie/set-latest-chat',
   },
 };

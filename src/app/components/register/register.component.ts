@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsersApiService } from '../../api/usersApi.service';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
 import { UserCookieApiService } from '../../api/userCookieApi.service';
+import { RefreshDataService } from '../../services/refreshData.service';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +17,7 @@ export class RegisterComponent implements OnInit {
     private userApi: UsersApiService,
     private userCookieApi: UserCookieApiService,
     private router: Router,
-    private userService: UserService
+    private refreshDataService: RefreshDataService
   ) {}
   registerForm!: FormGroup;
 
@@ -41,17 +41,17 @@ export class RegisterComponent implements OnInit {
         if (cookie) {
           this.userCookieApi.saveUserCookie(response, cookie).subscribe({
             next: () => {
-              this.userService.setUserName(response.userName);
+              this.refreshDataService.setUserName(response.userName);
               this.router.navigate(['/home']);
             },
             error: (error) => {
               console.error('Failed to save user cookie:', error);
-              this.userService.setUserName(response.userName);
+              this.refreshDataService.setUserName(response.userName);
               this.router.navigate(['/home']);
             },
           });
         } else {
-          this.userService.setUserName(response.userName);
+          this.refreshDataService.setUserName(response.userName);
           this.router.navigate(['/home']);
         }
       },
