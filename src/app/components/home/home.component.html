@@ -37,7 +37,10 @@
       </div>
       <div class="content-area">
         <div class="content-area">
-          <app-chats *ngIf="tab === 'chats'"></app-chats>
+          <app-chats
+            (selectedChat)="onChatSelected($event)"
+            *ngIf="tab === 'chats'"
+          ></app-chats>
           <app-contacts *ngIf="tab === 'contacts'"></app-contacts>
           <app-add-contacts *ngIf="tab === 'addContact'"></app-add-contacts>
           <app-add-chat *ngIf="tab === 'addChat'"></app-add-chat>
@@ -46,5 +49,7 @@
       </div>
     </div>
   </mat-grid-tile>
-  <mat-grid-tile colspan="3"></mat-grid-tile>
+  <mat-grid-tile colspan="3"
+    ><app-show-chat [chat]="selectedChat"></app-show-chat
+  ></mat-grid-tile>
 </mat-grid-list>

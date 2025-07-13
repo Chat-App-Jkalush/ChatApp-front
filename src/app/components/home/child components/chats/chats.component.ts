@@ -1,13 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { UsersApiService } from '../../../../api/usersApi.service';
 import { UserService } from '../../../../services/user.service';
 import { ChatApiService } from '../../../../api/chatApi.service';
-
-interface ChatListItem {
-  chatId: string;
-  chatName: string;
-  type: string;
-}
+import { ChatListItem } from '../../../../models/chat/chat.model';
 
 @Component({
   selector: 'app-chats',
@@ -16,6 +11,9 @@ interface ChatListItem {
   styleUrls: ['./chats.component.scss'],
 })
 export class ChatsComponent implements OnInit {
+  @Output()
+  selectedChat = new EventEmitter<ChatListItem>();
+
   userName = '';
   chats: ChatListItem[] = [];
   totalChats = 0;
@@ -23,7 +21,6 @@ export class ChatsComponent implements OnInit {
   pageIndex = 0;
 
   constructor(
-    private usersApiService: UsersApiService,
     private userService: UserService,
     private chatApi: ChatApiService
   ) {}
@@ -49,5 +46,9 @@ export class ChatsComponent implements OnInit {
         this.chats = res.chats;
         this.totalChats = res.total;
       });
+  }
+
+  onChatSelect(chatIndex: number) {
+    this.selectedChat.emit(this.chats[chatIndex]);
   }
 }

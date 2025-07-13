@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ChatListItem } from '../../models/chat/chat.model';
 
 @Component({
   selector: 'app-home',
@@ -8,4 +9,9 @@ import { Component } from '@angular/core';
 })
 export class HomeComponent {
   tab: string = 'chats';
+  selectedChat: ChatListItem | null = null;
+
+  onChatSelected(chat: ChatListItem) {
+    this.selectedChat = chat;
+  }
 }

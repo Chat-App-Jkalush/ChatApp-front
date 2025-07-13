@@ -8,9 +8,10 @@
 
 <div class="chats-container">
   <app-chat
-    *ngFor="let chat of chats"
+    *ngFor="let chat of chats; let i = index"
     [chatName]="chat.chatName"
     [chatType]="chat.type"
     class="chat-item"
+    (click)="onChatSelect(i)"
   ></app-chat>
 </div>

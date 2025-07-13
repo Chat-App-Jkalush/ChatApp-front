@@ -27,6 +27,7 @@ import { AddContactComponent } from './components/home/child components/add-cont
 import { AddContactsComponent } from './components/home/child components/add-contacts/add-contacts.component';
 import { SettingsComponent } from './components/home/child components/settings/settings.component';
 import { AddChatComponent } from './components/home/child components/add-chat/add-chat.component';
+import { ShowChatComponent } from './components/home/child components/show-chat/show-chat.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { AddChatComponent } from './components/home/child components/add-chat/ad
     AddContactsComponent,
     SettingsComponent,
     AddChatComponent,
+    ShowChatComponent,
   ],
   imports: [
     BrowserModule,
