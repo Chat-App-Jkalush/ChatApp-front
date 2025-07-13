@@ -1,31 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { messageInfoResponse } from '../../../../../../../../../common/Ro/message.ro';
 import { RefreshDataService } from '../../../../../../services/refreshData.service';
+import { MessageApiService } from '../../../../../../api/messageApi.service';
 
 @Component({
   selector: 'app-messages',
   standalone: false,
   templateUrl: './messages.component.html',
-  styleUrl: './messages.component.scss',
+  styleUrls: ['./messages.component.scss'],
 })
 export class MessagesComponent implements OnInit {
-  constructor(private refreshDataService: RefreshDataService) {}
   userName: string = '';
-  messages: messageInfoResponse[] = [
-    {
-      sender: 'Jkalush',
-      content: 'Hello, this is Jkalush!',
-    },
-    {
-      sender: 'Test',
-      content: 'Hi Jkalush, Test here.',
-    },
-    {
-      sender: 'Shoko',
-      content: 'Hey everyone, Shoko joined the chat.',
-    },
-  ];
-  ngOnInit(): void {
+  messages: messageInfoResponse[] = [];
+
+  constructor(
+    private refreshDataService: RefreshDataService,
+    private messageApi: MessageApiService
+  ) {}
+
+  async ngOnInit(): Promise<void> {
     this.userName = this.refreshDataService.userName;
+    const chatId = this.refreshDataService.latestChatId;
+    if (chatId) {
+      try {
+        this.messages = await this.messageApi.getAllByChatId(chatId);
+      } catch (error) {
+        this.messages = [];
+      }
+    }
   }
 }
