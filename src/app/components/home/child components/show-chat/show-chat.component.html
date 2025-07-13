@@ -3,7 +3,9 @@
     <h2 class="chat-title">{{ chat.chatName }} : {{ chat.type }}</h2>
   </div>
 
-  <div class="chat-messages"></div>
+  <div class="chat-messages">
+    <app-messages></app-messages>
+  </div>
 
   <form class="chat-input-row" [formGroup]="message" (ngSubmit)="sendMessage()">
     <input
