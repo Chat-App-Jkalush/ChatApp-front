@@ -38,7 +38,7 @@ export class ChatApiService {
   createChat(chatName: string, participants: string[] = [], type: chatType) {
     return this.client.post<{ chatId: string; chatName: string }>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.CREATE}`,
-      { chatName, participants },
+      { chatName, participants, type },
       { withCredentials: true }
     );
   }
