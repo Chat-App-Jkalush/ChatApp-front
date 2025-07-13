@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_ENDPOINT } from '../../../constants/api.constatns';
+import { chatType } from '../../../../common/enums/chat.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,7 @@ export class ChatApiService {
     );
   }
 
-  createChat(chatName: string, participants: string[] = []) {
+  createChat(chatName: string, participants: string[] = [], type: chatType) {
     return this.client.post<{ chatId: string; chatName: string }>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.CREATE}`,
       { chatName, participants },
