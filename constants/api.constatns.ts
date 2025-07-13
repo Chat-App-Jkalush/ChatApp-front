@@ -12,6 +12,7 @@ export const API_ENDPOINT = {
   CONTACTS: {
     ADD: '/contacts/add',
     PAGINATED: '/contacts/paginated',
+    REMOVE: '/contacts/remove',
   },
   CHATS: {
     PAGINATED: '/chats/paginated',

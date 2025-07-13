@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UsersApiService } from '../../../../api/usersApi.service';
 import { UserService } from '../../../../services/user.service';
 import { ContactApiService } from '../../../../api/contactApi.service';
+import { Event } from '@angular/router';
 
 @Component({
   selector: 'app-contacts',
@@ -39,5 +40,9 @@ export class ContactsComponent implements OnInit {
         this.contacts = res.contacts;
         this.totalContacts = res.total;
       });
+  }
+  removeContact(contactName: string) {
+    this.contacts = this.contacts.filter((contact) => contact !== contactName);
+    this.totalContacts = this.contacts.length;
   }
 }

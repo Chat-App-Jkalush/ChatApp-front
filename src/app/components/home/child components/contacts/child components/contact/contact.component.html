@@ -5,4 +5,13 @@
   <div class="contact-content">
     <div class="contact-name">{{ contactName }}</div>
   </div>
+  <button
+    mat-icon-button
+    color="warn"
+    aria-label="Remove contact"
+    (click)="onRemoveContact()"
+    class="remove-contact-btn"
+  >
+    <mat-icon>remove_circle</mat-icon>
+  </button>
 </div>
