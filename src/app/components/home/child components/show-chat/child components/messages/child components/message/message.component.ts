@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { messageInfoResponse } from '../../../../../../../../../../../common/Ro/message.ro';
+import { Message } from '../../../../../../../../../../../common/dto/message.dto';
 
 @Component({
   selector: 'app-message',
@@ -9,5 +10,10 @@ import { messageInfoResponse } from '../../../../../../../../../../../common/Ro/
 })
 export class MessageComponent {
   @Input()
-  message: messageInfoResponse = { sender: '', content: '' };
+  message: Message = {
+    chatId: '',
+    sender: '',
+    content: '',
+    createdAt: new Date(),
+  };
 }
