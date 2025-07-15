@@ -7,12 +7,15 @@ import {
   ViewChild,
   ElementRef,
   AfterViewChecked,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { ChatApiService } from '../../../../api/chatApi.service';
 import { RefreshDataService } from '../../../../services/refreshData.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChatSocketService } from '../../../../services/chatSocket.service';
 import { MessagesComponent } from './child components/messages/messages.component';
+import { Event } from '@angular/router';
 
 @Component({
   selector: 'app-show-chat',
@@ -22,6 +25,7 @@ import { MessagesComponent } from './child components/messages/messages.componen
 })
 export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() chat: any;
+  @Output() leaveChatEvent = new EventEmitter<string>();
   @ViewChild('messagesContainer', { static: false })
   messagesContainer!: ElementRef;
 
@@ -112,5 +116,9 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
   }
   closeInfo(): void {
     this.showInfo = false;
+  }
+
+  leaveChat() {
+    this.leaveChatEvent.emit(this.chat?.chatId);
   }
 }

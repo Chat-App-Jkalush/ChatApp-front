@@ -53,6 +53,9 @@
     </div>
   </mat-grid-tile>
   <mat-grid-tile colspan="3">
-    <app-show-chat [chat]="selectedChat"></app-show-chat>
+    <app-show-chat
+      (leaveChatEvent)="onChatLeft($event)"
+      [chat]="selectedChat"
+    ></app-show-chat>
   </mat-grid-tile>
 </mat-grid-list>

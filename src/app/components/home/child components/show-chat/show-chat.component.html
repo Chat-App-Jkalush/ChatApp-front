@@ -30,7 +30,11 @@
 
   <div class="chat-info-overlay" *ngIf="showInfo" (click)="closeInfo()">
     <div class="chat-info-dialog" (click)="$event.stopPropagation()">
-      <app-chat-info [chat]="chat" [userName]="userName"></app-chat-info>
+      <app-chat-info
+        [chat]="chat"
+        [userName]="userName"
+        (onLeaveChat)="leaveChat()"
+      ></app-chat-info>
       <button mat-icon-button class="close-btn" (click)="closeInfo()">
         <mat-icon>close</mat-icon>
       </button>

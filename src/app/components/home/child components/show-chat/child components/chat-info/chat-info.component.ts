@@ -14,10 +14,6 @@ export class ChatInfoComponent implements OnInit {
   @Output() onLeaveChat = new EventEmitter<void>();
   participents: string[] = [];
   ngOnInit(): void {
-    if (!this.chat?.chatId) {
-      console.error('Chat ID is missing!');
-      return;
-    }
     this.chatApi.getChatParticipants(this.chat.chatId).subscribe({
       next: (response) => {
         console.log('Chat participants:', response.participants);
@@ -31,7 +27,6 @@ export class ChatInfoComponent implements OnInit {
   leaveChat(): void {
     this.chatApi.leaveChat(this.userName, this.chat.chatId).subscribe({
       next: () => {
-        console.log('Left chat successfully');
         this.onLeaveChat.emit();
       },
     });
