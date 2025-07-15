@@ -20,8 +20,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private refreshDataService: RefreshDataService,
-    private chatSocketService: ChatSocketService,
-    private chatApi: ChatApiService
+    private chatSocketService: ChatSocketService
   ) {}
 
   ngOnInit(): void {

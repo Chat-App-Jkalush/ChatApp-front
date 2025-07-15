@@ -60,6 +60,9 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
   public renderMessage(message: Message): void {
+    if (!message.createdAt) {
+      message.createdAt = new Date();
+    }
     if (this.chatId === message.chatId) {
       this.messages.push(message);
     }
