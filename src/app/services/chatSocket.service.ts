@@ -45,4 +45,8 @@ export class ChatSocketService {
   disconnect() {
     this.socket.disconnect();
   }
+
+  leaveChat(chatId: string, userName: string) {
+    this.socket.emit(EVENTS.LEAVE_CHAT, { chatId, userName });
+  }
 }

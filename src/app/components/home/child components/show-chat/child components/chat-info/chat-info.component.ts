@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ChatApiService } from '../../../../../../api/chatApi.service';
+import { ChatSocketService } from '../../../../../../services/chatSocket.service';
 
 @Component({
   selector: 'app-chat-info',
@@ -8,7 +9,10 @@ import { ChatApiService } from '../../../../../../api/chatApi.service';
   styleUrl: './chat-info.component.scss',
 })
 export class ChatInfoComponent implements OnInit {
-  constructor(private chatApi: ChatApiService) {}
+  constructor(
+    private chatApi: ChatApiService,
+    private chatSocketService: ChatSocketService
+  ) {}
   @Input() chat: any;
   @Input() userName: string = '';
   @Output() onLeaveChat = new EventEmitter<void>();
@@ -27,6 +31,7 @@ export class ChatInfoComponent implements OnInit {
   leaveChat(): void {
     this.chatApi.leaveChat(this.userName, this.chat.chatId).subscribe({
       next: () => {
+        this.chatSocketService.leaveChat(this.chat.chatId, this.userName);
         this.onLeaveChat.emit();
       },
     });
