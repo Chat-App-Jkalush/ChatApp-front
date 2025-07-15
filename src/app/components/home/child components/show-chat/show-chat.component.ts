@@ -12,6 +12,7 @@ import { ChatApiService } from '../../../../api/chatApi.service';
 import { RefreshDataService } from '../../../../services/refreshData.service';
 import { messageInfoResponse } from '../../../../../../../common/Ro/message.ro';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChatSocketService } from '../../../../services/chatSocket.service';
 
 @Component({
   selector: 'app-show-chat',
@@ -32,7 +33,8 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
   constructor(
     private chatApi: ChatApiService,
     private refreshDataService: RefreshDataService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private chatSocketService: ChatSocketService
   ) {}
 
   ngOnInit() {
@@ -86,6 +88,8 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
 
   sendMessage() {}
   trackByMessage(index: number, message: any): any {
-    return message.id || index;
+    this.chatSocketService.sendMessage({
+      ...this.message.value,
+    });
   }
 }

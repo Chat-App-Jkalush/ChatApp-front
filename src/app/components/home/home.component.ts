@@ -17,6 +17,7 @@ export class HomeComponent {
   onChatSelected(chat: ChatListItem) {
     this.selectedChat = chat;
     if (chat?.chatId) {
+      console.log('Selected chat ID:', chat.chatId);
       this.refreshDataService.setLatestChatId(chat.chatId);
     }
   }
