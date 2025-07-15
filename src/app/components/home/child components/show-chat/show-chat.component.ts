@@ -28,6 +28,8 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
   @Output() leaveChatEvent = new EventEmitter<string>();
   @ViewChild('messagesContainer', { static: false })
   messagesContainer!: ElementRef;
+  @ViewChild(MessagesComponent)
+  messagesComponent!: MessagesComponent;
 
   latestChatId: string | null = null;
   userName: string = '';
@@ -55,6 +57,10 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
         this.chatApi.getChatById(chatId).subscribe((chat) => {
           this.chat = chat;
           this.shouldScrollToBottom = true;
+          if (this.messagesComponent) {
+            this.messagesComponent.chatId = chat.chatId;
+            this.messagesComponent.loadMessages();
+          }
         });
       }
     });
@@ -70,11 +76,17 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
       this.refreshDataService.setLatestChatId(this.chat.chatId);
       this.message.patchValue({ chatId: this.chat.chatId });
       this.shouldScrollToBottom = true;
+      if (this.messagesComponent) {
+        this.messagesComponent.chatId = this.chat.chatId;
+        this.messagesComponent.loadMessages();
+      }
     }
   }
 
   ngAfterViewChecked() {
     if (this.shouldScrollToBottom) {
+      if (this.messagesContainer) {
+      }
       this.scrollToBottom();
       this.shouldScrollToBottom = false;
     }
@@ -111,7 +123,6 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   onInfoClick(): void {
-    console.log('Chat passed to info:', this.chat);
     this.showInfo = true;
   }
   closeInfo(): void {

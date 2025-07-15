@@ -14,6 +14,9 @@ export class ChatSocketService {
       transports: ['websocket'],
       withCredentials: true,
     });
+    this.socket.on('connect', () => {});
+    this.socket.on('disconnect', (reason: string) => {});
+    this.socket.onAny((event, ...args) => {});
   }
 
   getSocket(): Socket {
@@ -35,11 +38,15 @@ export class ChatSocketService {
   }
 
   onNewMessage(callback: (message: any) => void) {
-    this.socket.on(EVENTS.NEW_MESSAGE, callback);
+    this.socket.on(EVENTS.NEW_MESSAGE, (msg) => {
+      callback(msg);
+    });
   }
 
   onEvent(event: string, callback: (...args: any[]) => void) {
-    this.socket.on(event, callback);
+    this.socket.on(event, (...args) => {
+      callback(...args);
+    });
   }
 
   disconnect() {
