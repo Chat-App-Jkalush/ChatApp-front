@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ContactApiService } from '../../../../../../api/contactApi.service';
-import { RemoveContactDto } from '../../../../../../../../../backend/dist/common/dto/contact.dto';
 import { RefreshDataService } from '../../../../../../services/refreshData.service';
+import { RemoveContactDto } from '../../../../../../../../../common/dto/contact.dto';
 
 @Component({
   selector: 'app-contact',
