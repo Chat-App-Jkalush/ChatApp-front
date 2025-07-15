@@ -1,7 +1,18 @@
-<header>{{ chat.chatName }}</header>
-<h5>Participants</h5>
-<ul>
-  <li *ngFor="let participant of participents">
-    {{ participant }}
-  </li>
-</ul>
+<header class="chat-info-header">
+  <span class="chat-title">{{ chat.chatName }}</span>
+</header>
+
+<h5 class="participants-title">Participants</h5>
+<mat-list>
+  <mat-list-item *ngFor="let participant of participents">
+    <mat-icon matListIcon color="primary">person</mat-icon>
+    <span matLine>{{ participant }}</span>
+  </mat-list-item>
+</mat-list>
+
+<div class="chat-info-actions">
+  <button mat-raised-button color="warn" (click)="leaveChat()">
+    <mat-icon>exit_to_app</mat-icon>
+    Leave Chat
+  </button>
+</div>

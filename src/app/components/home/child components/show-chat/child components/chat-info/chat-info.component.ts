@@ -10,7 +10,8 @@ import { ChatApiService } from '../../../../../../api/chatApi.service';
 export class ChatInfoComponent implements OnInit {
   constructor(private chatApi: ChatApiService) {}
   @Input() chat: any;
-  @Output() onLeaveCha = new EventEmitter<void>();
+  @Input() userName: string = '';
+  @Output() onLeaveChat = new EventEmitter<void>();
   participents: string[] = [];
   ngOnInit(): void {
     if (!this.chat?.chatId) {
@@ -24,6 +25,14 @@ export class ChatInfoComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error fetching chat participants:', error);
+      },
+    });
+  }
+  leaveChat(): void {
+    this.chatApi.leaveChat(this.userName, this.chat.chatId).subscribe({
+      next: () => {
+        console.log('Left chat successfully');
+        this.onLeaveChat.emit();
       },
     });
   }

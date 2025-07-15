@@ -21,6 +21,7 @@ export const API_ENDPOINT = {
     CREATE: '/chats',
     GET_BY_ID: '/chats/paginated',
     GET_PARTICIPANTS: '/chats/get-chat-participents',
+    LEAVE_CHAT: '/chats/leave-chat',
   },
   DATA_COOKIE: {
     SAVE: '/data-cookie/save',

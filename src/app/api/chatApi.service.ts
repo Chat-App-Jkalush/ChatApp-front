@@ -74,4 +74,12 @@ export class ChatApiService {
       { withCredentials: true }
     );
   }
+
+  leaveChat(userName: string, chatId: string) {
+    return this.client.post(
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.LEAVE_CHAT}`,
+      { userName, chatId },
+      { withCredentials: true }
+    );
+  }
 }
