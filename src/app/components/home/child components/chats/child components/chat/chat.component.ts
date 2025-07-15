@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ChatListItem } from '../../../../../../models/chat/chat.model';
 
 @Component({
   selector: 'app-chat',
@@ -7,6 +8,5 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent {
-  @Input() chatName: string = '';
-  @Input() chatType: string = '';
+  @Input() chat!: ChatListItem;
 }

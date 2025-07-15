@@ -11,7 +11,12 @@ export class ChatApiService {
 
   getPaginatedChats(userName: string, page: number, pageSize: number) {
     return this.client.get<{
-      chats: { chatId: string; chatName: string; type: string }[];
+      chats: {
+        chatId: string;
+        chatName: string;
+        type: string;
+        description: string;
+      }[];
       total: number;
     }>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.PAGINATED}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
@@ -35,18 +40,31 @@ export class ChatApiService {
     );
   }
 
-  createChat(chatName: string, participants: string[] = [], type: chatType) {
-    return this.client.post<{ chatId: string; chatName: string }>(
+  createChat(
+    chatName: string,
+    participants: string[] = [],
+    type: chatType,
+    description: string
+  ) {
+    return this.client.post<{
+      chatId: string;
+      chatName: string;
+      description: string;
+    }>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.CREATE}`,
-      { chatName, participants, type },
+      { chatName, participants, type, description },
       { withCredentials: true }
     );
   }
 
   getChatById(chatId: string) {
-    return this.client.get<{ chatId: string; chatName: string; type: string }>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.PAGINATED}/${chatId}`,
-      { withCredentials: true }
-    );
+    return this.client.get<{
+      chatId: string;
+      chatName: string;
+      type: string;
+      description: string;
+    }>(`${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.PAGINATED}/${chatId}`, {
+      withCredentials: true,
+    });
   }
 }

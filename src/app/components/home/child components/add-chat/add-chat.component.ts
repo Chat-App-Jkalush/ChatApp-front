@@ -63,6 +63,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
         Validators.minLength(3),
         Validators.maxLength(50),
       ]),
+      description: new FormControl('', [Validators.maxLength(200)]), // <-- add this
       participants: new FormControl([], Validators.required),
     });
   }
@@ -157,6 +158,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
     this.clearMessages();
     this.loading = true;
     const chatName = this.addChatForm.get('chatName')?.value;
+    const description = this.addChatForm.get('description')?.value; // <-- add this
     const creator = this.userName;
     const participants = Array.from(
       new Set([creator, ...this.selectedParticipants])
@@ -164,7 +166,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
     const type = participants.length === 2 ? chatType.DM : chatType.GROUP;
 
     this.chatManagement
-      .createChatAndUpdateUsers(chatName, participants, type)
+      .createChatAndUpdateUsers(chatName, participants, type, description)
       .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         this.loading = false;
