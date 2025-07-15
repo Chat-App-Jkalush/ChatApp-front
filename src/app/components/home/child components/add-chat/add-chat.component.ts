@@ -134,11 +134,11 @@ export class AddChatComponent implements OnInit, OnDestroy {
         if (result.success) {
           this.successMessage = result.message;
           this.resetForm();
+          this.onFinished.emit();
         } else {
           this.errorMessage = result.message;
         }
       });
-    this.onFinished.emit();
   }
 
   onCancel(): void {
