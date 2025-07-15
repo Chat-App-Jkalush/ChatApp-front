@@ -25,12 +25,14 @@ export function onInit(
           if (data?.userDetails?.latestChatId) {
             refreshDataService.setLatestChatId(data.userDetails.latestChatId);
           }
+          if (data?.userDetails?.chats) {
+            refreshDataService.setChats(data.userDetails.chats);
+          }
         });
     }
     return Promise.resolve();
   };
 }
-
 export const OnInitProvider: Provider = {
   provide: APP_INITIALIZER,
   useFactory: onInit,
