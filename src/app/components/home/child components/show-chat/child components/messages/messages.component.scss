@@ -24,3 +24,25 @@ app-message {
   word-break: break-word;
   box-shadow: 0 2px 4px rgba(25, 118, 210, 0.08);
 }
+:host-context(.system-message) {
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+.message-row.system-message {
+  justify-content: center;
+}
+
+.message-row.system-message ::ng-deep app-message {
+  background: #ffebee !important;
+  color: #c62828 !important;
+  border: none !important;
+  font-weight: bold !important;
+  text-align: center !important;
+  max-width: 80% !important;
+  box-shadow: none !important;
+  align-self: center;
+}
