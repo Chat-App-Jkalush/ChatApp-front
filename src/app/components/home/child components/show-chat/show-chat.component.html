@@ -4,7 +4,7 @@
   </div>
 
   <div class="chat-messages">
-    <app-messages></app-messages>
+    <app-messages [chatId]="chat.chatId" [userName]="userName"></app-messages>
   </div>
 
   <form class="chat-input-row" [formGroup]="message" (ngSubmit)="sendMessage()">
@@ -12,7 +12,6 @@
       type="text"
       formControlName="content"
       placeholder="Type your message here..."
-      (keydown.enter)="sendMessage()"
     />
     <button
       type="submit"
