@@ -52,11 +52,16 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  public async loadMessages(): Promise<void> {
+  private async loadMessages(): Promise<void> {
     try {
       this.messages = await this.messageApi.getAllByChatId(this.chatId!);
     } catch (error) {
       this.messages = [];
+    }
+  }
+  public renderMessage(message: Message): void {
+    if (this.chatId === message.chatId) {
+      this.messages.push(message);
     }
   }
 }

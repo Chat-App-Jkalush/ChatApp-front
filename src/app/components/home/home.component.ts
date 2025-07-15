@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ChatListItem } from '../../models/chat/chat.model';
 import { RefreshDataService } from '../../services/refreshData.service';
 import { ChatSocketService } from '../../services/chatSocket.service';
 import { ChatApiService } from '../../api/chatApi.service';
+import { MessagesComponent } from './child components/show-chat/child components/messages/messages.component';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,7 @@ export class HomeComponent implements OnInit {
   selectedChat: ChatListItem | null = null;
   userName: string = '';
   chatIds: string[] = [];
+  @ViewChild(MessagesComponent) messagesComponent!: MessagesComponent;
 
   constructor(
     private refreshDataService: RefreshDataService,
@@ -29,12 +31,16 @@ export class HomeComponent implements OnInit {
         this.chatSocketService.joinChats(this.userName);
       }
     });
+    this.chatSocketService.onNewMessage((message) => {
+      if (this.selectedChat && this.selectedChat.chatId === message.chatId) {
+        this.messagesComponent.renderMessage(message);
+      }
+    });
   }
 
   onChatSelected(chat: ChatListItem) {
     this.selectedChat = chat;
     if (chat?.chatId) {
-      console.log('Selected chat ID:', chat.chatId);
       this.refreshDataService.setLatestChatId(chat.chatId);
     }
   }

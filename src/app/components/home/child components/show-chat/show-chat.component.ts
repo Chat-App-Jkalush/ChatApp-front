@@ -24,7 +24,6 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() chat: any;
   @ViewChild('messagesContainer', { static: false })
   messagesContainer!: ElementRef;
-  @ViewChild(MessagesComponent) messagesComponent!: MessagesComponent;
 
   latestChatId: string | null = null;
   userName: string = '';
@@ -100,9 +99,6 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
     this.message.patchValue({ content: '' });
 
     this.shouldScrollToBottom = true;
-    if (this.messagesComponent) {
-      this.messagesComponent.loadMessages();
-    }
   }
 
   trackByMessage(index: number, message: any): any {
