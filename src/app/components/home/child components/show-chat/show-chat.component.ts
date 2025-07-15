@@ -29,6 +29,7 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
   userName: string = '';
   message!: FormGroup;
   private shouldScrollToBottom = false;
+  showInfo = false;
 
   constructor(
     private chatApi: ChatApiService,
@@ -103,5 +104,13 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
 
   trackByMessage(index: number, message: any): any {
     return message.id || index;
+  }
+
+  onInfoClick(): void {
+    console.log('Chat passed to info:', this.chat);
+    this.showInfo = true;
+  }
+  closeInfo(): void {
+    this.showInfo = false;
   }
 }

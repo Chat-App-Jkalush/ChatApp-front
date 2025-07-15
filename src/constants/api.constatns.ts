@@ -20,6 +20,7 @@ export const API_ENDPOINT = {
     ADD_USER_TO_CHAT: '/chats/add-user-to-chat',
     CREATE: '/chats',
     GET_BY_ID: '/chats/paginated',
+    GET_PARTICIPANTS: '/chats/get-chat-participents',
   },
   DATA_COOKIE: {
     SAVE: '/data-cookie/save',
