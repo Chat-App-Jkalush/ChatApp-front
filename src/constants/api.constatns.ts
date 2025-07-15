@@ -21,9 +21,9 @@ export const API_ENDPOINT = {
     CREATE: '/chats',
     GET_BY_ID: '/chats/paginated',
   },
-  USER_COOKIE: {
-    SAVE: '/user-cookie/save',
-    GET: '/user-cookie/get',
-    SET_LATEST_CHAT: '/user-cookie/set-latest-chat',
+  DATA_COOKIE: {
+    SAVE: '/data-cookie/save',
+    GET: '/data-cookie/get',
+    SET_LATEST_CHAT: '/data-cookie/set-latest-chat',
   },
 };

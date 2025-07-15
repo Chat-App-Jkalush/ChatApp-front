@@ -43,4 +43,7 @@ export class HomeComponent implements OnInit {
       this.refreshDataService.setLatestChatId(chat.chatId);
     }
   }
+  onAddChatFinished() {
+    this.tab = 'chats';
+  }
 }

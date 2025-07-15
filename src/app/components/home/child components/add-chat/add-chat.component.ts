@@ -7,11 +7,9 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { ContactService } from '../../../../services/contact.service';
 import { ChatManagementService } from '../../../../services/chatManagment.service';
-import { filterContacts } from '../../../../helpers/contactFilter.helper';
 import { chatType } from '../../../../../../../common/enums/chat.enum';
 import { RefreshDataService } from '../../../../services/refreshData.service';
 
@@ -22,13 +20,10 @@ import { RefreshDataService } from '../../../../services/refreshData.service';
   styleUrls: ['./add-chat.component.scss'],
 })
 export class AddChatComponent implements OnInit, OnDestroy {
-  @Output() chatCreated = new EventEmitter<any>();
-  @Output() cancelled = new EventEmitter<void>();
+  @Output() onFinished = new EventEmitter<void>();
 
   addChatForm!: FormGroup;
-  searchControl = new FormControl('');
   contacts: string[] = [];
-  filteredContacts: string[] = [];
   selectedParticipants: string[] = [];
   totalContacts = 0;
   pageSize = 10;
@@ -48,7 +43,6 @@ export class AddChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeForm();
     this.setupUserSubscription();
-    this.setupSearchSubscription();
   }
 
   ngOnDestroy(): void {
@@ -63,7 +57,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
         Validators.minLength(3),
         Validators.maxLength(50),
       ]),
-      description: new FormControl('', [Validators.maxLength(200)]), // <-- add this
+      description: new FormControl('', [Validators.maxLength(200)]),
       participants: new FormControl([], Validators.required),
     });
   }
@@ -77,14 +71,6 @@ export class AddChatComponent implements OnInit, OnDestroy {
       });
   }
 
-  private setupSearchSubscription(): void {
-    this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe((searchTerm) => {
-        this.filteredContacts = filterContacts(this.contacts, searchTerm || '');
-      });
-  }
-
   loadContacts(): void {
     if (!this.userName) return;
     this.loading = true;
@@ -95,10 +81,6 @@ export class AddChatComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         this.contacts = res.contacts || [];
         this.totalContacts = res.total || 0;
-        this.filteredContacts = filterContacts(
-          this.contacts,
-          this.searchControl.value || ''
-        );
         this.loading = false;
       });
   }
@@ -109,21 +91,8 @@ export class AddChatComponent implements OnInit, OnDestroy {
     this.loadContacts();
   }
 
-  onParticipantSelected(event: MatAutocompleteSelectedEvent): void {
-    this.addParticipant(event.option.value);
-    this.searchControl.setValue('');
-  }
-
-  toggleParticipant(participant: string): void {
-    if (this.isParticipantSelected(participant)) {
-      this.removeParticipant(participant);
-    } else {
-      this.addParticipant(participant);
-    }
-  }
-
-  private addParticipant(participant: string): void {
-    if (!this.selectedParticipants.includes(participant)) {
+  onParticipantSelected(participant: string): void {
+    if (participant && !this.selectedParticipants.includes(participant)) {
       this.selectedParticipants.push(participant);
       this.updateFormParticipants();
     }
@@ -142,14 +111,6 @@ export class AddChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  isParticipantSelected(participant: string): boolean {
-    return this.selectedParticipants.includes(participant);
-  }
-
-  displayFn(contact: string): string {
-    return contact || '';
-  }
-
   onSubmit(): void {
     if (this.addChatForm.invalid) {
       this.markFormGroupTouched();
@@ -158,7 +119,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
     this.clearMessages();
     this.loading = true;
     const chatName = this.addChatForm.get('chatName')?.value;
-    const description = this.addChatForm.get('description')?.value; // <-- add this
+    const description = this.addChatForm.get('description')?.value;
     const creator = this.userName;
     const participants = Array.from(
       new Set([creator, ...this.selectedParticipants])
@@ -177,17 +138,17 @@ export class AddChatComponent implements OnInit, OnDestroy {
           this.errorMessage = result.message;
         }
       });
+    this.onFinished.emit();
   }
 
   onCancel(): void {
     this.resetForm();
-    this.cancelled.emit();
+    this.onFinished.emit();
   }
 
   private resetForm(): void {
     this.addChatForm.reset();
     this.selectedParticipants = [];
-    this.searchControl.setValue('');
     this.clearMessages();
   }
 

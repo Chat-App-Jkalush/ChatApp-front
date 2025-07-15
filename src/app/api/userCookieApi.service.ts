@@ -15,7 +15,7 @@ export class UserCookieApiService {
     latestChatId?: string
   ): Observable<any> {
     return this.client.post(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.USER_COOKIE.SAVE}`,
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.DATA_COOKIE.SAVE}`,
       { ...userDetails, cookie, latestChatId },
       { withCredentials: true }
     );
@@ -23,14 +23,14 @@ export class UserCookieApiService {
 
   getUserCookie(cookie: string): Observable<any> {
     return this.client.get(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.USER_COOKIE.GET}?cookie=${cookie}`,
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.DATA_COOKIE.GET}?cookie=${cookie}`,
       { withCredentials: true }
     );
   }
 
   setLatestChatId(userName: string, latestChatId: string): Observable<any> {
     return this.client.post(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.USER_COOKIE.SET_LATEST_CHAT}`,
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.DATA_COOKIE.SET_LATEST_CHAT}`,
       { userName, latestChatId },
       { withCredentials: true }
     );
