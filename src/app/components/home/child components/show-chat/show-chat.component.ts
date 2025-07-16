@@ -109,6 +109,7 @@ export class ShowChatComponent implements OnInit, OnChanges, AfterViewChecked {
     const messageData = {
       ...this.message.value,
       chatId: this.chat?.chatId || this.latestChatId,
+      createdAt: new Date().toISOString(),
     };
 
     this.chatSocketService.sendMessage(messageData);

@@ -34,6 +34,7 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.socketListener = (message: Message) => {
       if (this.chatId === message.chatId) {
+        message.createdAt = this.parseDate(message.createdAt);
         this.messages.push(message);
       }
     };
@@ -54,18 +55,39 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  private parseDate(dateValue: any): Date {
+    if (!dateValue) {
+      return new Date();
+    }
+
+    if (dateValue instanceof Date) {
+      return dateValue;
+    }
+
+    if (typeof dateValue === 'string') {
+      const parsedDate = new Date(dateValue);
+      if (!isNaN(parsedDate.getTime())) {
+        return parsedDate;
+      }
+    }
+
+    console.warn('Invalid date format received:', dateValue);
+    return new Date();
+  }
+
   public async loadMessages(): Promise<void> {
     try {
       this.messages = await this.messageApi.getAllByChatId(this.chatId!);
+      this.messages.forEach((msg) => {
+        msg.createdAt = this.parseDate(msg.createdAt);
+      });
     } catch (error) {
       this.messages = [];
     }
   }
 
   public renderMessage(message: Message): void {
-    if (!message.createdAt) {
-      message.createdAt = new Date();
-    }
+    message.createdAt = this.parseDate(message.createdAt);
     if (this.chatId === message.chatId) {
       this.messages.push(message);
     }

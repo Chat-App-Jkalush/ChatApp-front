@@ -3,7 +3,10 @@
     <mat-icon>account_circle</mat-icon>
   </div>
   <div class="chat-content">
-    <div class="chat-name">{{ chat.chatName }} : {{ chat.type }}</div>
+    <div class="chat-name">
+      {{ chat.type == "DM" ? otherParticipant : chat.chatName }} :
+      {{ chat.type }}
+    </div>
     <div class="chat-description">{{ chat.description }}</div>
   </div>
 </div>
