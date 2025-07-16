@@ -25,23 +25,37 @@ export class SettingsComponent implements OnInit {
 
   public ngOnInit(): void {
     this.settingsForm = this.fb.group({
-      userName: [this.refreshDataService.userName, Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      password: ['', Validators.required],
+      userName: [
+        this.refreshDataService.userName,
+        [Validators.required, Validators.pattern(/\S+/)],
+      ],
+      firstName: ['', [Validators.pattern(/\S+/)]],
+      lastName: ['', [Validators.pattern(/\S+/)]],
+      password: ['', [Validators.minLength(6)]],
     });
   }
 
   public onSubmit(): void {
-    if (this.settingsForm.invalid) return;
+    if (this.settingsForm.get('userName')?.invalid) return;
     this.loading = true;
     this.successMessage = '';
     this.errorMessage = '';
-    this.usersApi.updateUser(this.settingsForm.value).subscribe({
+    const formValue = this.settingsForm.value;
+    const updatePayload: any = { userName: formValue.userName };
+    if (formValue.firstName && formValue.firstName.trim() !== '') {
+      updatePayload.firstName = formValue.firstName;
+    }
+    if (formValue.lastName && formValue.lastName.trim() !== '') {
+      updatePayload.lastName = formValue.lastName;
+    }
+    if (formValue.password && formValue.password.trim() !== '') {
+      updatePayload.password = formValue.password;
+    }
+    this.usersApi.updateUser(updatePayload).subscribe({
       next: (): void => {
         this.successMessage = 'Profile updated successfully!';
         this.loading = false;
-        this.refreshDataService.setUserName(this.settingsForm.value.userName);
+        this.refreshDataService.setUserName(updatePayload.userName);
       },
       error: (err: any): void => {
         this.errorMessage = 'Failed to update profile.';
