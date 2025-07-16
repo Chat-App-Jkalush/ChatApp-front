@@ -35,7 +35,6 @@ export class HomeComponent implements OnInit {
 
   onChatSelected(chat: { chatId: string }) {
     if (chat?.chatId) {
-      this.refreshDataService.setLatestChatId(chat.chatId);
       this.router.navigate(['/home/chat', chat.chatId]);
     }
   }

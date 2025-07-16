@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_ENDPOINT } from '../../constants/api.constatns';
 import { chatType } from '../../../../common/enums/chat.enum';
+import { DmExitsDto } from '../../../../backend/dist/common/dto/chat.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -79,6 +80,14 @@ export class ChatApiService {
     return this.client.post(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.LEAVE_CHAT}`,
       { userName, chatId },
+      { withCredentials: true }
+    );
+  }
+
+  DmExists(dto: DmExitsDto) {
+    return this.client.post<boolean>(
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.DM_EXISTS}`,
+      dto,
       { withCredentials: true }
     );
   }

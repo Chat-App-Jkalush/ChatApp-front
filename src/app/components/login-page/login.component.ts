@@ -39,14 +39,8 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.refreshDataService.setUserName(response.userName);
 
-        const cookie =
-          document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('token='))
-            ?.split('=')[1] || '';
-
         this.userCookieApi
-          .saveUserCookie({ userName: response.userName }, cookie)
+          .saveUserCookie({ userName: response.userName })
           .subscribe({
             next: () => {
               this.router.navigate(['/home']);

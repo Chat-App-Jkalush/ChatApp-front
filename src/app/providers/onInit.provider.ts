@@ -10,29 +10,21 @@ export function onInit(
     if (typeof document === 'undefined') {
       return Promise.resolve();
     }
-    const cookie = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('token='))
-      ?.split('=')[1];
-    if (cookie) {
-      return userCookieApi
-        .getUserCookie(cookie)
-        .toPromise()
-        .then((data) => {
-          if (data?.userDetails?.userName) {
-            refreshDataService.setUserName(data.userDetails.userName);
-          }
-          if (data?.userDetails?.latestChatId) {
-            refreshDataService.setLatestChatId(data.userDetails.latestChatId);
-          }
-          if (data?.userDetails?.chats) {
-            refreshDataService.setChats(data.userDetails.chats);
-          }
-        });
-    }
-    return Promise.resolve();
+    return userCookieApi
+      .getUserCookie()
+      .toPromise()
+      .then((data) => {
+        if (data?.userName) {
+          refreshDataService.setUserName(data.userName);
+        }
+        if (data?.chats) {
+          refreshDataService.setChats(data.chats);
+        }
+      })
+      .catch(() => {});
   };
 }
+
 export const OnInitProvider: Provider = {
   provide: APP_INITIALIZER,
   useFactory: onInit,

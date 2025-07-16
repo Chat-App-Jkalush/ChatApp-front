@@ -12,6 +12,7 @@ import { ContactService } from '../../../../services/contact.service';
 import { ChatManagementService } from '../../../../services/chatManagment.service';
 import { chatType } from '../../../../../../../common/enums/chat.enum';
 import { RefreshDataService } from '../../../../services/refreshData.service';
+import { ChatApiService } from '../../../../api/chatApi.service';
 
 @Component({
   selector: 'app-add-chat',
@@ -37,7 +38,8 @@ export class AddChatComponent implements OnInit, OnDestroy {
   constructor(
     private contactService: ContactService,
     private chatManagement: ChatManagementService,
-    private refreshDataService: RefreshDataService
+    private refreshDataService: RefreshDataService,
+    private chatApiService: ChatApiService
   ) {}
 
   ngOnInit(): void {
@@ -125,7 +127,19 @@ export class AddChatComponent implements OnInit, OnDestroy {
       new Set([creator, ...this.selectedParticipants])
     );
     const type = participants.length === 2 ? chatType.DM : chatType.GROUP;
-
+    if (type === chatType.DM) {
+      if (
+        this.chatApiService.DmExists({
+          userName1: participants[0],
+          userName2: participants[1],
+        })
+      ) {
+        this.errorMessage =
+          'Direct message already exists between these users.';
+        this.loading = false;
+        return;
+      }
+    }
     this.chatManagement
       .createChatAndUpdateUsers(chatName, participants, type, description)
       .pipe(takeUntil(this.destroy$))

@@ -54,12 +54,8 @@ export class ChatsComponent implements OnInit {
   public removeChat(chatId: string) {
     this.chats = this.chats.filter((chat) => chat.chatId !== chatId);
     this.totalChats--;
-    if (
-      this.chats.length === 0 ||
-      this.refreshDataService.latestChatId === chatId
-    ) {
+    if (this.chats.length === 0) {
       this.selectedChat.emit();
-      this.refreshDataService.setLatestChatId('');
     }
   }
 }

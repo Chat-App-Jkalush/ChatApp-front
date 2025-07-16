@@ -69,6 +69,7 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('Unsubscribing from all subscriptions');
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
@@ -139,7 +140,6 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     if (this.chat?.chatId) {
       this.chatApi.leaveChat(this.userName, this.chat.chatId).subscribe({
         next: () => {
-          this.refreshDataService.setLatestChatId('');
           this.chatSocketService.leaveChat(this.chat.chatId, this.userName);
           this.closeInfo();
           this.router.navigate(['/home']);
