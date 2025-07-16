@@ -1,11 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ChatListItem } from '../../models/chat/chat.model';
 import { RefreshDataService } from '../../services/refreshData.service';
 import { ChatSocketService } from '../../services/chatSocket.service';
-import { ChatApiService } from '../../api/chatApi.service';
-import { MessagesComponent } from './child components/show-chat/child components/messages/messages.component';
-import { Event } from '@angular/router';
+import { Router } from '@angular/router';
 import { ChatsComponent } from './child components/chats/chats.component';
+import { MessagesComponent } from './child components/show-chat/child components/messages/messages.component';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +13,6 @@ import { ChatsComponent } from './child components/chats/chats.component';
 })
 export class HomeComponent implements OnInit {
   tab: string = 'chats';
-  selectedChat: ChatListItem | null = null;
   userName: string = '';
   chatIds: string[] = [];
   @ViewChild(MessagesComponent) messagesComponent!: MessagesComponent;
@@ -23,7 +20,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private refreshDataService: RefreshDataService,
-    private chatSocketService: ChatSocketService
+    private chatSocketService: ChatSocketService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -33,24 +31,23 @@ export class HomeComponent implements OnInit {
         this.chatSocketService.joinChats(this.userName);
       }
     });
-    this.chatSocketService.onNewMessage((message) => {
-      if (this.selectedChat && this.selectedChat.chatId === message.chatId) {
-        this.messagesComponent.renderMessage(message);
-      }
-    });
   }
 
-  onChatSelected(chat: ChatListItem) {
-    this.selectedChat = chat;
+  onChatSelected(chat: { chatId: string }) {
     if (chat?.chatId) {
       this.refreshDataService.setLatestChatId(chat.chatId);
+      this.router.navigate(['/home/chat', chat.chatId]);
     }
   }
+
   onAddChatFinished() {
     this.tab = 'chats';
   }
 
   onChatLeft(chatId: string) {
-    this.chatsComponent.removeChat(chatId);
+    if (this.chatsComponent) {
+      this.chatsComponent.removeChat(chatId);
+    }
+    this.router.navigate(['/home']);
   }
 }
