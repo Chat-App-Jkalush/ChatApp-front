@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSpinner } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
 
 const MaterialModules = [
   MatCardModule,
@@ -29,6 +30,7 @@ const MaterialModules = [
   MatAutocompleteModule,
   MatChipsModule,
   MatSpinner,
+  MatListModule,
 ];
 
 @NgModule({

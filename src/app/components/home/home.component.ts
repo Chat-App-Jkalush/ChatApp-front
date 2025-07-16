@@ -4,6 +4,8 @@ import { RefreshDataService } from '../../services/refreshData.service';
 import { ChatSocketService } from '../../services/chatSocket.service';
 import { ChatApiService } from '../../api/chatApi.service';
 import { MessagesComponent } from './child components/show-chat/child components/messages/messages.component';
+import { Event } from '@angular/router';
+import { ChatsComponent } from './child components/chats/chats.component';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +19,7 @@ export class HomeComponent implements OnInit {
   userName: string = '';
   chatIds: string[] = [];
   @ViewChild(MessagesComponent) messagesComponent!: MessagesComponent;
+  @ViewChild(ChatsComponent) chatsComponent!: ChatsComponent;
 
   constructor(
     private refreshDataService: RefreshDataService,
@@ -45,5 +48,9 @@ export class HomeComponent implements OnInit {
   }
   onAddChatFinished() {
     this.tab = 'chats';
+  }
+
+  onChatLeft(chatId: string) {
+    this.chatsComponent.removeChat(chatId);
   }
 }

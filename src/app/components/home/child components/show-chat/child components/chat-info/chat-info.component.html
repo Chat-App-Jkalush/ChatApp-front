@@ -1,0 +1,38 @@
+<header class="chat-info-header">
+  <span class="chat-title">{{ chat.chatName }}</span>
+</header>
+
+<h5 class="participants-title">Participants</h5>
+<mat-list>
+  <mat-list-item *ngFor="let participant of participents">
+    <mat-icon matListIcon color="primary">person</mat-icon>
+    <span matLine>{{ participant }}</span>
+  </mat-list-item>
+</mat-list>
+
+<div class="add-participant">
+  <mat-form-field appearance="fill">
+    <mat-label>Add Participant</mat-label>
+    <input
+      matInput
+      [(ngModel)]="newParticipant"
+      [matAutocomplete]="auto"
+      (keyup.enter)="addParticipant()"
+    />
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let contact of filteredContacts" [value]="contact">
+        {{ contact }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <button mat-icon-button color="primary" (click)="addParticipant()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+  <div class="chat-info-actions">
+    <button mat-raised-button color="warn" (click)="leaveChat()">
+      <mat-icon>exit_to_app</mat-icon>
+      Leave Chat
+    </button>
+  </div>
+</div>

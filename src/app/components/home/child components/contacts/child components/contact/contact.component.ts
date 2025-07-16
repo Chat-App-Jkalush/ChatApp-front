@@ -1,7 +1,15 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import { ContactApiService } from '../../../../../../api/contactApi.service';
 import { RefreshDataService } from '../../../../../../services/refreshData.service';
 import { RemoveContactDto } from '../../../../../../../../../common/dto/contact.dto';
+import { ChatSocketService } from '../../../../../../services/chatSocket.service';
 
 @Component({
   selector: 'app-contact',
@@ -12,19 +20,20 @@ import { RemoveContactDto } from '../../../../../../../../../common/dto/contact.
 export class ContactComponent {
   constructor(
     private contactApi: ContactApiService,
-    private refreshDataService: RefreshDataService
+    private refreshDataService: RefreshDataService,
+    private chatSocket: ChatSocketService
   ) {}
-  @Input()
-  contactName: string = '';
 
-  @Output()
-  contactRemoved = new EventEmitter<string>();
+  @Input() contactName: string = '';
+  @Input() isOnline: boolean = false;
+  @Output() contactRemoved = new EventEmitter<string>();
 
   onRemoveContact() {
     const dto: RemoveContactDto = {
       userName: this.refreshDataService.userName,
       contactName: this.contactName,
     };
+
     this.contactApi.removeContact(dto).subscribe({
       next: () => {
         this.contactRemoved.emit(this.contactName);

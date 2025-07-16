@@ -41,8 +41,10 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['chatId'] && this.chatId) {
-      this.loadMessages();
+    if (changes['chatId']) {
+      if (this.chatId) {
+        this.loadMessages();
+      }
     }
   }
 
@@ -52,13 +54,14 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private async loadMessages(): Promise<void> {
+  public async loadMessages(): Promise<void> {
     try {
       this.messages = await this.messageApi.getAllByChatId(this.chatId!);
     } catch (error) {
       this.messages = [];
     }
   }
+
   public renderMessage(message: Message): void {
     if (!message.createdAt) {
       message.createdAt = new Date();

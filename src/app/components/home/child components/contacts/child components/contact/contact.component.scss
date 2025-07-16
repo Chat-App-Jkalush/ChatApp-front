@@ -26,3 +26,15 @@
   font-weight: 500;
   font-size: 16px;
 }
+
+.isOnline {
+  margin-left: 16px;
+  font-weight: 600;
+  font-size: 14px;
+  &.online {
+    color: #2ecc40;
+  }
+  &.offline {
+    color: #e53935;
+  }
+}

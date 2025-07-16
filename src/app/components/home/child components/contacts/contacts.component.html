@@ -9,6 +9,7 @@
   <app-contact
     *ngFor="let contact of contacts"
     [contactName]="contact"
+    [isOnline]="onlineMap[contact]"
     (contactRemoved)="removeContact($event)"
     class="contact-item"
   ></app-contact>

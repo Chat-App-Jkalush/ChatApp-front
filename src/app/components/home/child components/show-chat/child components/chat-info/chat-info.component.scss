@@ -1,0 +1,46 @@
+.chat-info-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1976d2;
+  color: #fff;
+  padding: 16px 0;
+  border-radius: 8px 8px 0 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.participants-title {
+  margin: 16px 0 8px 0;
+  font-weight: 500;
+  color: #1976d2;
+  text-align: center;
+}
+
+mat-list {
+  background: #f5f7fa;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  padding: 8px 0;
+}
+
+mat-list-item {
+  font-size: 1rem;
+  color: #333;
+}
+
+.chat-info-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+button[mat-raised-button] {
+  font-weight: bold;
+  border-radius: 20px;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

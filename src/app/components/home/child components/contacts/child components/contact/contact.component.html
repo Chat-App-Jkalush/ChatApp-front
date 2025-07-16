@@ -4,6 +4,10 @@
   </div>
   <div class="contact-content">
     <div class="contact-name">{{ contactName }}</div>
+    <hr />
+    <div class="isOnline" [ngClass]="isOnline ? 'online' : 'offline'">
+      {{ isOnline ? "Online" : "Offline" }}
+    </div>
   </div>
   <button
     mat-icon-button

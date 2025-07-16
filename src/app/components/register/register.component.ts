@@ -34,29 +34,28 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.invalid) return;
     this.userApi.register(this.registerForm.value).subscribe({
       next: (response) => {
-        const cookie = document.cookie
+        let cookie = document.cookie
           .split('; ')
           .find((row) => row.startsWith('token='))
           ?.split('=')[1];
-        if (cookie) {
-          this.userCookieApi.saveUserCookie(response, cookie).subscribe({
+
+        if (!cookie) {
+          console.error('No token found in cookies');
+          return;
+        }
+
+        this.userCookieApi
+          .saveUserCookie({ userName: response.userName }, cookie)
+          .subscribe({
             next: () => {
               this.refreshDataService.setUserName(response.userName);
               this.router.navigate(['/home']);
             },
             error: (error) => {
-              console.error('Failed to save user cookie:', error);
               this.refreshDataService.setUserName(response.userName);
               this.router.navigate(['/home']);
             },
           });
-        } else {
-          this.refreshDataService.setUserName(response.userName);
-          this.router.navigate(['/home']);
-        }
-      },
-      error: (error) => {
-        console.error('Registration failed:', error);
       },
     });
   }

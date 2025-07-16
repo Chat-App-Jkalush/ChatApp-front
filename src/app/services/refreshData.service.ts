@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ChatListItem } from '../models/chat/chat.model';
+import { UserCookieApiService } from '../api/userCookieApi.service';
 
 @Injectable({ providedIn: 'root' })
 export class RefreshDataService {
@@ -8,7 +9,7 @@ export class RefreshDataService {
   private _latestChatIdSubject = new BehaviorSubject<string>('');
   private _chats$ = new BehaviorSubject<ChatListItem[]>([]);
 
-  constructor() {
+  constructor(private dataCookieApi: UserCookieApiService) {
     if (typeof window !== 'undefined' && window.localStorage) {
       const userName = localStorage.getItem('userName');
       if (userName) {
@@ -54,7 +55,7 @@ export class RefreshDataService {
   setLatestChatId(chatId: string) {
     this._latestChatIdSubject.next(chatId);
     if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem('latestChatId', chatId);
+      this.dataCookieApi.setLatestChatId(this.userName, chatId);
     }
   }
 

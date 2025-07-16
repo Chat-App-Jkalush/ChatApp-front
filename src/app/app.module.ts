@@ -9,7 +9,7 @@ import {
   provideHttpClient,
   withFetch,
 } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { App } from './app';
@@ -30,6 +30,7 @@ import { AddChatComponent } from './components/home/child components/add-chat/ad
 import { ShowChatComponent } from './components/home/child components/show-chat/show-chat.component';
 import { MessagesComponent } from './components/home/child components/show-chat/child components/messages/messages.component';
 import { MessageComponent } from './components/home/child components/show-chat/child components/messages/child components/message/message.component';
+import { ChatInfoComponent } from './components/home/child components/show-chat/child components/chat-info/chat-info.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { MessageComponent } from './components/home/child components/show-chat/c
     ShowChatComponent,
     MessagesComponent,
     MessageComponent,
+    ChatInfoComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +58,7 @@ import { MessageComponent } from './components/home/child components/show-chat/c
     ReactiveFormsModule,
     HttpClientModule,
     MatModule,
+    FormsModule,
   ],
   providers: [
     provideClientHydration(withEventReplay()),

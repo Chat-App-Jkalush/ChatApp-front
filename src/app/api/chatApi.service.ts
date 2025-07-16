@@ -67,4 +67,19 @@ export class ChatApiService {
       withCredentials: true,
     });
   }
+
+  getChatParticipants(chatId: string) {
+    return this.client.get<{ participants: string[] }>(
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.GET_PARTICIPANTS}/${chatId}`,
+      { withCredentials: true }
+    );
+  }
+
+  leaveChat(userName: string, chatId: string) {
+    return this.client.post(
+      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.LEAVE_CHAT}`,
+      { userName, chatId },
+      { withCredentials: true }
+    );
+  }
 }
