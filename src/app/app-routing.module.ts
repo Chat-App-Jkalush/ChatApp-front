@@ -4,8 +4,8 @@ import { LoginComponent } from './components/login-page/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { RegisterComponent } from './components/register/register.component';
 import { HomeComponent } from './components/home/home.component';
-import path from 'path';
 import { ShowChatComponent } from './components/home/child components/show-chat/show-chat.component';
+import { AuthGuard } from './guards/authGuard.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -14,6 +14,7 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
+    canActivate: [AuthGuard],
     children: [{ path: 'chat/:chatId', component: ShowChatComponent }],
   },
   { path: '**', component: NotFoundComponent },
