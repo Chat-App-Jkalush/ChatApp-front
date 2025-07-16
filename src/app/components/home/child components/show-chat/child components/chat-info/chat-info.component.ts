@@ -28,13 +28,13 @@ export class ChatInfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.chatApi.getChatParticipants(this.chat.chatId).subscribe({
-      next: (response) => {
+      next: (response: { participants: string[] }) => {
         this.participents = response.participants;
         this.filterContacts();
       },
     });
     this.contactService.getContacts(this.userName, 0, 100).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.contacts = response.contacts || response;
         this.filterContacts();
       },

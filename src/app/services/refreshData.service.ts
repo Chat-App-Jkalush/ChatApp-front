@@ -1,44 +1,47 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ChatListItem } from '../models/chat/chat.model';
 import { UserCookieApiService } from '../api/userCookieApi.service';
 
 @Injectable({ providedIn: 'root' })
 export class RefreshDataService {
-  private _userName$ = new BehaviorSubject<string>('');
-  private _chats$ = new BehaviorSubject<ChatListItem[]>([]);
+  private _userName$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  private _chats$: BehaviorSubject<ChatListItem[]> = new BehaviorSubject<
+    ChatListItem[]
+  >([]);
 
   constructor(private dataCookieApi: UserCookieApiService) {}
 
-  setUserName(userName: string) {
+  public setUserName(userName: string): void {
+    console.log('setUserName called with', userName);
     this._userName$.next(userName);
   }
 
-  get userName() {
+  public get userName(): string {
     return this._userName$.value;
   }
 
-  get userName$() {
+  public get userName$(): Observable<string> {
     return this._userName$.asObservable();
   }
 
-  clearUserName() {
+  public clearUserName(): void {
     this._userName$.next('');
   }
 
-  setChats(chats: ChatListItem[]) {
+  public setChats(chats: ChatListItem[]): void {
     this._chats$.next(chats);
   }
 
-  get chats() {
+  public get chats(): ChatListItem[] {
     return this._chats$.value;
   }
 
-  get chats$() {
+  public get chats$(): Observable<ChatListItem[]> {
     return this._chats$.asObservable();
   }
 
-  clearChats() {
+  public clearChats(): void {
     this._chats$.next([]);
   }
 }

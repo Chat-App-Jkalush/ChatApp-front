@@ -12,11 +12,11 @@ import { MessagesComponent } from './child components/show-chat/child components
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  tab: string = 'chats';
-  userName: string = '';
-  chatIds: string[] = [];
-  @ViewChild(MessagesComponent) messagesComponent!: MessagesComponent;
-  @ViewChild(ChatsComponent) chatsComponent!: ChatsComponent;
+  public tab: string = 'chats';
+  public userName: string = '';
+  public chatIds: string[] = [];
+  @ViewChild(MessagesComponent) public messagesComponent!: MessagesComponent;
+  @ViewChild(ChatsComponent) public chatsComponent!: ChatsComponent;
 
   constructor(
     private refreshDataService: RefreshDataService,
@@ -24,8 +24,8 @@ export class HomeComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.refreshDataService.userName$.subscribe((name) => {
+  public ngOnInit(): void {
+    this.refreshDataService.userName$.subscribe((name: string) => {
       this.userName = name;
       if (this.userName) {
         this.chatSocketService.joinChats(this.userName);
@@ -33,17 +33,17 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onChatSelected(chat: { chatId: string }) {
+  public onChatSelected(chat: { chatId: string }): void {
     if (chat?.chatId) {
       this.router.navigate(['/home/chat', chat.chatId]);
     }
   }
 
-  onAddChatFinished() {
+  public onAddChatFinished(): void {
     this.tab = 'chats';
   }
 
-  onChatLeft(chatId: string) {
+  public onChatLeft(chatId: string): void {
     if (this.chatsComponent) {
       this.chatsComponent.removeChat(chatId);
     }

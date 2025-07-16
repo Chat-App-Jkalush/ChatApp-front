@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_ENDPOINT } from '../../constants/api.constatns';
 import { chatType } from '../../../../common/enums/chat.enum';
-import { DmExitsDto } from '../../../../backend/dist/common/dto/chat.dto';
+import { DmExitsDto } from '../../../../common/dto/chat.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,11 @@ import { DmExitsDto } from '../../../../backend/dist/common/dto/chat.dto';
 export class ChatApiService {
   constructor(private client: HttpClient) {}
 
-  getPaginatedChats(userName: string, page: number, pageSize: number) {
+  public getPaginatedChats(
+    userName: string,
+    page: number,
+    pageSize: number
+  ): any {
     return this.client.get<{
       chats: {
         chatId: string;
@@ -25,7 +29,11 @@ export class ChatApiService {
     );
   }
 
-  updateUserChats(userName: string, chatId: string, chatName: string) {
+  public updateUserChats(
+    userName: string,
+    chatId: string,
+    chatName: string
+  ): any {
     return this.client.post(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.UPDATE_USER_CHATS}`,
       { userName, chatId, chatName },
@@ -33,7 +41,7 @@ export class ChatApiService {
     );
   }
 
-  addUserToChat(userName: string, chatId: string) {
+  public addUserToChat(userName: string, chatId: string): any {
     return this.client.post(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.ADD_USER_TO_CHAT}`,
       { userName, chatId },
@@ -41,12 +49,12 @@ export class ChatApiService {
     );
   }
 
-  createChat(
+  public createChat(
     chatName: string,
     participants: string[] = [],
     type: chatType,
     description: string
-  ) {
+  ): any {
     return this.client.post<{
       chatId: string;
       chatName: string;
@@ -58,7 +66,7 @@ export class ChatApiService {
     );
   }
 
-  getChatById(chatId: string) {
+  public getChatById(chatId: string): any {
     return this.client.get<{
       chatId: string;
       chatName: string;
@@ -69,14 +77,14 @@ export class ChatApiService {
     });
   }
 
-  getChatParticipants(chatId: string) {
+  public getChatParticipants(chatId: string): any {
     return this.client.get<{ participants: string[] }>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.GET_PARTICIPANTS}/${chatId}`,
       { withCredentials: true }
     );
   }
 
-  leaveChat(userName: string, chatId: string) {
+  public leaveChat(userName: string, chatId: string): any {
     return this.client.post(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.LEAVE_CHAT}`,
       { userName, chatId },
@@ -84,7 +92,7 @@ export class ChatApiService {
     );
   }
 
-  DmExists(dto: DmExitsDto) {
+  public DmExists(dto: DmExitsDto): any {
     return this.client.post<boolean>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.DM_EXISTS}`,
       dto,

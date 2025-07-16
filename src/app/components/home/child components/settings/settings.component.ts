@@ -11,10 +11,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent implements OnInit {
-  settingsForm!: FormGroup;
-  loading = false;
-  successMessage = '';
-  errorMessage = '';
+  public settingsForm!: FormGroup;
+  public loading: boolean = false;
+  public successMessage: string = '';
+  public errorMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -23,7 +23,7 @@ export class SettingsComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.settingsForm = this.fb.group({
       userName: [this.refreshDataService.userName, Validators.required],
       firstName: ['', Validators.required],
@@ -32,26 +32,27 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  public onSubmit(): void {
     if (this.settingsForm.invalid) return;
     this.loading = true;
     this.successMessage = '';
     this.errorMessage = '';
     this.usersApi.updateUser(this.settingsForm.value).subscribe({
-      next: () => {
+      next: (): void => {
         this.successMessage = 'Profile updated successfully!';
         this.loading = false;
         this.refreshDataService.setUserName(this.settingsForm.value.userName);
       },
-      error: (err) => {
+      error: (err: any): void => {
         this.errorMessage = 'Failed to update profile.';
         this.loading = false;
       },
     });
   }
-  logout() {
+
+  public logout(): void {
     this.usersApi.logOut().subscribe({
-      next: () => {
+      next: (): void => {
         this.router.navigate(['/login']);
       },
     });

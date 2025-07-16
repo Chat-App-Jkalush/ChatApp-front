@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   templateUrl: './app.html',
   standalone: false,
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
-  protected title = 'frontend';
+  protected title: string = 'frontend';
 }

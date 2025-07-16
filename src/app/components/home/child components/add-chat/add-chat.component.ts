@@ -21,19 +21,19 @@ import { ChatApiService } from '../../../../api/chatApi.service';
   styleUrls: ['./add-chat.component.scss'],
 })
 export class AddChatComponent implements OnInit, OnDestroy {
-  @Output() onFinished = new EventEmitter<void>();
+  @Output() public onFinished = new EventEmitter<void>();
 
-  addChatForm!: FormGroup;
-  contacts: string[] = [];
-  selectedParticipants: string[] = [];
-  totalContacts = 0;
-  pageSize = 10;
-  pageIndex = 0;
-  userName = '';
-  loading = false;
-  errorMessage = '';
-  successMessage = '';
-  private destroy$ = new Subject<void>();
+  public addChatForm!: FormGroup;
+  public contacts: string[] = [];
+  public selectedParticipants: string[] = [];
+  public totalContacts: number = 0;
+  public pageSize: number = 10;
+  public pageIndex: number = 0;
+  public userName: string = '';
+  public loading: boolean = false;
+  public errorMessage: string = '';
+  public successMessage: string = '';
+  private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private contactService: ContactService,
@@ -42,12 +42,12 @@ export class AddChatComponent implements OnInit, OnDestroy {
     private chatApiService: ChatApiService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.initializeForm();
     this.setupUserSubscription();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -67,42 +67,42 @@ export class AddChatComponent implements OnInit, OnDestroy {
   private setupUserSubscription(): void {
     this.refreshDataService.userName$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((userName) => {
+      .subscribe((userName: string) => {
         this.userName = userName;
         if (userName) this.loadContacts();
       });
   }
 
-  loadContacts(): void {
+  public loadContacts(): void {
     if (!this.userName) return;
     this.loading = true;
     this.errorMessage = '';
     this.contactService
       .getContacts(this.userName, this.pageIndex, this.pageSize)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
+      .subscribe((res: { contacts: string[]; total: number }) => {
         this.contacts = res.contacts || [];
         this.totalContacts = res.total || 0;
         this.loading = false;
       });
   }
 
-  onPageChange(event: PageEvent): void {
+  public onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     this.loadContacts();
   }
 
-  onParticipantSelected(participant: string): void {
+  public onParticipantSelected(participant: string): void {
     if (participant && !this.selectedParticipants.includes(participant)) {
       this.selectedParticipants.push(participant);
       this.updateFormParticipants();
     }
   }
 
-  removeParticipant(participant: string): void {
+  public removeParticipant(participant: string): void {
     this.selectedParticipants = this.selectedParticipants.filter(
-      (p) => p !== participant
+      (p: string) => p !== participant
     );
     this.updateFormParticipants();
   }
@@ -113,20 +113,21 @@ export class AddChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSubmit(): void {
+  public onSubmit(): void {
     if (this.addChatForm.invalid) {
       this.markFormGroupTouched();
       return;
     }
     this.clearMessages();
     this.loading = true;
-    const chatName = this.addChatForm.get('chatName')?.value;
-    const description = this.addChatForm.get('description')?.value;
-    const creator = this.userName;
-    const participants = Array.from(
+    const chatName: string = this.addChatForm.get('chatName')?.value;
+    const description: string = this.addChatForm.get('description')?.value;
+    const creator: string = this.userName;
+    const participants: string[] = Array.from(
       new Set([creator, ...this.selectedParticipants])
     );
-    const type = participants.length === 2 ? chatType.DM : chatType.GROUP;
+    const type: chatType =
+      participants.length === 2 ? chatType.DM : chatType.GROUP;
     if (type === chatType.DM) {
       if (
         this.chatApiService.DmExists({
@@ -143,7 +144,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
     this.chatManagement
       .createChatAndUpdateUsers(chatName, participants, type, description)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
+      .subscribe((result: { success: boolean; message: string }) => {
         this.loading = false;
         if (result.success) {
           this.successMessage = result.message;
@@ -155,7 +156,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
       });
   }
 
-  onCancel(): void {
+  public onCancel(): void {
     this.resetForm();
     this.onFinished.emit();
   }
@@ -172,7 +173,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.addChatForm.controls).forEach((key) => {
+    Object.keys(this.addChatForm.controls).forEach((key: string) => {
       const control = this.addChatForm.get(key);
       control?.markAsTouched();
     });

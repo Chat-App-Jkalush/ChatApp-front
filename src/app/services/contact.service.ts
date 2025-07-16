@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
 export class ContactService {
   constructor(private contactApi: ContactApiService) {}
 
-  getContacts(
+  public getContacts(
     userName: string,
     pageIndex: number,
     pageSize: number

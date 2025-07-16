@@ -14,7 +14,7 @@ import { UserCookieApiService } from '../../api/userCookieApi.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  loginForm!: FormGroup;
+  public loginForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -24,34 +24,34 @@ export class LoginComponent implements OnInit {
     private refreshDataService: RefreshDataService
   ) {}
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.loginForm = this.fb.group({
       userName: ['', Validators.required],
       password: ['', Validators.required],
     });
   }
 
-  onSubmit() {
+  public onSubmit(): void {
     if (this.loginForm.invalid) {
       return;
     }
     this.userApi.login(this.loginForm.value as LoginDto).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.refreshDataService.setUserName(response.userName);
 
         this.userCookieApi
           .saveUserCookie({ userName: response.userName })
           .subscribe({
-            next: () => {
+            next: (): void => {
               this.router.navigate(['/home']);
             },
-            error: (error) => {
+            error: (error: any): void => {
               console.error('Failed to save user cookie:', error);
               this.router.navigate(['/home']);
             },
           });
       },
-      error: (error) => {
+      error: (error: any): void => {
         console.error('Login failed:', error);
       },
     });

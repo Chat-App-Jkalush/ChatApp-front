@@ -9,8 +9,8 @@ export class AuthGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(): boolean | UrlTree {
-    const userName = this.refreshDataService.userName;
+  public canActivate(): boolean | UrlTree {
+    const userName: string = this.refreshDataService.userName;
     if (!userName) {
       return this.router.createUrlTree(['/login']);
     }

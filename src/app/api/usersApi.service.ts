@@ -11,7 +11,7 @@ import { API_ENDPOINT } from '../../constants/api.constatns';
 export class UsersApiService {
   constructor(private client: HttpClient) {}
 
-  login(credentials: LoginDto): Observable<UserResponse> {
+  public login(credentials: LoginDto): Observable<UserResponse> {
     return this.client.post<UserResponse>(
       API_ENDPOINT.BASE + API_ENDPOINT.AUTH.LOGIN,
       credentials,
@@ -21,7 +21,7 @@ export class UsersApiService {
     );
   }
 
-  register(credentials: RegisterDto): Observable<UserResponse> {
+  public register(credentials: RegisterDto): Observable<UserResponse> {
     return this.client.post<UserResponse>(
       API_ENDPOINT.BASE + API_ENDPOINT.AUTH.REGISTER,
       credentials,
@@ -31,7 +31,11 @@ export class UsersApiService {
     );
   }
 
-  getPaginatedChats(userName: string, page: number, pageSize: number) {
+  public getPaginatedChats(
+    userName: string,
+    page: number,
+    pageSize: number
+  ): Observable<{ chats: string[]; total: number }> {
     return this.client.get<{ chats: string[]; total: number }>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.USERS.PAGINATED_CHATS}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
       {
@@ -40,19 +44,23 @@ export class UsersApiService {
     );
   }
 
-  getPaginatedUsers(userName: string, page: number, pageSize: number) {
+  public getPaginatedUsers(
+    userName: string,
+    page: number,
+    pageSize: number
+  ): Observable<{ users: any[]; total: number }> {
     return this.client.get<{ users: any[]; total: number }>(
       `${API_ENDPOINT.BASE}/users/paginated-users?userName=${userName}&page=${page}&pageSize=${pageSize}`,
       { withCredentials: true }
     );
   }
 
-  updateUser(profile: {
+  public updateUser(profile: {
     userName: string;
     firstName: string;
     lastName: string;
     password: string;
-  }) {
+  }): Observable<UserResponse> {
     return this.client.put<UserResponse>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.USERS.UPDATE}`,
       profile,
@@ -60,7 +68,7 @@ export class UsersApiService {
     );
   }
 
-  logOut(): Observable<void> {
+  public logOut(): Observable<void> {
     return this.client.post<void>(
       API_ENDPOINT.BASE + API_ENDPOINT.AUTH.LOGOUT,
       {},

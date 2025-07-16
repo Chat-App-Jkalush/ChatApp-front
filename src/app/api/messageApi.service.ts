@@ -7,7 +7,7 @@ import { Message } from '../../../../common/dto/message.dto';
   providedIn: 'root',
 })
 export class MessageApiService {
-  async getAllByChatId(chatId: string): Promise<Message[]> {
+  public async getAllByChatId(chatId: string): Promise<Message[]> {
     const url = `${
       API_ENDPOINT.BASE
     }/messages/by-chat?chatId=${encodeURIComponent(chatId)}`;

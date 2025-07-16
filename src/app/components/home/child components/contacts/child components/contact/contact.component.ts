@@ -24,21 +24,21 @@ export class ContactComponent {
     private chatSocket: ChatSocketService
   ) {}
 
-  @Input() contactName: string = '';
-  @Input() isOnline: boolean = false;
-  @Output() contactRemoved = new EventEmitter<string>();
+  @Input() public contactName: string = '';
+  @Input() public isOnline: boolean = false;
+  @Output() public contactRemoved = new EventEmitter<string>();
 
-  onRemoveContact() {
+  public onRemoveContact(): void {
     const dto: RemoveContactDto = {
       userName: this.refreshDataService.userName,
       contactName: this.contactName,
     };
 
     this.contactApi.removeContact(dto).subscribe({
-      next: () => {
+      next: (): void => {
         this.contactRemoved.emit(this.contactName);
       },
-      error: (err) => {
+      error: (err: any): void => {
         console.error('Failed to remove contact:', err);
       },
     });

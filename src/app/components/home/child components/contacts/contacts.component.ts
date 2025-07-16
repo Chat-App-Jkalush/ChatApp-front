@@ -10,14 +10,16 @@ import { ChatSocketService } from '../../../../services/chatSocket.service';
   styleUrls: ['./contacts.component.scss'],
 })
 export class ContactsComponent implements OnInit, OnDestroy {
-  userName = '';
-  contacts: string[] = [];
-  totalContacts = 0;
-  pageSize = 10;
-  pageIndex = 0;
-  onlineMap: { [contact: string]: boolean } = {};
-  private onlineStatusListener: any;
-  private isInitialized = false;
+  public userName: string = '';
+  public contacts: string[] = [];
+  public totalContacts: number = 0;
+  public pageSize: number = 10;
+  public pageIndex: number = 0;
+  public onlineMap: { [contact: string]: boolean } = {};
+  private onlineStatusListener:
+    | ((data: { userName: string; isOnline: boolean }) => void)
+    | null = null;
+  private isInitialized: boolean = false;
 
   constructor(
     private contactApi: ContactApiService,
@@ -25,13 +27,13 @@ export class ContactsComponent implements OnInit, OnDestroy {
     private chatSocket: ChatSocketService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.userName = this.refreshDataService.userName;
     this.setupOnlineStatusListener();
     this.initializeComponent();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.removeOnlineStatusListener();
   }
 
@@ -41,7 +43,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.onlineStatusListener = (data: {
       userName: string;
       isOnline: boolean;
-    }) => {
+    }): void => {
       if (this.contacts.includes(data.userName)) {
         this.onlineMap[data.userName] = data.isOnline;
         console.log(
@@ -84,16 +86,16 @@ export class ContactsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onPageChange(event: any) {
+  public onPageChange(event: { pageIndex: number; pageSize: number }): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     this.loadContacts();
   }
 
-  loadContacts() {
+  public loadContacts(): void {
     this.contactApi
       .getPaginatedContacts(this.userName, this.pageIndex + 1, this.pageSize)
-      .subscribe((res) => {
+      .subscribe((res: any) => {
         this.contacts = res.contacts.map((c: any) =>
           typeof c === 'string' ? c : c.contactName
         );
@@ -102,24 +104,28 @@ export class ContactsComponent implements OnInit, OnDestroy {
       });
   }
 
-  setOnlineStatus() {
+  public setOnlineStatus(): void {
     if (this.contacts.length === 0) return;
 
-    const contactNames = this.contacts.map((c: any) =>
+    const contactNames: string[] = this.contacts.map((c: any) =>
       typeof c === 'string' ? c : c.contactName
     );
 
-    this.chatSocket.getOnlineContacts(contactNames).then((onlineContacts) => {
-      contactNames.forEach((contact) => {
-        this.onlineMap[contact] = onlineContacts.includes(contact);
-      });
+    this.chatSocket
+      .getOnlineContacts(contactNames)
+      .then((onlineContacts: string[]) => {
+        contactNames.forEach((contact: string) => {
+          this.onlineMap[contact] = onlineContacts.includes(contact);
+        });
 
-      console.log('Initial online status set:', this.onlineMap);
-    });
+        console.log('Initial online status set:', this.onlineMap);
+      });
   }
 
-  removeContact(contactName: string) {
-    this.contacts = this.contacts.filter((contact) => contact !== contactName);
+  public removeContact(contactName: string): void {
+    this.contacts = this.contacts.filter(
+      (contact: string) => contact !== contactName
+    );
     this.totalContacts = this.contacts.length;
     delete this.onlineMap[contactName];
   }

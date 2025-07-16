@@ -8,8 +8,11 @@ import {
 @Injectable({ providedIn: 'root' })
 export class ChatSocketService {
   private socket: Socket;
-  private joinedChats = false;
-  private eventListeners = new Map<string, Function[]>();
+  private joinedChats: boolean = false;
+  private eventListeners: Map<string, Function[]> = new Map<
+    string,
+    Function[]
+  >();
 
   constructor() {
     this.socket = io(DEFAULT_PORT_ORIGIN, {
@@ -17,33 +20,33 @@ export class ChatSocketService {
       withCredentials: true,
     });
 
-    this.socket.on('connect', () => {
+    this.socket.on('connect', (): void => {
       console.log('Socket connected');
       this.joinedChats = false;
     });
 
-    this.socket.on('disconnect', (reason: string) => {
+    this.socket.on('disconnect', (reason: string): void => {
       console.log('Socket disconnected:', reason);
       this.joinedChats = false;
     });
 
-    this.socket.onAny((event, ...args) => {
+    this.socket.onAny((event: string, ...args: any[]): void => {
       console.log('Socket event:', event, args);
     });
   }
 
-  getSocket(): Socket {
+  public getSocket(): Socket {
     return this.socket;
   }
 
-  joinChats(userName: string): Promise<void> {
+  public joinChats(userName: string): Promise<void> {
     return new Promise((resolve) => {
       if (this.joinedChats) {
         resolve();
         return;
       }
 
-      const doJoin = () => {
+      const doJoin = (): void => {
         this.socket.emit(EVENTS.JOIN_CHAT, { userName });
         this.joinedChats = true;
         console.log(`User ${userName} joined chats`);
@@ -58,23 +61,23 @@ export class ChatSocketService {
     });
   }
 
-  sendMessage(message: any) {
+  public sendMessage(message: any): void {
     this.socket.emit(EVENTS.NEW_MESSAGE, message);
   }
 
-  onNewMessage(callback: (message: any) => void) {
-    this.socket.on(EVENTS.NEW_MESSAGE, (msg) => {
+  public onNewMessage(callback: (message: any) => void): void {
+    this.socket.on(EVENTS.NEW_MESSAGE, (msg: any) => {
       callback(msg);
     });
   }
 
-  onEvent(event: string, callback: (...args: any[]) => void) {
+  public onEvent(event: string, callback: (...args: any[]) => void): void {
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, []);
     }
     this.eventListeners.get(event)!.push(callback);
 
-    this.socket.on(event, (...args) => {
+    this.socket.on(event, (...args: any[]): void => {
       callback(...args);
     });
 
@@ -85,7 +88,7 @@ export class ChatSocketService {
     );
   }
 
-  removeListener(event: string, callback: Function) {
+  public removeListener(event: string, callback: Function): void {
     this.socket.off(event, callback as any);
 
     if (this.eventListeners.has(event)) {
@@ -100,23 +103,23 @@ export class ChatSocketService {
     }
   }
 
-  removeAllListeners(event: string) {
+  public removeAllListeners(event: string): void {
     this.socket.removeAllListeners(event);
     this.eventListeners.delete(event);
     console.log(`Removed all listeners for event: ${event}`);
   }
 
-  disconnect() {
+  public disconnect(): void {
     this.socket.disconnect();
     this.joinedChats = false;
     this.eventListeners.clear();
   }
 
-  leaveChat(chatId: string, userName: string) {
+  public leaveChat(chatId: string, userName: string): void {
     this.socket.emit(EVENTS.LEAVE_CHAT, { chatId, userName });
   }
 
-  isOnline(userName: string): Promise<boolean> {
+  public isOnline(userName: string): Promise<boolean> {
     return new Promise((resolve) => {
       const timeout = setTimeout(() => {
         console.log(`Timeout checking if ${userName} is online`);
@@ -124,7 +127,7 @@ export class ChatSocketService {
       }, 5000);
 
       this.socket.emit(EVENTS.IS_ONLINE, { userName });
-      this.socket.once('isOnlineResult', (data) => {
+      this.socket.once('isOnlineResult', (data: any) => {
         clearTimeout(timeout);
         console.log(`${userName} is ${data.isOnline ? 'online' : 'offline'}`);
         resolve(data.isOnline);
@@ -132,7 +135,7 @@ export class ChatSocketService {
     });
   }
 
-  getOnlineContacts(contacts: string[]): Promise<string[]> {
+  public getOnlineContacts(contacts: string[]): Promise<string[]> {
     return new Promise((resolve) => {
       const timeout = setTimeout(() => {
         console.log('Timeout getting online contacts');
@@ -140,7 +143,7 @@ export class ChatSocketService {
       }, 5000);
 
       this.socket.emit(EVENTS.GET_ONLINE_USERS, { contacts });
-      this.socket.once('onlineUsersList', (data) => {
+      this.socket.once('onlineUsersList', (data: any) => {
         clearTimeout(timeout);
         console.log('Online contacts received:', data.onlineContacts);
         resolve(data.onlineContacts);
@@ -148,7 +151,7 @@ export class ChatSocketService {
     });
   }
 
-  getListenerCount(event: string): number {
+  public getListenerCount(event: string): number {
     return this.eventListeners.get(event)?.length || 0;
   }
 }

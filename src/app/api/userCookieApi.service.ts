@@ -9,7 +9,10 @@ import { Observable } from 'rxjs';
 export class UserCookieApiService {
   constructor(private client: HttpClient) {}
 
-  saveUserCookie(userDetails: any, latestChatId?: string): Observable<any> {
+  public saveUserCookie(
+    userDetails: any,
+    latestChatId?: string
+  ): Observable<any> {
     return this.client.post(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.DATA_COOKIE.SAVE}`,
       { ...userDetails, latestChatId },
@@ -17,14 +20,17 @@ export class UserCookieApiService {
     );
   }
 
-  getUserCookie(): Observable<any> {
+  public getUserCookie(): Observable<any> {
     return this.client.get(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.DATA_COOKIE.GET}`,
       { withCredentials: true }
     );
   }
 
-  setLatestChatId(userName: string, latestChatId: string): Observable<any> {
+  public setLatestChatId(
+    userName: string,
+    latestChatId: string
+  ): Observable<any> {
     return this.client.post(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.DATA_COOKIE.SET_LATEST_CHAT}`,
       { userName, latestChatId },

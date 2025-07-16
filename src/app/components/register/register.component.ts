@@ -12,7 +12,7 @@ import { RefreshDataService } from '../../services/refreshData.service';
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent implements OnInit {
-  registerForm!: FormGroup;
+  public registerForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -22,7 +22,7 @@ export class RegisterComponent implements OnInit {
     private refreshDataService: RefreshDataService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.registerForm = this.fb.group({
       userName: ['', Validators.required],
       firstName: ['', Validators.required],
@@ -31,18 +31,18 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  public onSubmit(): void {
     if (this.registerForm.invalid) return;
     this.userApi.register(this.registerForm.value).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.userCookieApi
           .saveUserCookie({ userName: response.userName })
           .subscribe({
-            next: () => {
+            next: (): void => {
               this.refreshDataService.setUserName(response.userName);
               this.router.navigate(['/home']);
             },
-            error: () => {
+            error: (): void => {
               this.refreshDataService.setUserName(response.userName);
               this.router.navigate(['/home']);
             },

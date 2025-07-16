@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ChatApiService } from '../../../../api/chatApi.service';
 import { ChatListItem } from '../../../../models/chat/chat.model';
 import { RefreshDataService } from '../../../../services/refreshData.service';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chats',
@@ -11,48 +12,55 @@ import { RefreshDataService } from '../../../../services/refreshData.service';
 })
 export class ChatsComponent implements OnInit {
   @Output()
-  selectedChat = new EventEmitter<ChatListItem>();
+  public selectedChat = new EventEmitter<ChatListItem>();
 
-  userName = '';
-  chats: ChatListItem[] = [];
-  totalChats = 0;
-  pageSize = 10;
-  pageIndex = 0;
+  public userName: string = '';
+  public chats: ChatListItem[] = [];
+  public totalChats: number = 0;
+  public pageSize: number = 10;
+  public pageIndex: number = 0;
 
   constructor(
     private refreshDataService: RefreshDataService,
     private chatApi: ChatApiService
   ) {}
 
-  ngOnInit(): void {
-    this.refreshDataService.userName$.subscribe((userName) => {
-      this.userName = userName;
-      this.loadChats();
-    });
+  public ngOnInit(): void {
+    this.refreshDataService.userName$
+      .pipe(
+        filter((userName: string) => !!userName),
+        distinctUntilChanged()
+      )
+      .subscribe((userName: string) => {
+        this.userName = userName;
+        this.loadChats();
+      });
   }
 
-  onPageChange(event: any) {
+  public onPageChange(event: { pageIndex: number; pageSize: number }): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     this.loadChats();
   }
 
-  loadChats() {
+  public loadChats(): void {
     if (!this.userName) return;
     this.chatApi
       .getPaginatedChats(this.userName, this.pageIndex + 1, this.pageSize)
-      .subscribe((res) => {
+      .subscribe((res: { chats: ChatListItem[]; total: number }) => {
         this.chats = res.chats;
         this.totalChats = res.total;
       });
   }
 
-  onChatSelect(chatIndex: number) {
+  public onChatSelect(chatIndex: number): void {
     this.selectedChat.emit(this.chats[chatIndex]);
   }
 
-  public removeChat(chatId: string) {
-    this.chats = this.chats.filter((chat) => chat.chatId !== chatId);
+  public removeChat(chatId: string): void {
+    this.chats = this.chats.filter(
+      (chat: ChatListItem) => chat.chatId !== chatId
+    );
     this.totalChats--;
     if (this.chats.length === 0) {
       this.selectedChat.emit();

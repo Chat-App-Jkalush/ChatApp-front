@@ -6,7 +6,7 @@ import {
   AfterViewChecked,
   OnDestroy,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { ChatApiService } from '../../../../api/chatApi.service';
 import { RefreshDataService } from '../../../../services/refreshData.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -21,17 +21,17 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./show-chat.component.scss'],
 })
 export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
-  chat: any;
+  public chat: any;
   @ViewChild('messagesContainer', { static: false })
-  messagesContainer!: ElementRef;
+  public messagesContainer!: ElementRef;
   @ViewChild(MessagesComponent)
-  messagesComponent!: MessagesComponent;
+  public messagesComponent!: MessagesComponent;
 
-  latestChatId: string | null = null;
-  userName: string = '';
-  message!: FormGroup;
-  private shouldScrollToBottom = false;
-  showInfo = false;
+  public latestChatId: string | null = null;
+  public userName: string = '';
+  public message!: FormGroup;
+  private shouldScrollToBottom: boolean = false;
+  public showInfo: boolean = false;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -43,58 +43,52 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     private router: Router
   ) {}
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.message = this.fb.group({
       content: ['', Validators.required],
       chatId: [''],
       sender: [this.userName],
     });
 
-    const userNameSub = this.refreshDataService.userName$.subscribe(
-      (userName) => {
+    const userNameSub: Subscription =
+      this.refreshDataService.userName$.subscribe((userName: string) => {
         this.userName = userName;
         this.message.patchValue({ sender: userName });
-      }
-    );
+      });
     this.subscriptions.push(userNameSub);
 
-    const routeSub = this.route.paramMap.subscribe((params) => {
-      const chatId = params.get('chatId');
-      if (chatId) {
-        this.latestChatId = chatId;
-        this.loadChat(chatId);
+    const routeSub: Subscription = this.route.paramMap.subscribe(
+      (params: ParamMap) => {
+        const chatId: string | null = params.get('chatId');
+        if (chatId) {
+          this.latestChatId = chatId;
+          this.loadChat(chatId);
+        }
       }
-    });
+    );
     this.subscriptions.push(routeSub);
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     console.log('Unsubscribing from all subscriptions');
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.subscriptions.forEach((sub: Subscription) => sub.unsubscribe());
   }
 
-  private loadChat(chatId: string) {
+  private loadChat(chatId: string): void {
     this.chatApi.getChatById(chatId).subscribe({
-      next: (chat) => {
+      next: (chat: any) => {
         this.chat = chat;
         this.message.patchValue({ chatId: chat.chatId });
         this.shouldScrollToBottom = true;
-
-        setTimeout(() => {
-          if (this.messagesComponent) {
-            this.messagesComponent.chatId = chat.chatId;
-            this.messagesComponent.loadMessages();
-          }
-        });
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading chat:', error);
         this.router.navigate(['/home']);
       },
     });
   }
 
-  ngAfterViewChecked() {
+  public ngAfterViewChecked(): void {
     if (this.shouldScrollToBottom) {
       this.scrollToBottom();
       this.shouldScrollToBottom = false;
@@ -106,18 +100,18 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
       try {
         this.messagesContainer.nativeElement.scrollTop =
           this.messagesContainer.nativeElement.scrollHeight;
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error scrolling to bottom:', err);
       }
     }
   }
 
-  sendMessage() {
+  public sendMessage(): void {
     if (this.message.invalid || !this.message.get('content')?.value?.trim()) {
       return;
     }
 
-    const messageData = {
+    const messageData: any = {
       ...this.message.value,
       chatId: this.chat?.chatId || this.latestChatId,
       createdAt: new Date().toISOString(),
@@ -128,23 +122,23 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.shouldScrollToBottom = true;
   }
 
-  onInfoClick(): void {
+  public onInfoClick(): void {
     this.showInfo = true;
   }
 
-  closeInfo(): void {
+  public closeInfo(): void {
     this.showInfo = false;
   }
 
-  leaveChat() {
+  public leaveChat(): void {
     if (this.chat?.chatId) {
       this.chatApi.leaveChat(this.userName, this.chat.chatId).subscribe({
-        next: () => {
+        next: (): void => {
           this.chatSocketService.leaveChat(this.chat.chatId, this.userName);
           this.closeInfo();
           this.router.navigate(['/home']);
         },
-        error: (error) => {
+        error: (error: any): void => {
           console.error('Error leaving chat:', error);
         },
       });

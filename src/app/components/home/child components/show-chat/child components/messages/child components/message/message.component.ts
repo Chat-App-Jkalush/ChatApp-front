@@ -10,7 +10,7 @@ import { Message } from '../../../../../../../../../../../common/dto/message.dto
 })
 export class MessageComponent {
   @Input()
-  message: Message = {
+  public message: Message = {
     chatId: '',
     sender: '',
     content: '',

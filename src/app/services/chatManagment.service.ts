@@ -6,11 +6,11 @@ import { chatType } from '../../../../common/enums/chat.enum';
 
 @Injectable({ providedIn: 'root' })
 export class ChatManagementService {
-  private readonly REQUEST_TIMEOUT = 5000;
+  private readonly REQUEST_TIMEOUT: number = 5000;
 
   constructor(private chatApi: ChatApiService) {}
 
-  createChatAndUpdateUsers(
+  public createChatAndUpdateUsers(
     chatName: string,
     participants: string[],
     type: chatType,
@@ -19,11 +19,11 @@ export class ChatManagementService {
     return this.chatApi
       .createChat(chatName, participants, type, description)
       .pipe(
-        switchMap((res) => {
+        switchMap((res: { chatId: string; chatName: string }) => {
           if (!res || !res.chatId || !res.chatName) {
             return of({ success: false, message: 'Failed to create chat.' });
           }
-          const updateRequests = participants.map((userName) =>
+          const updateRequests = participants.map((userName: string) =>
             this.chatApi
               .updateUserChats(userName, res.chatId, res.chatName)
               .pipe(

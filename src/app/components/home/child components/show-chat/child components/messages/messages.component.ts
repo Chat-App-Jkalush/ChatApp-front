@@ -18,9 +18,9 @@ import { EVENTS } from '../../../../../../../../../common/constatns/gateway.cont
   styleUrls: ['./messages.component.scss'],
 })
 export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() chatId: string | null = null;
-  @Input() userName: string = '';
-  messages: Message[] = [];
+  @Input() public chatId: string | null = null;
+  @Input() public userName: string = '';
+  public messages: Message[] = [];
   private socketListener: ((message: Message) => void) | null = null;
 
   constructor(
@@ -28,11 +28,11 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     private chatSocketService: ChatSocketService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.chatId) {
       this.loadMessages();
     }
-    this.socketListener = (message: Message) => {
+    this.socketListener = (message: Message): void => {
       if (this.chatId === message.chatId) {
         message.createdAt = this.parseDate(message.createdAt);
         this.messages.push(message);
@@ -41,7 +41,7 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     this.chatSocketService.onEvent(EVENTS.REPLY, this.socketListener);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes['chatId']) {
       if (this.chatId) {
         this.loadMessages();
@@ -49,7 +49,7 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.socketListener) {
       this.chatSocketService.getSocket().off(EVENTS.REPLY, this.socketListener);
     }
@@ -78,7 +78,7 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
   public async loadMessages(): Promise<void> {
     try {
       this.messages = await this.messageApi.getAllByChatId(this.chatId!);
-      this.messages.forEach((msg) => {
+      this.messages.forEach((msg: Message) => {
         msg.createdAt = this.parseDate(msg.createdAt);
       });
     } catch (error) {

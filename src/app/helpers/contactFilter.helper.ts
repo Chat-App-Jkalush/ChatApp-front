@@ -3,7 +3,7 @@ export function filterContacts(
   searchTerm: string
 ): string[] {
   if (!searchTerm.trim()) return contacts.slice();
-  return contacts.filter((c) =>
+  return contacts.filter((c: string) =>
     c.toLowerCase().includes(searchTerm.toLowerCase())
   );
 }

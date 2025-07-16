@@ -10,21 +10,22 @@ import { RefreshDataService } from '../../../../../../services/refreshData.servi
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit {
-  @Input() chat!: ChatListItem;
-  otherParticipant: string | null = null;
+  @Input() public chat!: ChatListItem;
+  public otherParticipant: string | null = null;
 
   constructor(
     private chatApi: ChatApiService,
     private refreshService: RefreshDataService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.chat.type === 'DM') {
       this.chatApi.getChatParticipants(this.chat.chatId).subscribe(
         (res: { participants: string[] }) => {
           this.otherParticipant =
             res.participants.find(
-              (participant) => participant !== this.refreshService.userName
+              (participant: string) =>
+                participant !== this.refreshService.userName
             ) || 'Myself and I';
         },
         () => {

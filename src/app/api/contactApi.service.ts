@@ -8,7 +8,7 @@ import { RemoveContactDto } from '../../../../common/dto/contact.dto';
 export class ContactApiService {
   constructor(private client: HttpClient) {}
 
-  addContact(userName: string, contactName: string) {
+  public addContact(userName: string, contactName: string): any {
     return this.client.post(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CONTACTS.ADD}`,
       { userName, contactName },
@@ -16,14 +16,18 @@ export class ContactApiService {
     );
   }
 
-  getPaginatedContacts(userName: string, page: number, pageSize: number) {
+  public getPaginatedContacts(
+    userName: string,
+    page: number,
+    pageSize: number
+  ): any {
     return this.client.get<{ contacts: string[]; total: number }>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CONTACTS.PAGINATED}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
       { withCredentials: true }
     );
   }
 
-  removeContact(dto: RemoveContactDto) {
+  public removeContact(dto: RemoveContactDto): any {
     return this.client.post(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CONTACTS.REMOVE}`,
       dto,
