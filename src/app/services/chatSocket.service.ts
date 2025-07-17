@@ -4,6 +4,7 @@ import {
   DEFAULT_PORT_ORIGIN,
   EVENTS,
 } from '../../../../common/constatns/gateway.contants';
+import { ContactOnlineStatus } from '../../../../common/dto/contact.dto';
 
 @Injectable({ providedIn: 'root' })
 export class ChatSocketService {
@@ -149,6 +150,18 @@ export class ChatSocketService {
         resolve(data.onlineContacts);
       });
     });
+  }
+
+  public onContactOnlineStatus(
+    callback: (status: ContactOnlineStatus) => void
+  ): () => void {
+    const handler = (status: ContactOnlineStatus) => {
+      callback(status);
+    };
+    this.socket.on('contactOnlineStatus', handler);
+    return () => {
+      this.socket.off('contactOnlineStatus', handler);
+    };
   }
 
   public getListenerCount(event: string): number {

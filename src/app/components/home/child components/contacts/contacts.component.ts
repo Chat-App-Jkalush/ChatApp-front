@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ContactApiService } from '../../../../api/contactApi.service';
 import { RefreshDataService } from '../../../../services/refreshData.service';
 import { ChatSocketService } from '../../../../services/chatSocket.service';
+import { ContactOnlineStatus } from '../../../../../../../common/dto/contact.dto';
 
 @Component({
   selector: 'app-contacts',
@@ -15,10 +16,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
   public totalContacts: number = 0;
   public pageSize: number = 10;
   public pageIndex: number = 0;
-  public onlineMap: { [contact: string]: boolean } = {};
-  private onlineStatusListener:
-    | ((data: { userName: string; isOnline: boolean }) => void)
-    | null = null;
+  public onlineStatuses: { [contact: string]: boolean } = {};
+  private onlineStatusSubscription: (() => void) | null = null;
   private isInitialized: boolean = false;
 
   constructor(
@@ -29,40 +28,32 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.userName = this.refreshDataService.userName;
-    this.setupOnlineStatusListener();
     this.initializeComponent();
+    this.subscribeToOnlineStatus();
   }
 
   public ngOnDestroy(): void {
-    this.removeOnlineStatusListener();
+    this.unsubscribeFromOnlineStatus();
   }
 
-  private setupOnlineStatusListener(): void {
-    this.removeOnlineStatusListener();
-
-    this.onlineStatusListener = (data: {
-      userName: string;
-      isOnline: boolean;
-    }): void => {
-      if (this.contacts.includes(data.userName)) {
-        this.onlineMap[data.userName] = data.isOnline;
-        console.log(
-          `Contact ${data.userName} is now ${
-            data.isOnline ? 'online' : 'offline'
-          }`
-        );
+  private subscribeToOnlineStatus(): void {
+    this.unsubscribeFromOnlineStatus();
+    this.onlineStatusSubscription = this.chatSocket.onContactOnlineStatus(
+      (data: ContactOnlineStatus): void => {
+        if (this.contacts.includes(data.userName)) {
+          this.onlineStatuses = {
+            ...this.onlineStatuses,
+            [data.userName]: data.isOnline,
+          };
+        }
       }
-    };
-
-    this.chatSocket.onEvent('contactOnlineStatus', this.onlineStatusListener);
+    );
   }
 
-  private removeOnlineStatusListener(): void {
-    if (this.onlineStatusListener) {
-      this.chatSocket
-        .getSocket()
-        .off('contactOnlineStatus', this.onlineStatusListener);
-      this.onlineStatusListener = null;
+  private unsubscribeFromOnlineStatus(): void {
+    if (this.onlineStatusSubscription) {
+      this.onlineStatusSubscription();
+      this.onlineStatusSubscription = null;
     }
   }
 
@@ -100,25 +91,23 @@ export class ContactsComponent implements OnInit, OnDestroy {
           typeof c === 'string' ? c : c.contactName
         );
         this.totalContacts = res.total;
-        this.setOnlineStatus();
+        this.setInitialOnlineStatus();
       });
   }
 
-  public setOnlineStatus(): void {
+  private setInitialOnlineStatus(): void {
     if (this.contacts.length === 0) return;
-
     const contactNames: string[] = this.contacts.map((c: any) =>
       typeof c === 'string' ? c : c.contactName
     );
-
     this.chatSocket
       .getOnlineContacts(contactNames)
       .then((onlineContacts: string[]) => {
+        const statusMap: { [contact: string]: boolean } = {};
         contactNames.forEach((contact: string) => {
-          this.onlineMap[contact] = onlineContacts.includes(contact);
+          statusMap[contact] = onlineContacts.includes(contact);
         });
-
-        console.log('Initial online status set:', this.onlineMap);
+        this.onlineStatuses = statusMap;
       });
   }
 
@@ -127,6 +116,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
       (contact: string) => contact !== contactName
     );
     this.totalContacts = this.contacts.length;
-    delete this.onlineMap[contactName];
+    const { [contactName]: _, ...rest } = this.onlineStatuses;
+    this.onlineStatuses = rest;
   }
 }
