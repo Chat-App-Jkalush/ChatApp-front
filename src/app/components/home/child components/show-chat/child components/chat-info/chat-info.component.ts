@@ -61,11 +61,6 @@ export class ChatInfoComponent implements OnInit {
   }
 
   leaveChat(): void {
-    this.chatApi.leaveChat(this.userName, this.chat.chatId).subscribe({
-      next: () => {
-        this.chatSocketService.leaveChat(this.chat.chatId, this.userName);
-        this.onLeaveChat.emit();
-      },
-    });
+    this.onLeaveChat.emit();
   }
 }
