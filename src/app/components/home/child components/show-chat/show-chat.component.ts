@@ -8,9 +8,9 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { ChatApiService } from '../../../../api/chat/chatApi.service';
-import { RefreshDataService } from '../../../../services/refreshData.service';
+import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ChatSocketService } from '../../../../services/chatSocket.service';
+import { ChatSocketService } from '../../../../services/chat/chatSocket.service';
 import { MessagesComponent } from './child components/messages/messages.component';
 import { Subscription } from 'rxjs';
 

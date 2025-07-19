@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ChatApiService } from '../../../../../../api/chat/chatApi.service';
-import { ChatSocketService } from '../../../../../../services/chatSocket.service';
-import { RefreshDataService } from '../../../../../../services/refreshData.service';
-import { ContactService } from '../../../../../../services/contact.service';
+import { ChatSocketService } from '../../../../../../services/chat/chatSocket.service';
+import { RefreshDataService } from '../../../../../../services/refresh/refreshData.service';
+import { ContactService } from '../../../../../../services/contact/contact.service';
 
 @Component({
   selector: 'app-chat-info',

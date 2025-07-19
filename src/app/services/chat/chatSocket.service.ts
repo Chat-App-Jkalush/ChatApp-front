@@ -3,8 +3,8 @@ import { Socket, io } from 'socket.io-client';
 import {
   DEFAULT_PORT_ORIGIN,
   EVENTS,
-} from '../../../../common/constatns/gateway.contants';
-import { ContactOnlineStatus } from '../../../../common/dto/contact.dto';
+} from '../../../../../common/constatns/gateway.contants';
+import { ContactOnlineStatus } from '../../../../../common/dto/contact.dto';
 
 @Injectable({ providedIn: 'root' })
 export class ChatSocketService {

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ChatApiService } from '../../../../api/chat/chatApi.service';
 import { ChatListItem } from '../../../../models/chat/chat.model';
-import { RefreshDataService } from '../../../../services/refreshData.service';
+import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 @Component({

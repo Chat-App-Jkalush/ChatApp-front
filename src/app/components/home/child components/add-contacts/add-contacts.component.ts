@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactApiService } from '../../../../api/contact/contactApi.service';
-import { RefreshDataService } from '../../../../services/refreshData.service';
+import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { UsersApiService } from '../../../../api/user/usersApi.service';
 
 @Component({

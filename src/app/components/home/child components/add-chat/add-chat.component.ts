@@ -8,10 +8,10 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
-import { ContactService } from '../../../../services/contact.service';
-import { ChatManagementService } from '../../../../services/chatManagment.service';
+import { ContactService } from '../../../../services/contact/contact.service';
+import { ChatManagementService } from '../../../../services/chat/chatManagment.service';
 import { chatType } from '../../../../../../../common/enums/chat.enum';
-import { RefreshDataService } from '../../../../services/refreshData.service';
+import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { ChatApiService } from '../../../../api/chat/chatApi.service';
 
 @Component({

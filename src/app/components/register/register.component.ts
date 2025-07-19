@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserCookieApiService } from '../../api/user/userCookieApi.service';
-import { RefreshDataService } from '../../services/refreshData.service';
+import { RefreshDataService } from '../../services/refresh/refreshData.service';
 import { UsersApiService } from '../../api/user/usersApi.service';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { RefreshDataService } from '../../services/refreshData.service';
-import { ChatSocketService } from '../../services/chatSocket.service';
+import { RefreshDataService } from '../../services/refresh/refreshData.service';
+import { ChatSocketService } from '../../services/chat/chatSocket.service';
 import { Router } from '@angular/router';
 import { ChatsComponent } from './child components/chats/chats.component';
 import { MessagesComponent } from './child components/show-chat/child components/messages/messages.component';

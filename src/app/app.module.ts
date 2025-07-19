@@ -17,7 +17,7 @@ import { LoginComponent } from './components/login-page/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { RegisterComponent } from './components/register/register.component';
 import { HomeComponent } from './components/home/home.component';
-import { MatModule } from './mat.module';
+import { MatModule } from './modules/mat.module';
 import { ChatComponent } from './components/home/child components/chats/child components/chat/chat.component';
 import { ChatsComponent } from './components/home/child components/chats/chats.component';
 import { ContactsComponent } from './components/home/child components/contacts/contacts.component';

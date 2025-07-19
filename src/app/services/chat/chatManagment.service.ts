@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ChatApiService } from '../api/chat/chatApi.service';
+import { ChatApiService } from '../../api/chat/chatApi.service';
 import { Observable, forkJoin, of } from 'rxjs';
 import { catchError, timeout, switchMap, map } from 'rxjs/operators';
-import { chatType } from '../../../../common/enums/chat.enum';
+import { chatType } from '../../../../../common/enums/chat.enum';
 
 @Injectable({ providedIn: 'root' })
 export class ChatManagementService {

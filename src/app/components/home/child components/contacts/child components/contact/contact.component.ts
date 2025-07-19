@@ -7,9 +7,9 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { ContactApiService } from '../../../../../../api/contact/contactApi.service';
-import { RefreshDataService } from '../../../../../../services/refreshData.service';
+import { RefreshDataService } from '../../../../../../services/refresh/refreshData.service';
 import { RemoveContactDto } from '../../../../../../../../../common/dto/contact.dto';
-import { ChatSocketService } from '../../../../../../services/chatSocket.service';
+import { ChatSocketService } from '../../../../../../services/chat/chatSocket.service';
 
 @Component({
   selector: 'app-contact',

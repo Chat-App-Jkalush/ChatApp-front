@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
-import { RefreshDataService } from '../services/refreshData.service';
+import { RefreshDataService } from '../services/refresh/refreshData.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
