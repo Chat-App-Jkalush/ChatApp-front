@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ContactApiService } from '../../../../api/contact/contactApi.service';
 import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { ChatSocketService } from '../../../../services/chat/chatSocket.service';
-import { ContactOnlineStatus } from '../../../../../../../common/dto/contact.dto';
+import { CommonDto, CommonRo } from '../../../../../../../common';
 
 @Component({
   selector: 'app-contacts',
@@ -39,7 +39,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   private subscribeToOnlineStatus(): void {
     this.unsubscribeFromOnlineStatus();
     this.onlineStatusSubscription = this.chatSocket.onContactOnlineStatus(
-      (data: ContactOnlineStatus): void => {
+      (data: CommonDto.ContactDto.ContactOnlineStatus): void => {
         if (this.contacts.includes(data.userName)) {
           this.onlineStatuses = {
             ...this.onlineStatuses,

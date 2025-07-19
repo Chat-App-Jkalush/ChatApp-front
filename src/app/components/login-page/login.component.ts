@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoginDto } from '../../../../../common/dto/user.dto';
+import { CommonDto, CommonRo } from '../../../../../common';
 import { Router } from '@angular/router';
 import { RefreshDataService } from '../../services/refresh/refreshData.service';
 import { UserCookieApiService } from '../../api/user/userCookieApi.service';
@@ -35,25 +35,27 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-    this.userApi.login(this.loginForm.value as LoginDto).subscribe({
-      next: (response: any) => {
-        this.refreshDataService.setUserName(response.userName);
+    this.userApi
+      .login(this.loginForm.value as CommonDto.UserDto.LoginDto)
+      .subscribe({
+        next: (response: CommonRo.UserRo.UserResponse) => {
+          this.refreshDataService.setUserName(response.userName);
 
-        this.userCookieApi
-          .saveUserCookie({ userName: response.userName })
-          .subscribe({
-            next: (): void => {
-              this.router.navigate(['/home']);
-            },
-            error: (error: any): void => {
-              console.error('Failed to save user cookie:', error);
-              this.router.navigate(['/home']);
-            },
-          });
-      },
-      error: (error: any): void => {
-        console.error('Login failed:', error);
-      },
-    });
+          this.userCookieApi
+            .saveUserCookie({ userName: response.userName })
+            .subscribe({
+              next: (): void => {
+                this.router.navigate(['/home']);
+              },
+              error: (error: any): void => {
+                console.error('Failed to save user cookie:', error);
+                this.router.navigate(['/home']);
+              },
+            });
+        },
+        error: (error: any): void => {
+          console.error('Login failed:', error);
+        },
+      });
   }
 }

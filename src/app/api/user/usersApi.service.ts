@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginDto, RegisterDto } from '../../../../../common/dto/user.dto';
+import { CommonDto, CommonRo } from '../../../../../common';
 import { Observable } from 'rxjs';
-import { UserResponse } from '../../../../../common/Ro/user.ro';
 import { API_ENDPOINT } from '../../../constants/api.constatns';
 
 @Injectable({
@@ -11,8 +10,10 @@ import { API_ENDPOINT } from '../../../constants/api.constatns';
 export class UsersApiService {
   constructor(private client: HttpClient) {}
 
-  public login(credentials: LoginDto): Observable<UserResponse> {
-    return this.client.post<UserResponse>(
+  public login(
+    credentials: CommonDto.UserDto.LoginDto
+  ): Observable<CommonRo.UserRo.UserResponse> {
+    return this.client.post<CommonRo.UserRo.UserResponse>(
       API_ENDPOINT.BASE + API_ENDPOINT.AUTH.LOGIN,
       credentials,
       {
@@ -21,8 +22,10 @@ export class UsersApiService {
     );
   }
 
-  public register(credentials: RegisterDto): Observable<UserResponse> {
-    return this.client.post<UserResponse>(
+  public register(
+    credentials: CommonDto.UserDto.RegisterDto
+  ): Observable<CommonRo.UserRo.UserResponse> {
+    return this.client.post<CommonRo.UserRo.UserResponse>(
       API_ENDPOINT.BASE + API_ENDPOINT.AUTH.REGISTER,
       credentials,
       {
@@ -48,8 +51,11 @@ export class UsersApiService {
     userName: string,
     page: number,
     pageSize: number
-  ): Observable<{ users: any[]; total: number }> {
-    return this.client.get<{ users: any[]; total: number }>(
+  ): Observable<{ users: CommonRo.UserRo.UserResponse[]; total: number }> {
+    return this.client.get<{
+      users: CommonRo.UserRo.UserResponse[];
+      total: number;
+    }>(
       `${API_ENDPOINT.BASE}/users/paginated-users?userName=${userName}&page=${page}&pageSize=${pageSize}`,
       { withCredentials: true }
     );
@@ -60,8 +66,8 @@ export class UsersApiService {
     firstName: string;
     lastName: string;
     password: string;
-  }): Observable<UserResponse> {
-    return this.client.put<UserResponse>(
+  }): Observable<CommonRo.UserRo.UserResponse> {
+    return this.client.put<CommonRo.UserRo.UserResponse>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.USERS.UPDATE}`,
       profile,
       { withCredentials: true }

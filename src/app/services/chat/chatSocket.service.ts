@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
-import {
-  DEFAULT_PORT_ORIGIN,
-  EVENTS,
-} from '../../../../../common/constatns/gateway.contants';
-import { ContactOnlineStatus } from '../../../../../common/dto/contact.dto';
+import { CommonDto, CommonConstants } from '../../../../../common';
 
 @Injectable({ providedIn: 'root' })
 export class ChatSocketService {
@@ -16,7 +12,7 @@ export class ChatSocketService {
   >();
 
   constructor() {
-    this.socket = io(DEFAULT_PORT_ORIGIN, {
+    this.socket = io(CommonConstants.GatewayConstants.DEFAULT_PORT_ORIGIN, {
       transports: ['websocket'],
       withCredentials: true,
     });
@@ -48,7 +44,9 @@ export class ChatSocketService {
       }
 
       const doJoin = (): void => {
-        this.socket.emit(EVENTS.JOIN_CHAT, { userName });
+        this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_CHAT, {
+          userName,
+        });
         this.joinedChats = true;
         console.log(`User ${userName} joined chats`);
         resolve();
@@ -62,14 +60,22 @@ export class ChatSocketService {
     });
   }
 
-  public sendMessage(message: any): void {
-    this.socket.emit(EVENTS.NEW_MESSAGE, message);
+  public sendMessage(message: CommonDto.MessageDto.CreateMessageDto): void {
+    this.socket.emit(
+      CommonConstants.GatewayConstants.EVENTS.NEW_MESSAGE,
+      message
+    );
   }
 
-  public onNewMessage(callback: (message: any) => void): void {
-    this.socket.on(EVENTS.NEW_MESSAGE, (msg: any) => {
-      callback(msg);
-    });
+  public onNewMessage(
+    callback: (message: CommonDto.MessageDto.CreateMessageDto) => void
+  ): void {
+    this.socket.on(
+      CommonConstants.GatewayConstants.EVENTS.NEW_MESSAGE,
+      (msg: CommonDto.MessageDto.CreateMessageDto) => {
+        callback(msg);
+      }
+    );
   }
 
   public onEvent(event: string, callback: (...args: any[]) => void): void {
@@ -117,7 +123,10 @@ export class ChatSocketService {
   }
 
   public leaveChat(chatId: string, userName: string): void {
-    this.socket.emit(EVENTS.LEAVE_CHAT, { chatId, userName });
+    this.socket.emit(CommonConstants.GatewayConstants.EVENTS.LEAVE_CHAT, {
+      chatId,
+      userName,
+    });
   }
 
   public isOnline(userName: string): Promise<boolean> {
@@ -127,8 +136,10 @@ export class ChatSocketService {
         resolve(false);
       }, 5000);
 
-      this.socket.emit(EVENTS.IS_ONLINE, { userName });
-      this.socket.once('isOnlineResult', (data: any) => {
+      this.socket.emit(CommonConstants.GatewayConstants.EVENTS.IS_ONLINE, {
+        userName,
+      });
+      this.socket.once('isOnlineResult', (data: { isOnline: boolean }) => {
         clearTimeout(timeout);
         console.log(`${userName} is ${data.isOnline ? 'online' : 'offline'}`);
         resolve(data.isOnline);
@@ -143,19 +154,25 @@ export class ChatSocketService {
         resolve([]);
       }, 5000);
 
-      this.socket.emit(EVENTS.GET_ONLINE_USERS, { contacts });
-      this.socket.once('onlineUsersList', (data: any) => {
-        clearTimeout(timeout);
-        console.log('Online contacts received:', data.onlineContacts);
-        resolve(data.onlineContacts);
-      });
+      this.socket.emit(
+        CommonConstants.GatewayConstants.EVENTS.GET_ONLINE_USERS,
+        { contacts }
+      );
+      this.socket.once(
+        'onlineUsersList',
+        (data: { onlineContacts: string[] }) => {
+          clearTimeout(timeout);
+          console.log('Online contacts received:', data.onlineContacts);
+          resolve(data.onlineContacts);
+        }
+      );
     });
   }
 
   public onContactOnlineStatus(
-    callback: (status: ContactOnlineStatus) => void
+    callback: (status: CommonDto.ContactDto.ContactOnlineStatus) => void
   ): () => void {
-    const handler = (status: ContactOnlineStatus) => {
+    const handler = (status: CommonDto.ContactDto.ContactOnlineStatus) => {
       callback(status);
     };
     this.socket.on('contactOnlineStatus', handler);

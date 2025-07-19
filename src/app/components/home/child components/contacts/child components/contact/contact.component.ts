@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { ContactApiService } from '../../../../../../api/contact/contactApi.service';
 import { RefreshDataService } from '../../../../../../services/refresh/refreshData.service';
-import { RemoveContactDto } from '../../../../../../../../../common/dto/contact.dto';
+import { CommonDto, CommonRo } from '../../../../../../../../../common';
 import { ChatSocketService } from '../../../../../../services/chat/chatSocket.service';
 
 @Component({
@@ -29,7 +29,7 @@ export class ContactComponent {
   @Output() public contactRemoved = new EventEmitter<string>();
 
   public onRemoveContact(): void {
-    const dto: RemoveContactDto = {
+    const dto: CommonDto.ContactDto.RemoveContactDto = {
       userName: this.refreshDataService.userName,
       contactName: this.contactName,
     };
@@ -38,7 +38,7 @@ export class ContactComponent {
       next: (): void => {
         this.contactRemoved.emit(this.contactName);
       },
-      error: (err: any): void => {
+      error: (err: unknown): void => {
         console.error('Failed to remove contact:', err);
       },
     });

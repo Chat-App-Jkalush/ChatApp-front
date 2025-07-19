@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { API_ENDPOINT } from '../../../constants/api.constatns';
 import { chatType } from '../../../../../common/enums/chat.enum';
-import { DmExitsDto } from '../../../../../common/dto/chat.dto';
+import { CommonDto, CommonRo } from '../../../../../common';
 
 @Injectable({
   providedIn: 'root',
@@ -92,7 +93,7 @@ export class ChatApiService {
     );
   }
 
-  public DmExists(dto: DmExitsDto): any {
+  public DmExists(dto: CommonDto.ChatDto.DmExitsDto): Observable<boolean> {
     return this.client.post<boolean>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.DM_EXISTS}`,
       dto,

@@ -6,10 +6,9 @@ import {
   OnInit,
   OnDestroy,
 } from '@angular/core';
-import { Message } from '../../../../../../../../../common/dto/message.dto';
+import { CommonDto, CommonConstants } from '../../../../../../../../../common';
 import { MessageApiService } from '../../../../../../api/message/messageApi.service';
 import { ChatSocketService } from '../../../../../../services/chat/chatSocket.service';
-import { EVENTS } from '../../../../../../../../../common/constatns/gateway.contants';
 
 @Component({
   selector: 'app-messages',
@@ -20,8 +19,10 @@ import { EVENTS } from '../../../../../../../../../common/constatns/gateway.cont
 export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() public chatId: string | null = null;
   @Input() public userName: string = '';
-  public messages: Message[] = [];
-  private socketListener: ((message: Message) => void) | null = null;
+  public messages: CommonDto.MessageDto.Message[] = [];
+  private socketListener:
+    | ((message: CommonDto.MessageDto.Message) => void)
+    | null = null;
 
   constructor(
     private messageApi: MessageApiService,
@@ -32,13 +33,16 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     if (this.chatId) {
       this.loadMessages();
     }
-    this.socketListener = (message: Message): void => {
+    this.socketListener = (message: CommonDto.MessageDto.Message): void => {
       if (this.chatId === message.chatId) {
         message.createdAt = this.parseDate(message.createdAt);
         this.messages.push(message);
       }
     };
-    this.chatSocketService.onEvent(EVENTS.REPLY, this.socketListener);
+    this.chatSocketService.onEvent(
+      CommonConstants.GatewayConstants.EVENTS.REPLY,
+      this.socketListener
+    );
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -51,11 +55,16 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
 
   public ngOnDestroy(): void {
     if (this.socketListener) {
-      this.chatSocketService.getSocket().off(EVENTS.REPLY, this.socketListener);
+      this.chatSocketService
+        .getSocket()
+        .off(
+          CommonConstants.GatewayConstants.EVENTS.REPLY,
+          this.socketListener
+        );
     }
   }
 
-  private parseDate(dateValue: any): Date {
+  private parseDate(dateValue: unknown): Date {
     if (!dateValue) {
       return new Date();
     }
@@ -78,7 +87,7 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
   public async loadMessages(): Promise<void> {
     try {
       this.messages = await this.messageApi.getAllByChatId(this.chatId!);
-      this.messages.forEach((msg: Message) => {
+      this.messages.forEach((msg: CommonDto.MessageDto.Message) => {
         msg.createdAt = this.parseDate(msg.createdAt);
       });
     } catch (error) {
@@ -86,7 +95,7 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  public renderMessage(message: Message): void {
+  public renderMessage(message: CommonDto.MessageDto.Message): void {
     message.createdAt = this.parseDate(message.createdAt);
     if (this.chatId === message.chatId) {
       this.messages.push(message);
