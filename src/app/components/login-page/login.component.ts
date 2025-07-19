@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginDto } from '../../../../../common/dto/user.dto';
-import { UsersApiService } from '../../api/usersApi.service';
 import { Router } from '@angular/router';
 import { RefreshDataService } from '../../services/refreshData.service';
-import { UserCookieApiService } from '../../api/userCookieApi.service';
+import { UserCookieApiService } from '../../api/user/userCookieApi.service';
+import { UsersApiService } from '../../api/user/usersApi.service';
 // ...existing imports...
 
 @Component({

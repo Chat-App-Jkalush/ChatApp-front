@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { API_ENDPOINT } from '../../constants/api.constatns';
-import { RemoveContactDto } from '../../../../common/dto/contact.dto';
+import { API_ENDPOINT } from '../../../constants/api.constatns';
+import { RemoveContactDto } from '../../../../../common/dto/contact.dto';
 @Injectable({
   providedIn: 'root',
 })

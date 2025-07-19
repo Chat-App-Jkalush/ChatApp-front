@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UsersApiService } from '../../../../api/usersApi.service';
 import { RefreshDataService } from '../../../../services/refreshData.service';
 import { Router } from '@angular/router';
+import { UsersApiService } from '../../../../api/user/usersApi.service';
 
 @Component({
   selector: 'app-settings',

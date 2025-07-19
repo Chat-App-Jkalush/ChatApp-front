@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { UsersApiService } from '../../../../api/usersApi.service';
-import { ContactApiService } from '../../../../api/contactApi.service';
+import { ContactApiService } from '../../../../api/contact/contactApi.service';
 import { RefreshDataService } from '../../../../services/refreshData.service';
+import { UsersApiService } from '../../../../api/user/usersApi.service';
 
 @Component({
   selector: 'app-add-contacts',

@@ -12,7 +12,7 @@ import { ContactService } from '../../../../services/contact.service';
 import { ChatManagementService } from '../../../../services/chatManagment.service';
 import { chatType } from '../../../../../../../common/enums/chat.enum';
 import { RefreshDataService } from '../../../../services/refreshData.service';
-import { ChatApiService } from '../../../../api/chatApi.service';
+import { ChatApiService } from '../../../../api/chat/chatApi.service';
 
 @Component({
   selector: 'app-add-chat',

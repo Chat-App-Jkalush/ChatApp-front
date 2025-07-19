@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { API_ENDPOINT } from '../../constants/api.constatns';
+import { API_ENDPOINT } from '../../../constants/api.constatns';
 import { Observable } from 'rxjs';
 
 @Injectable({

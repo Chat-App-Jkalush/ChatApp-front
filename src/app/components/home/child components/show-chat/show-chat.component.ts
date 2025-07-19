@@ -7,7 +7,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
-import { ChatApiService } from '../../../../api/chatApi.service';
+import { ChatApiService } from '../../../../api/chat/chatApi.service';
 import { RefreshDataService } from '../../../../services/refreshData.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChatSocketService } from '../../../../services/chatSocket.service';

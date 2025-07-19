@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { API_ENDPOINT } from '../../constants/api.constatns';
-import { chatType } from '../../../../common/enums/chat.enum';
-import { DmExitsDto } from '../../../../common/dto/chat.dto';
+import { API_ENDPOINT } from '../../../constants/api.constatns';
+import { chatType } from '../../../../../common/enums/chat.enum';
+import { DmExitsDto } from '../../../../../common/dto/chat.dto';
 
 @Injectable({
   providedIn: 'root',

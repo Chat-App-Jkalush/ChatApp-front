@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { messageInfoResponse } from '../../../../common/Ro/message.ro';
-import { API_ENDPOINT } from '../../constants/api.constatns';
-import { Message } from '../../../../common/dto/message.dto';
+import { messageInfoResponse } from '../../../../../common/Ro/message.ro';
+import { API_ENDPOINT } from '../../../constants/api.constatns';
+import { Message } from '../../../../../common/dto/message.dto';
 
 @Injectable({
   providedIn: 'root',

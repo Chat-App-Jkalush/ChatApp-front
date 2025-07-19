@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChatListItem } from '../models/chat/chat.model';
-import { UserCookieApiService } from '../api/userCookieApi.service';
+import { UserCookieApiService } from '../api/user/userCookieApi.service';
 
 @Injectable({ providedIn: 'root' })
 export class RefreshDataService {

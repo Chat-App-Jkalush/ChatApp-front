@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ContactApiService } from '../../../../api/contactApi.service';
+import { ContactApiService } from '../../../../api/contact/contactApi.service';
 import { RefreshDataService } from '../../../../services/refreshData.service';
 import { ChatSocketService } from '../../../../services/chatSocket.service';
 import { ContactOnlineStatus } from '../../../../../../../common/dto/contact.dto';

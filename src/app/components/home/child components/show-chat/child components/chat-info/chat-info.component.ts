@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ChatApiService } from '../../../../../../api/chatApi.service';
+import { ChatApiService } from '../../../../../../api/chat/chatApi.service';
 import { ChatSocketService } from '../../../../../../services/chatSocket.service';
 import { RefreshDataService } from '../../../../../../services/refreshData.service';
 import { ContactService } from '../../../../../../services/contact.service';

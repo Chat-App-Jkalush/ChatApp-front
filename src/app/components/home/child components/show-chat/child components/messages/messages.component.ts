@@ -7,7 +7,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { Message } from '../../../../../../../../../common/dto/message.dto';
-import { MessageApiService } from '../../../../../../api/messageApi.service';
+import { MessageApiService } from '../../../../../../api/message/messageApi.service';
 import { ChatSocketService } from '../../../../../../services/chatSocket.service';
 import { EVENTS } from '../../../../../../../../../common/constatns/gateway.contants';
 
