@@ -9,7 +9,11 @@
   </div>
 
   <div class="chat-messages" #messagesContainer>
-    <app-messages [chatId]="chat.chatId" [userName]="userName"></app-messages>
+    <app-messages
+      [chatId]="chat.chatId"
+      [userName]="userName"
+      (messagesLoaded)="scrollToBottom()"
+    ></app-messages>
   </div>
 
   <form class="chat-input-row" [formGroup]="message" (ngSubmit)="sendMessage()">

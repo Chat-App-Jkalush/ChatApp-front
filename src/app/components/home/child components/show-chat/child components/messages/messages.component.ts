@@ -5,6 +5,9 @@ import {
   SimpleChanges,
   OnInit,
   OnDestroy,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { CommonDto, CommonConstants } from '../../../../../../../../../common';
 import { MessageApiService } from '../../../../../../api/message/messageApi.service';
@@ -16,9 +19,12 @@ import { ChatSocketService } from '../../../../../../services/chat/chatSocket.se
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.scss'],
 })
-export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
+export class MessagesComponent
+  implements OnInit, OnChanges, OnDestroy, AfterViewInit
+{
   @Input() public chatId: string | null = null;
   @Input() public userName: string = '';
+  @ViewChild('messagesScrollContainer') messagesScrollContainer!: ElementRef;
   public messages: CommonDto.MessageDto.Message[] = [];
   private socketListener:
     | ((message: CommonDto.MessageDto.Message) => void)
@@ -37,6 +43,7 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
       if (this.chatId === message.chatId) {
         message.createdAt = this.parseDate(message.createdAt);
         this.messages.push(message);
+        this.scrollToBottom();
       }
     };
     this.chatSocketService.onEvent(
@@ -51,6 +58,10 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
         this.loadMessages();
       }
     }
+  }
+
+  public ngAfterViewInit(): void {
+    this.scrollToBottom();
   }
 
   public ngOnDestroy(): void {
@@ -80,7 +91,6 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
 
-    console.warn('Invalid date format received:', dateValue);
     return new Date();
   }
 
@@ -90,8 +100,10 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
       this.messages.forEach((msg: CommonDto.MessageDto.Message) => {
         msg.createdAt = this.parseDate(msg.createdAt);
       });
+      setTimeout(() => this.scrollToBottom(), 0);
     } catch (error) {
       this.messages = [];
+      setTimeout(() => this.scrollToBottom(), 0);
     }
   }
 
@@ -99,6 +111,16 @@ export class MessagesComponent implements OnInit, OnChanges, OnDestroy {
     message.createdAt = this.parseDate(message.createdAt);
     if (this.chatId === message.chatId) {
       this.messages.push(message);
+      this.scrollToBottom();
     }
+  }
+
+  private scrollToBottom(): void {
+    setTimeout(() => {
+      if (this.messagesScrollContainer?.nativeElement) {
+        this.messagesScrollContainer.nativeElement.scrollTop =
+          this.messagesScrollContainer.nativeElement.scrollHeight;
+      }
+    }, 0);
   }
 }

@@ -5,6 +5,7 @@ import {
   ElementRef,
   AfterViewChecked,
   OnDestroy,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { ChatApiService } from '../../../../api/chat/chatApi.service';
@@ -40,7 +41,8 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     private fb: FormBuilder,
     private chatSocketService: ChatSocketService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   public ngOnInit(): void {
@@ -70,7 +72,6 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    console.log('Unsubscribing from all subscriptions');
     this.subscriptions.forEach((sub: Subscription) => sub.unsubscribe());
   }
 
@@ -82,7 +83,6 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
         this.shouldScrollToBottom = true;
       },
       error: (error: any) => {
-        console.error('Error loading chat:', error);
         this.router.navigate(['/home']);
       },
     });
@@ -95,15 +95,18 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     }
   }
 
-  private scrollToBottom(): void {
-    if (this.messagesContainer?.nativeElement) {
-      try {
-        this.messagesContainer.nativeElement.scrollTop =
-          this.messagesContainer.nativeElement.scrollHeight;
-      } catch (err: any) {
-        console.error('Error scrolling to bottom:', err);
+  public scrollToBottom(): void {
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      if (this.messagesContainer?.nativeElement) {
+        try {
+          this.messagesContainer.nativeElement.scrollTop =
+            this.messagesContainer.nativeElement.scrollHeight;
+        } catch (err: any) {
+          console.error('Error scrolling to bottom:', err);
+        }
       }
-    }
+    }, 0);
   }
 
   public sendMessage(): void {
@@ -137,9 +140,6 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
           this.chatSocketService.leaveChat(this.chat.chatId, this.userName);
           this.closeInfo();
           this.router.navigate(['/home']);
-        },
-        error: (error: any): void => {
-          console.error('Error leaving chat:', error);
         },
       });
     }

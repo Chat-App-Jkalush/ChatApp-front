@@ -1,10 +1,12 @@
-<div
-  *ngFor="let message of messages"
-  [ngClass]="{
-    'message-row': true,
-    me: message.sender === userName,
-    'system-message': message.sender === 'System'
-  }"
->
-  <app-message [message]="message"></app-message>
+<div class="messages-scroll-container" #messagesScrollContainer>
+  <div
+    *ngFor="let message of messages"
+    [ngClass]="{
+      'message-row': true,
+      me: message.sender === userName,
+      'system-message': message.sender === 'System'
+    }"
+  >
+    <app-message [message]="message"></app-message>
+  </div>
 </div>
