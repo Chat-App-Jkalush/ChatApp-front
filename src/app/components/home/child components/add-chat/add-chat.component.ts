@@ -161,18 +161,14 @@ export class AddChatComponent implements OnInit, OnDestroy {
           chat?: ChatListItem;
         }) => {
           this.loading = false;
-          if (result.success && result.chat) {
-            this.successMessage = result.message;
-            this.formHelper.resetForm(this.addChatForm);
-            this.selectedParticipants = [];
-            this.clearMessages();
-            this.onFinished.emit();
-          } else {
-            this.onFinished.emit();
-          }
+          this.formHelper.resetForm(this.addChatForm);
+          this.selectedParticipants = [];
+          this.clearMessages();
+          this.onFinished.emit();
         }
       );
   }
+
   public onCancel(): void {
     this.formHelper.resetForm(this.addChatForm);
     this.selectedParticipants = [];
