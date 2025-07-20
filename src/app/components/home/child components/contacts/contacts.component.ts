@@ -1,8 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { ContactApiService } from '../../../../api/contact/contactApi.service';
 import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { ChatSocketService } from '../../../../services/chat/chatSocket.service';
 import { CommonDto, CommonRo } from '../../../../../../../common';
+import { ChatApiService } from '../../../../api/chat/chatApi.service';
 
 @Component({
   selector: 'app-contacts',
@@ -18,11 +25,13 @@ export class ContactsComponent implements OnInit, OnDestroy {
   public pageIndex: number = 0;
   public onlineStatuses: { [contact: string]: boolean } = {};
   private onlineStatusSubscription: (() => void) | null = null;
+  @Output() contactRemoved = new EventEmitter<string>();
 
   constructor(
     private contactApi: ContactApiService,
     private refreshDataService: RefreshDataService,
-    private chatSocket: ChatSocketService
+    private chatSocket: ChatSocketService,
+    private chatApi: ChatApiService
   ) {}
 
   public ngOnInit(): void {
@@ -116,5 +125,9 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.totalContacts = this.contacts.length;
     const { [contactName]: _, ...rest } = this.onlineStatuses;
     this.onlineStatuses = rest;
+
+    this.chatApi
+      .deleteDm({ userName1: this.userName, userName2: contactName })
+      .subscribe(() => this.contactRemoved.emit(contactName));
   }
 }

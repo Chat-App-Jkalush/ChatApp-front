@@ -90,4 +90,14 @@ export class ChatApiService {
       { withCredentials: true }
     );
   }
+
+  deleteDm(
+    dto: CommonDto.ChatDto.DeleteDmDto
+  ): Observable<{ message: string }> {
+    return this.client.post<{ message: string }>(
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.DELETE_DM}`,
+      dto,
+      { withCredentials: true }
+    );
+  }
 }

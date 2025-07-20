@@ -59,4 +59,10 @@ export class HomeComponent implements OnInit {
       this.chatsComponent.loadChats();
     }
   }
+
+  public onContactRemoved(contactName: string): void {
+    if (this.chatsComponent) {
+      this.chatsComponent.loadChats();
+    }
+  }
 }

@@ -28,6 +28,7 @@ export namespace FrontendConstants {
       GET_PARTICIPANTS: '/chats/get-chat-participents',
       LEAVE_CHAT: '/chats/leave-chat',
       DM_EXISTS: '/chats/dm-exists',
+      DELETE_DM: '/chats/delete-dm',
     } as const;
 
     export const DATA_COOKIE = {
