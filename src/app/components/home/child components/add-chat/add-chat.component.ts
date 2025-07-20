@@ -5,7 +5,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
 import { ContactService } from '../../../../services/contact/contact.service';
@@ -13,6 +13,9 @@ import { ChatManagementService } from '../../../../services/chat/chatManagment.s
 import { chatType } from '../../../../../../../common/enums/chat.enum';
 import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { ChatApiService } from '../../../../api/chat/chatApi.service';
+import { AddChatFormHelper } from '../../../../helpers/AddChatForm.helper';
+import { AddChatParticipantHelper } from '../../../../helpers/participent.helper';
+import { ChatListItem } from '../../../../models/chat/chat.model';
 
 @Component({
   selector: 'app-add-chat',
@@ -39,29 +42,19 @@ export class AddChatComponent implements OnInit, OnDestroy {
     private contactService: ContactService,
     private chatManagement: ChatManagementService,
     private refreshDataService: RefreshDataService,
-    private chatApiService: ChatApiService
+    private chatApiService: ChatApiService,
+    private formHelper: AddChatFormHelper,
+    private participantHelper: AddChatParticipantHelper
   ) {}
 
   public ngOnInit(): void {
-    this.initializeForm();
+    this.addChatForm = this.formHelper.createForm();
     this.setupUserSubscription();
   }
 
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  private initializeForm(): void {
-    this.addChatForm = new FormGroup({
-      chatName: new FormControl('', [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(50),
-      ]),
-      description: new FormControl('', [Validators.maxLength(200)]),
-      participants: new FormControl([], Validators.required),
-    });
   }
 
   private setupUserSubscription(): void {
@@ -94,15 +87,17 @@ export class AddChatComponent implements OnInit, OnDestroy {
   }
 
   public onParticipantSelected(participant: string): void {
-    if (participant && !this.selectedParticipants.includes(participant)) {
-      this.selectedParticipants.push(participant);
-      this.updateFormParticipants();
-    }
+    this.selectedParticipants = this.participantHelper.addParticipant(
+      this.selectedParticipants,
+      participant
+    );
+    this.updateFormParticipants();
   }
 
   public removeParticipant(participant: string): void {
-    this.selectedParticipants = this.selectedParticipants.filter(
-      (p: string) => p !== participant
+    this.selectedParticipants = this.participantHelper.removeParticipant(
+      this.selectedParticipants,
+      participant
     );
     this.updateFormParticipants();
   }
@@ -115,7 +110,7 @@ export class AddChatComponent implements OnInit, OnDestroy {
 
   public onSubmit(): void {
     if (this.addChatForm.invalid) {
-      this.markFormGroupTouched();
+      this.formHelper.markFormGroupTouched(this.addChatForm);
       return;
     }
     this.clearMessages();
@@ -128,54 +123,65 @@ export class AddChatComponent implements OnInit, OnDestroy {
     );
     const type: chatType =
       participants.length === 2 ? chatType.DM : chatType.GROUP;
+
     if (type === chatType.DM) {
-      if (
-        this.chatApiService.DmExists({
+      this.chatApiService
+        .DmExists({
           userName1: participants[0],
           userName2: participants[1],
         })
-      ) {
-        this.errorMessage =
-          'Direct message already exists between these users.';
-        this.loading = false;
-        return;
-      }
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((exists: boolean) => {
+          if (exists) {
+            this.errorMessage =
+              'Direct message already exists between these users.';
+            this.loading = false;
+            return;
+          }
+          this.createChat(chatName, participants, type, description);
+        });
+    } else {
+      this.createChat(chatName, participants, type, description);
     }
+  }
+
+  private createChat(
+    chatName: string,
+    participants: string[],
+    type: chatType,
+    description: string
+  ): void {
     this.chatManagement
       .createChatAndUpdateUsers(chatName, participants, type, description)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((result: { success: boolean; message: string }) => {
-        this.loading = false;
-        if (result.success) {
-          this.successMessage = result.message;
-          this.resetForm();
-          this.onFinished.emit();
-        } else {
-          this.errorMessage = result.message;
+      .subscribe(
+        (result: {
+          success: boolean;
+          message: string;
+          chat?: ChatListItem;
+        }) => {
+          this.loading = false;
+          if (result.success && result.chat) {
+            this.successMessage = result.message;
+            this.formHelper.resetForm(this.addChatForm);
+            this.selectedParticipants = [];
+            this.clearMessages();
+            this.onFinished.emit();
+          } else {
+            this.onFinished.emit();
+          }
         }
-      });
+      );
   }
-
   public onCancel(): void {
-    this.resetForm();
-    this.onFinished.emit();
-  }
-
-  private resetForm(): void {
-    this.addChatForm.reset();
+    this.formHelper.resetForm(this.addChatForm);
     this.selectedParticipants = [];
     this.clearMessages();
+    this.onFinished.emit();
   }
 
   private clearMessages(): void {
     this.successMessage = '';
     this.errorMessage = '';
-  }
-
-  private markFormGroupTouched(): void {
-    Object.keys(this.addChatForm.controls).forEach((key: string) => {
-      const control = this.addChatForm.get(key);
-      control?.markAsTouched();
-    });
   }
 }

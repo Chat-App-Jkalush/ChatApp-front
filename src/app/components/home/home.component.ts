@@ -41,12 +41,22 @@ export class HomeComponent implements OnInit {
 
   public onAddChatFinished(): void {
     this.tab = 'chats';
+    if (this.chatsComponent) {
+      this.chatsComponent.loadChats();
+    }
   }
 
   public onChatLeft(chatId: string): void {
     if (this.chatsComponent) {
       this.chatsComponent.removeChat(chatId);
     }
+    this.chatsComponent.loadChats();
     this.router.navigate(['/home']);
+  }
+
+  public onParticipantsChanged(chatId: string): void {
+    if (this.chatsComponent) {
+      this.chatsComponent.loadChats();
+    }
   }
 }

@@ -1,8 +1,15 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  OnDestroy,
+} from '@angular/core';
 import { ChatApiService } from '../../../../api/chat/chatApi.service';
 import { ChatListItem } from '../../../../models/chat/chat.model';
 import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
-import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-chats',
@@ -10,7 +17,7 @@ import { distinctUntilChanged, filter } from 'rxjs/operators';
   standalone: false,
   styleUrls: ['./chats.component.scss'],
 })
-export class ChatsComponent implements OnInit {
+export class ChatsComponent implements OnInit, OnDestroy {
   @Output()
   public selectedChat = new EventEmitter<ChatListItem>();
 
@@ -19,6 +26,8 @@ export class ChatsComponent implements OnInit {
   public totalChats: number = 0;
   public pageSize: number = 10;
   public pageIndex: number = 0;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private refreshDataService: RefreshDataService,
@@ -29,12 +38,25 @@ export class ChatsComponent implements OnInit {
     this.refreshDataService.userName$
       .pipe(
         filter((userName: string) => !!userName),
-        distinctUntilChanged()
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
       )
       .subscribe((userName: string) => {
         this.userName = userName;
         this.loadChats();
       });
+
+    this.refreshDataService.chats$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((chats: ChatListItem[]) => {
+        this.chats = chats;
+        this.totalChats = chats.length;
+      });
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   public onPageChange(event: { pageIndex: number; pageSize: number }): void {
@@ -48,7 +70,7 @@ export class ChatsComponent implements OnInit {
     this.chatApi
       .getPaginatedChats(this.userName, this.pageIndex + 1, this.pageSize)
       .subscribe((res: { chats: ChatListItem[]; total: number }) => {
-        this.chats = res.chats;
+        this.refreshDataService.setChats(res.chats);
         this.totalChats = res.total;
       });
   }
@@ -58,10 +80,9 @@ export class ChatsComponent implements OnInit {
   }
 
   public removeChat(chatId: string): void {
-    this.chats = this.chats.filter(
-      (chat: ChatListItem) => chat.chatId !== chatId
-    );
-    this.totalChats--;
+    this.refreshDataService.removeChat(chatId);
+    this.loadChats();
+    this.totalChats = this.chats.length;
     if (this.chats.length === 0) {
       this.selectedChat.emit();
     }

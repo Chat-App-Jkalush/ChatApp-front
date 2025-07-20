@@ -9,10 +9,7 @@ export class RefreshDataService {
     ChatListItem[]
   >([]);
 
-  constructor() {}
-
   public setUserName(userName: string): void {
-    console.log('setUserName called with', userName);
     this._userName$.next(userName);
   }
 
@@ -30,6 +27,16 @@ export class RefreshDataService {
 
   public setChats(chats: ChatListItem[]): void {
     this._chats$.next(chats);
+  }
+
+  public addChat(chat: ChatListItem): void {
+    this._chats$.next([chat, ...this._chats$.value]);
+  }
+
+  public removeChat(chatId: string): void {
+    this._chats$.next(
+      this._chats$.value.filter((chat) => chat.chatId !== chatId)
+    );
   }
 
   public get chats(): ChatListItem[] {

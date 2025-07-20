@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ChatApiService } from '../../../../../../api/chat/chatApi.service';
-import { ChatSocketService } from '../../../../../../services/chat/chatSocket.service';
-import { RefreshDataService } from '../../../../../../services/refresh/refreshData.service';
 import { ContactService } from '../../../../../../services/contact/contact.service';
+import { RefreshDataService } from '../../../../../../services/refresh/refreshData.service';
 
 @Component({
   selector: 'app-chat-info',
@@ -13,7 +12,8 @@ import { ContactService } from '../../../../../../services/contact/contact.servi
 export class ChatInfoComponent implements OnInit {
   @Input() chat: any;
   @Input() userName: string = '';
-  @Output() onLeaveChat = new EventEmitter<void>();
+  @Output() onLeaveChat = new EventEmitter<string>();
+  @Output() participantsChanged = new EventEmitter<string>();
   participents: string[] = [];
   contacts: string[] = [];
   filteredContacts: string[] = [];
@@ -21,9 +21,8 @@ export class ChatInfoComponent implements OnInit {
 
   constructor(
     private chatApi: ChatApiService,
-    private chatSocketService: ChatSocketService,
-    private refreshDataService: RefreshDataService,
-    private contactService: ContactService
+    private contactService: ContactService,
+    private refreshDataService: RefreshDataService
   ) {}
 
   ngOnInit(): void {
@@ -55,12 +54,14 @@ export class ChatInfoComponent implements OnInit {
           this.participents.push(participant);
           this.filterContacts();
           this.newParticipant = '';
+          this.participantsChanged.emit(this.chat.chatId);
         },
       });
     }
   }
 
   leaveChat(): void {
-    this.onLeaveChat.emit();
+    this.refreshDataService.removeChat(this.chat.chatId);
+    this.onLeaveChat.emit(this.chat.chatId);
   }
 }
