@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ChatListItem } from '../../models/chat/chat.model';
-import { UserCookieApiService } from '../../api/user/userCookieApi.service';
 
 @Injectable({ providedIn: 'root' })
 export class RefreshDataService {
@@ -10,7 +9,7 @@ export class RefreshDataService {
     ChatListItem[]
   >([]);
 
-  constructor(private dataCookieApi: UserCookieApiService) {}
+  constructor() {}
 
   public setUserName(userName: string): void {
     console.log('setUserName called with', userName);

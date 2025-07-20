@@ -18,7 +18,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
   public pageIndex: number = 0;
   public onlineStatuses: { [contact: string]: boolean } = {};
   private onlineStatusSubscription: (() => void) | null = null;
-  private isInitialized: boolean = false;
 
   constructor(
     private contactApi: ContactApiService,
@@ -60,7 +59,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
   private async initializeComponent(): Promise<void> {
     await this.ensureUserJoinedChats();
     this.loadContacts();
-    this.isInitialized = true;
   }
 
   private ensureUserJoinedChats(): Promise<void> {

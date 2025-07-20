@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_ENDPOINT } from '../../../constants/api.constatns';
 import { CommonDto, CommonRo } from '../../../../../common';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -24,8 +25,8 @@ export class ContactApiService {
     userName: string,
     page: number,
     pageSize: number
-  ): Observable<{ contacts: string[]; total: number }> {
-    return this.client.get<{ contacts: string[]; total: number }>(
+  ): Observable<CommonRo.UserRo.PaginatedContacts> {
+    return this.client.get<CommonRo.UserRo.PaginatedContacts>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.CONTACTS.PAGINATED}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
       { withCredentials: true }
     );

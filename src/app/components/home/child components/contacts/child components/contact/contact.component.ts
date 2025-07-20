@@ -20,8 +20,7 @@ import { ChatSocketService } from '../../../../../../services/chat/chatSocket.se
 export class ContactComponent {
   constructor(
     private contactApi: ContactApiService,
-    private refreshDataService: RefreshDataService,
-    private chatSocket: ChatSocketService
+    private refreshDataService: RefreshDataService
   ) {}
 
   @Input() public contactName: string = '';

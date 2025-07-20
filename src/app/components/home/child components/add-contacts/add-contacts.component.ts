@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ContactApiService } from '../../../../api/contact/contactApi.service';
 import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { UsersApiService } from '../../../../api/user/usersApi.service';
+import { CommonRo } from '../../../../../../../common';
 
 @Component({
   selector: 'app-add-contacts',
@@ -10,7 +11,7 @@ import { UsersApiService } from '../../../../api/user/usersApi.service';
   styleUrls: ['./add-contacts.component.scss'],
 })
 export class AddContactsComponent implements OnInit {
-  public users: any[] = [];
+  public users: CommonRo.UserRo.UserResponse[] = [];
   public totalUsers: number = 0;
   public pageSize: number = 10;
   public pageIndex: number = 0;
@@ -33,25 +34,27 @@ export class AddContactsComponent implements OnInit {
 
   public loadUsers(): void {
     this.usersApiService
-      .getPaginatedUsers(
-        this.refreshDataService.userName,
-        this.pageIndex + 1,
-        this.pageSize
-      )
-      .subscribe((res: { users: any[]; total: number }) => {
-        this.users = res.users;
-        this.totalUsers = res.total;
-      });
+      .getPaginatedUsers({
+        userName: this.refreshDataService.userName,
+        page: this.pageIndex + 1,
+        limit: this.pageSize,
+      })
+      .subscribe(
+        (res: { users: CommonRo.UserRo.UserResponse[]; total: number }) => {
+          this.users = res.users;
+          this.totalUsers = res.total;
+        }
+      );
   }
 
   public addContact(userName: string): void {
     this.contactApi
       .addContact(this.refreshDataService.userName, userName)
       .subscribe({
-        next: (res: any): void => {
+        next: (res: CommonRo.UserRo.User): void => {
           console.log('Contact added successfully:', res);
           this.users = this.users.filter(
-            (user: any) => user.userName !== userName
+            (user: CommonRo.UserRo.UserResponse) => user.userName !== userName
           );
         },
         error: (err: any): void => {

@@ -14,6 +14,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChatSocketService } from '../../../../services/chat/chatSocket.service';
 import { MessagesComponent } from './child components/messages/messages.component';
 import { Subscription } from 'rxjs';
+import { ChatListItem } from '../../../../models/chat/chat.model';
 
 @Component({
   selector: 'app-show-chat',
@@ -22,7 +23,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./show-chat.component.scss'],
 })
 export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
-  public chat: any;
+  public chat!: ChatListItem;
   @ViewChild('messagesContainer', { static: false })
   public messagesContainer!: ElementRef;
   @ViewChild(MessagesComponent)

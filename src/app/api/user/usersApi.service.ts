@@ -48,25 +48,20 @@ export class UsersApiService {
   }
 
   public getPaginatedUsers(
-    userName: string,
-    page: number,
-    pageSize: number
+    dto: CommonDto.ContactDto.GetContactsDto
   ): Observable<{ users: CommonRo.UserRo.UserResponse[]; total: number }> {
     return this.client.get<{
       users: CommonRo.UserRo.UserResponse[];
       total: number;
     }>(
-      `${API_ENDPOINT.BASE}/users/paginated-users?userName=${userName}&page=${page}&pageSize=${pageSize}`,
+      `${API_ENDPOINT.BASE}/users/paginated-users?userName=${dto.userName}&page=${dto.page}&pageSize=${dto.limit}`,
       { withCredentials: true }
     );
   }
 
-  public updateUser(profile: {
-    userName: string;
-    firstName: string;
-    lastName: string;
-    password: string;
-  }): Observable<CommonRo.UserRo.UserResponse> {
+  public updateUser(
+    profile: CommonDto.UserDto.UserUpdateDto
+  ): Observable<CommonRo.UserRo.UserResponse> {
     return this.client.put<CommonRo.UserRo.UserResponse>(
       `${API_ENDPOINT.BASE}${API_ENDPOINT.USERS.UPDATE}`,
       profile,
