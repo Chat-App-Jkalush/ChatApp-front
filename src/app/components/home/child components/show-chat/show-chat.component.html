@@ -27,6 +27,9 @@
       mat-raised-button
       color="primary"
       [disabled]="message.get('content')?.value?.trim() === ''"
+      [ngClass]="{
+        'valid-send': message.valid && message.get('content')?.value?.trim()
+      }"
     >
       Send
     </button>

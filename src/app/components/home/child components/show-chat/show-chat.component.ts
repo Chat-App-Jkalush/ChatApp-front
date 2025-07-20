@@ -3,6 +3,7 @@ import {
   OnInit,
   ViewChild,
   ElementRef,
+  AfterViewInit,
   AfterViewChecked,
   OnDestroy,
   ChangeDetectorRef,
@@ -97,17 +98,15 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   public scrollToBottom(): void {
-    this.cdr.detectChanges();
-    setTimeout(() => {
-      if (this.messagesContainer?.nativeElement) {
-        try {
-          this.messagesContainer.nativeElement.scrollTop =
-            this.messagesContainer.nativeElement.scrollHeight;
-        } catch (err: any) {
-          console.error('Error scrolling to bottom:', err);
-        }
+    //this.cdr.detectChanges();
+    if (this.messagesContainer?.nativeElement) {
+      try {
+        this.messagesContainer.nativeElement.scrollTop =
+          this.messagesContainer.nativeElement.scrollHeight;
+      } catch (err: any) {
+        console.error('Error scrolling to bottom:', err);
       }
-    }, 0);
+    }
   }
 
   public sendMessage(): void {
