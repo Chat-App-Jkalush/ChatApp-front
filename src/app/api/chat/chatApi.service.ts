@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_ENDPOINT } from '../../../constants/api.constatns';
 import { chatType } from '../../../../../common/enums/chat.enum';
 import { CommonDto, CommonRo } from '../../../../../common';
 import { ChatListItem } from '../../models/chat/chat.model';
+import { FrontendConstants } from '../../../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class ChatApiService {
     pageSize: number
   ): Observable<{ chats: ChatListItem[]; total: number }> {
     return this.client.get<{ chats: ChatListItem[]; total: number }>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.PAGINATED}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.PAGINATED}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
       { withCredentials: true }
     );
   }
@@ -29,7 +29,7 @@ export class ChatApiService {
     chatName: string
   ): Observable<CommonRo.ChatRo.ChatRo> {
     return this.client.post<CommonRo.ChatRo.ChatRo>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.UPDATE_USER_CHATS}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.UPDATE_USER_CHATS}`,
       { userName, chatId, chatName },
       { withCredentials: true }
     );
@@ -40,7 +40,7 @@ export class ChatApiService {
     chatId: string
   ): Observable<Partial<CommonRo.ChatRo.ChatRo>> {
     return this.client.post<Partial<CommonRo.ChatRo.ChatRo>>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.ADD_USER_TO_CHAT}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.ADD_USER_TO_CHAT}`,
       { userName, chatId },
       { withCredentials: true }
     );
@@ -53,7 +53,7 @@ export class ChatApiService {
     description: string
   ): Observable<CommonRo.ChatRo.ChatRo> {
     return this.client.post<CommonRo.ChatRo.ChatRo>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.CREATE}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.CREATE}`,
       { chatName, participants, type, description },
       { withCredentials: true }
     );
@@ -61,7 +61,7 @@ export class ChatApiService {
 
   public getChatById(chatId: string): Observable<CommonRo.ChatRo.ChatRo> {
     return this.client.get<CommonRo.ChatRo.ChatRo>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.PAGINATED}/${chatId}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.PAGINATED}/${chatId}`,
       { withCredentials: true }
     );
   }
@@ -70,14 +70,14 @@ export class ChatApiService {
     chatId: string
   ): Observable<{ participants: string[] }> {
     return this.client.get<{ participants: string[] }>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.GET_PARTICIPANTS}/${chatId}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.GET_PARTICIPANTS}/${chatId}`,
       { withCredentials: true }
     );
   }
 
   public leaveChat(userName: string, chatId: string): Observable<boolean> {
     return this.client.post<boolean>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.LEAVE_CHAT}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.LEAVE_CHAT}`,
       { userName, chatId },
       { withCredentials: true }
     );
@@ -85,7 +85,7 @@ export class ChatApiService {
 
   public DmExists(dto: CommonDto.ChatDto.DmExitsDto): Observable<boolean> {
     return this.client.post<boolean>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.CHATS.DM_EXISTS}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.DM_EXISTS}`,
       dto,
       { withCredentials: true }
     );

@@ -6,6 +6,4 @@ import { Component } from '@angular/core';
   standalone: false,
   styleUrl: './app.scss',
 })
-export class App {
-  protected title: string = 'frontend';
-}
+export class App {}

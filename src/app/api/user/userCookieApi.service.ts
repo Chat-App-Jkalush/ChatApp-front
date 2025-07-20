@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { API_ENDPOINT } from '../../../constants/api.constatns';
 import { Observable } from 'rxjs';
 import { CommonRo } from '../../../../../common/Ro/common.ro';
+import { FrontendConstants } from '../../../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ export class UserCookieApiService {
     latestChatId?: string
   ): Observable<CommonRo.DataCookie.UserCookieRo> {
     return this.client.post<CommonRo.DataCookie.UserCookieRo>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.DATA_COOKIE.SAVE}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.DATA_COOKIE.SAVE}`,
       { ...userDetails, latestChatId },
       { withCredentials: true }
     );
@@ -23,7 +23,7 @@ export class UserCookieApiService {
 
   public getUserCookie(): Observable<CommonRo.DataCookie.UserCookieRo> {
     return this.client.get<CommonRo.DataCookie.UserCookieRo>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.DATA_COOKIE.GET}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.DATA_COOKIE.GET}`,
       { withCredentials: true }
     );
   }
@@ -33,7 +33,7 @@ export class UserCookieApiService {
     latestChatId: string
   ): Observable<CommonRo.DataCookie.UserCookieRo | null> {
     return this.client.post<CommonRo.DataCookie.UserCookieRo | null>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.DATA_COOKIE.SET_LATEST_CHAT}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.DATA_COOKIE.SET_LATEST_CHAT}`,
       { userName, latestChatId },
       { withCredentials: true }
     );

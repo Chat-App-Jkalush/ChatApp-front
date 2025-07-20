@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CommonDto, CommonRo } from '../../../../../common';
-import { API_ENDPOINT } from '../../../constants/api.constatns';
+import { HttpErrorResponse } from '@angular/common/http';
+import { FrontendConstants } from '../../../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -10,11 +11,16 @@ export class MessageApiService {
     chatId: string
   ): Promise<CommonDto.MessageDto.Message[]> {
     const url = `${
-      API_ENDPOINT.BASE
+      FrontendConstants.ApiEndpoint.BASE
     }/messages/by-chat?chatId=${encodeURIComponent(chatId)}`;
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error('Failed to fetch messages');
+      throw new HttpErrorResponse({
+        error: `Failed to fetch messages for chat ${chatId}`,
+        status: response.status,
+        statusText: response.statusText,
+        url,
+      });
     }
     return await response.json();
   }

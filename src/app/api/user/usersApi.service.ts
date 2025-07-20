@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CommonDto, CommonRo } from '../../../../../common';
 import { Observable } from 'rxjs';
-import { API_ENDPOINT } from '../../../constants/api.constatns';
+import { FrontendConstants } from '../../../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,8 @@ export class UsersApiService {
     credentials: CommonDto.UserDto.LoginDto
   ): Observable<CommonRo.UserRo.UserResponse> {
     return this.client.post<CommonRo.UserRo.UserResponse>(
-      API_ENDPOINT.BASE + API_ENDPOINT.AUTH.LOGIN,
+      FrontendConstants.ApiEndpoint.BASE +
+        FrontendConstants.ApiEndpoint.AUTH.LOGIN,
       credentials,
       {
         withCredentials: true,
@@ -26,7 +27,8 @@ export class UsersApiService {
     credentials: CommonDto.UserDto.RegisterDto
   ): Observable<CommonRo.UserRo.UserResponse> {
     return this.client.post<CommonRo.UserRo.UserResponse>(
-      API_ENDPOINT.BASE + API_ENDPOINT.AUTH.REGISTER,
+      FrontendConstants.ApiEndpoint.BASE +
+        FrontendConstants.ApiEndpoint.AUTH.REGISTER,
       credentials,
       {
         withCredentials: true,
@@ -40,7 +42,7 @@ export class UsersApiService {
     pageSize: number
   ): Observable<{ chats: string[]; total: number }> {
     return this.client.get<{ chats: string[]; total: number }>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.USERS.PAGINATED_CHATS}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.USERS.PAGINATED_CHATS}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
       {
         withCredentials: true,
       }
@@ -54,7 +56,7 @@ export class UsersApiService {
       users: CommonRo.UserRo.UserResponse[];
       total: number;
     }>(
-      `${API_ENDPOINT.BASE}/users/paginated-users?userName=${dto.userName}&page=${dto.page}&pageSize=${dto.limit}`,
+      `${FrontendConstants.ApiEndpoint.BASE}/users/paginated-users?userName=${dto.userName}&page=${dto.page}&pageSize=${dto.limit}`,
       { withCredentials: true }
     );
   }
@@ -63,7 +65,7 @@ export class UsersApiService {
     profile: CommonDto.UserDto.UserUpdateDto
   ): Observable<CommonRo.UserRo.UserResponse> {
     return this.client.put<CommonRo.UserRo.UserResponse>(
-      `${API_ENDPOINT.BASE}${API_ENDPOINT.USERS.UPDATE}`,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.USERS.UPDATE}`,
       profile,
       { withCredentials: true }
     );
@@ -71,7 +73,7 @@ export class UsersApiService {
 
   public logOut(): Observable<void> {
     return this.client.post<void>(
-      API_ENDPOINT.BASE + API_ENDPOINT.AUTH.LOGOUT,
+      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.AUTH.LOGOUT}`,
       {},
       {
         withCredentials: true,
