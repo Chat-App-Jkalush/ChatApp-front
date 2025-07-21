@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ContactApiService } from '../../../../api/contact/contactApi.service';
 import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { UsersApiService } from '../../../../api/user/usersApi.service';
-import { CommonRo } from '../../../../../../../common';
+import { UserResponse, User } from 'common/Ro';
 
 @Component({
   selector: 'app-add-contacts',
@@ -11,7 +11,7 @@ import { CommonRo } from '../../../../../../../common';
   styleUrls: ['./add-contacts.component.scss'],
 })
 export class AddContactsComponent implements OnInit {
-  public users: CommonRo.UserRo.UserResponse[] = [];
+  public users: UserResponse[] = [];
   public totalUsers: number = 0;
   public pageSize: number = 10;
   public pageIndex: number = 0;
@@ -39,22 +39,20 @@ export class AddContactsComponent implements OnInit {
         page: this.pageIndex + 1,
         limit: this.pageSize,
       })
-      .subscribe(
-        (res: { users: CommonRo.UserRo.UserResponse[]; total: number }) => {
-          this.users = res.users;
-          this.totalUsers = res.total;
-        }
-      );
+      .subscribe((res: { users: UserResponse[]; total: number }) => {
+        this.users = res.users;
+        this.totalUsers = res.total;
+      });
   }
 
   public addContact(userName: string): void {
     this.contactApi
       .addContact(this.refreshDataService.userName, userName)
       .subscribe({
-        next: (res: CommonRo.UserRo.User): void => {
+        next: (res: User): void => {
           console.log('Contact added successfully:', res);
           this.users = this.users.filter(
-            (user: CommonRo.UserRo.UserResponse) => user.userName !== userName
+            (user: UserResponse) => user.userName !== userName
           );
         },
         error: (err: any): void => {

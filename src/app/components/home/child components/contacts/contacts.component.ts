@@ -8,7 +8,7 @@ import {
 import { ContactApiService } from '../../../../api/contact/contactApi.service';
 import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { ChatSocketService } from '../../../../services/chat/chatSocket.service';
-import { CommonDto, CommonRo } from '../../../../../../../common';
+import { RemoveContactDto } from 'common/dto';
 import { ChatApiService } from '../../../../api/chat/chatApi.service';
 
 @Component({
@@ -47,11 +47,11 @@ export class ContactsComponent implements OnInit, OnDestroy {
   private subscribeToOnlineStatus(): void {
     this.unsubscribeFromOnlineStatus();
     this.onlineStatusSubscription = this.chatSocket.onContactOnlineStatus(
-      (data: CommonDto.ContactDto.ContactOnlineStatus): void => {
-        if (this.contacts.includes(data.userName)) {
+      (data: string): void => {
+        if (this.contacts.includes(data)) {
           this.onlineStatuses = {
             ...this.onlineStatuses,
-            [data.userName]: data.isOnline,
+            [data]: true, // Assuming online status is always true for now
           };
         }
       }
@@ -93,10 +93,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
   public loadContacts(): void {
     this.contactApi
       .getPaginatedContacts(this.userName, this.pageIndex + 1, this.pageSize)
-      .subscribe((res: any) => {
-        this.contacts = res.contacts.map((c: any) =>
-          typeof c === 'string' ? c : c.contactName
-        );
+      .subscribe((res: { contacts: string[]; total: number }) => {
+        this.contacts = res.contacts;
         this.totalContacts = res.total;
         this.setInitialOnlineStatus();
       });
@@ -104,9 +102,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   private setInitialOnlineStatus(): void {
     if (this.contacts.length === 0) return;
-    const contactNames: string[] = this.contacts.map((c: any) =>
-      typeof c === 'string' ? c : c.contactName
-    );
+    const contactNames: string[] = this.contacts;
     this.chatSocket
       .getOnlineContacts(contactNames)
       .then((onlineContacts: string[]) => {

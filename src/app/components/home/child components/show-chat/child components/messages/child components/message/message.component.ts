@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonDto, CommonRo } from '../../../../../../../../../../../common';
+import { Message } from '../../../../../../../../../../../common/dto';
 
 @Component({
   selector: 'app-message',
@@ -9,7 +9,7 @@ import { CommonDto, CommonRo } from '../../../../../../../../../../../common';
 })
 export class MessageComponent {
   @Input()
-  public message: CommonDto.MessageDto.Message = {
+  public message: Message = {
     chatId: '',
     sender: '',
     content: '',

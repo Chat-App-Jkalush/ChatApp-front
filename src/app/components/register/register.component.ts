@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { UserCookieApiService } from '../../api/user/userCookieApi.service';
 import { RefreshDataService } from '../../services/refresh/refreshData.service';
 import { UsersApiService } from '../../api/user/usersApi.service';
-import { CommonRo } from '../../../../../common';
+import { UserResponse } from '../../../../../common/Ro';
 
 @Component({
   selector: 'app-register',
@@ -35,7 +35,7 @@ export class RegisterComponent implements OnInit {
   public onSubmit(): void {
     if (this.registerForm.invalid) return;
     this.userApi.register(this.registerForm.value).subscribe({
-      next: (response: CommonRo.UserRo.UserResponse) => {
+      next: (response: UserResponse) => {
         this.userCookieApi
           .saveUserCookie({ userName: response.userName })
           .subscribe({

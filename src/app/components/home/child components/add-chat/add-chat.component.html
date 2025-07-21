@@ -1,6 +1,56 @@
 <form class="add-chat-form" [formGroup]="addChatForm" (ngSubmit)="onSubmit()">
   <h2 class="add-chat-title">Create New Chat</h2>
 
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Chat Name</mat-label>
+    <input
+      matInput
+      formControlName="chatName"
+      placeholder="Enter chat name"
+      maxlength="50"
+      required
+    />
+    <mat-hint>Required field (3-50 characters)</mat-hint>
+    <mat-error
+      *ngIf="
+        addChatForm.get('chatName')?.hasError('required') &&
+        addChatForm.get('chatName')?.touched
+      "
+    >
+      Chat name is required
+    </mat-error>
+    <mat-error
+      *ngIf="
+        addChatForm.get('chatName')?.hasError('minlength') &&
+        addChatForm.get('chatName')?.touched
+      "
+    >
+      Chat name must be at least 3 characters
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Description (Optional)</mat-label>
+    <textarea
+      matInput
+      formControlName="description"
+      placeholder="Enter chat description"
+      maxlength="200"
+      rows="2"
+    ></textarea>
+    <mat-hint>Optional (maximum 200 characters)</mat-hint>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Add Participants</mat-label>
+    <mat-select formControlName="participants" multiple>
+      <mat-option *ngFor="let contact of contacts" [value]="contact">
+        {{ contact }}
+      </mat-option>
+    </mat-select>
+    <mat-hint>Select contacts to add to the chat</mat-hint>
+  </mat-form-field>
+
   <div class="loading-overlay" *ngIf="loading">
     <mat-spinner diameter="40"></mat-spinner>
     <span>Loading...</span>
@@ -16,80 +66,50 @@
     {{ errorMessage }}
   </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Chat Name</mat-label>
-    <input
-      matInput
-      formControlName="chatName"
-      placeholder="Enter chat name"
-      maxlength="50"
-    />
-    <mat-error *ngIf="addChatForm.get('chatName')?.hasError('required')">
-      Chat name is required
-    </mat-error>
-    <mat-error *ngIf="addChatForm.get('chatName')?.hasError('minlength')">
-      Chat name must be at least 3 characters
-    </mat-error>
-  </mat-form-field>
+  <mat-paginator
+    *ngIf="totalContacts > pageSize"
+    [length]="totalContacts"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)"
+    [hidePageSize]="false"
+    [showFirstLastButtons]="true"
+  >
+  </mat-paginator>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Description</mat-label>
-    <textarea
-      matInput
-      formControlName="description"
-      placeholder="Enter chat description"
-      maxlength="200"
-      rows="2"
-    ></textarea>
-  </mat-form-field>
-
-  <div class="participants-section">
-    <mat-form-field appearance="outline">
-      <mat-label>Select Participant</mat-label>
-      <mat-select (selectionChange)="onParticipantSelected($event.value)">
-        <mat-option *ngFor="let contact of contacts" [value]="contact">
-          {{ contact }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-paginator
-      [length]="totalContacts"
-      [pageSize]="pageSize"
-      [pageIndex]="pageIndex"
-      [pageSizeOptions]="[5, 10, 20]"
-      (page)="onPageChange($event)"
-      [hidePageSize]="false"
-      [showFirstLastButtons]="true"
-    >
-    </mat-paginator>
-
-    <div class="selected-participants" *ngIf="selectedParticipants.length > 0">
-      <h3>Selected Participants ({{ selectedParticipants.length }})</h3>
-      <div class="participant-chips">
-        <mat-chip-set>
-          <mat-chip
-            *ngFor="let participant of selectedParticipants"
-            [removable]="true"
-            (removed)="removeParticipant(participant)"
-          >
-            {{ participant }}
-            <mat-icon matChipRemove>cancel</mat-icon>
-          </mat-chip>
-        </mat-chip-set>
-      </div>
+  <div
+    class="selected-participants"
+    *ngIf="addChatForm.get('participants')?.value?.length > 0"
+  >
+    <h4>
+      Selected Participants ({{
+        addChatForm.get("participants")?.value?.length
+      }})
+    </h4>
+    <div class="participant-chips">
+      <mat-chip-set>
+        <mat-chip
+          *ngFor="let participant of addChatForm.get('participants')?.value"
+          [removable]="true"
+          (removed)="removeParticipant(participant)"
+        >
+          {{ participant }}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+      </mat-chip-set>
     </div>
+  </div>
 
-    <div
-      class="field-error"
-      *ngIf="
-        addChatForm.get('participants')?.hasError('required') &&
-        addChatForm.get('participants')?.touched
-      "
-    >
-      <mat-icon>error</mat-icon>
-      At least one participant is required
-    </div>
+  <div
+    class="field-error"
+    *ngIf="
+      addChatForm.get('participants')?.hasError('required') &&
+      addChatForm.get('participants')?.touched
+    "
+  >
+    <mat-icon>error</mat-icon>
+    At least one participant is required
   </div>
 
   <div class="form-actions">
@@ -97,13 +117,18 @@
       mat-raised-button
       color="primary"
       type="submit"
-      [disabled]="addChatForm.invalid || loading"
+      [disabled]="
+        addChatForm.invalid ||
+        (addChatForm.get('participants')?.value?.length ?? 0) === 0 ||
+        loading
+      "
     >
       <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
+      <mat-icon *ngIf="!loading">add</mat-icon>
       <span>{{ loading ? "Creating..." : "Create Chat" }}</span>
     </button>
-
     <button mat-button type="button" (click)="onCancel()" [disabled]="loading">
+      <mat-icon>cancel</mat-icon>
       Cancel
     </button>
   </div>

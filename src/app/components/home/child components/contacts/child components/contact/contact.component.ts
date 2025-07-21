@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { ContactApiService } from '../../../../../../api/contact/contactApi.service';
 import { RefreshDataService } from '../../../../../../services/refresh/refreshData.service';
-import { CommonDto, CommonRo } from '../../../../../../../../../common';
+import { RemoveContactDto } from 'common/dto';
 import { ChatSocketService } from '../../../../../../services/chat/chatSocket.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class ContactComponent {
   @Output() public contactRemoved = new EventEmitter<string>();
 
   public onRemoveContact(): void {
-    const dto: CommonDto.ContactDto.RemoveContactDto = {
+    const dto: RemoveContactDto = {
       userName: this.refreshDataService.userName,
       contactName: this.contactName,
     };

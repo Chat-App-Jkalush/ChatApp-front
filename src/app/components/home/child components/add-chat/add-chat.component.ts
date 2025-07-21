@@ -5,7 +5,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
 import { ContactService } from '../../../../services/contact/contact.service';
@@ -13,7 +13,6 @@ import { ChatManagementService } from '../../../../services/chat/chatManagment.s
 import { chatType } from '../../../../../../../common/enums/chat.enum';
 import { RefreshDataService } from '../../../../services/refresh/refreshData.service';
 import { ChatApiService } from '../../../../api/chat/chatApi.service';
-import { AddChatFormHelper } from '../../../../helpers/AddChatForm.helper';
 import { AddChatParticipantHelper } from '../../../../helpers/participent.helper';
 import { ChatListItem } from '../../../../models/chat/chat.model';
 
@@ -28,7 +27,6 @@ export class AddChatComponent implements OnInit, OnDestroy {
 
   public addChatForm!: FormGroup;
   public contacts: string[] = [];
-  public selectedParticipants: string[] = [];
   public totalContacts: number = 0;
   public pageSize: number = 10;
   public pageIndex: number = 0;
@@ -39,16 +37,20 @@ export class AddChatComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
+    private fb: FormBuilder,
     private contactService: ContactService,
     private chatManagement: ChatManagementService,
     private refreshDataService: RefreshDataService,
     private chatApiService: ChatApiService,
-    private formHelper: AddChatFormHelper,
     private participantHelper: AddChatParticipantHelper
   ) {}
 
   public ngOnInit(): void {
-    this.addChatForm = this.formHelper.createForm();
+    this.addChatForm = this.fb.group({
+      chatName: ['', [Validators.required, Validators.minLength(3)]],
+      description: [''],
+      participants: [[], Validators.required],
+    });
     this.setupUserSubscription();
   }
 
@@ -73,10 +75,16 @@ export class AddChatComponent implements OnInit, OnDestroy {
     this.contactService
       .getContacts(this.userName, this.pageIndex, this.pageSize)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res: { contacts: string[]; total: number }) => {
-        this.contacts = res.contacts || [];
-        this.totalContacts = res.total || 0;
-        this.loading = false;
+      .subscribe({
+        next: (res: { contacts: string[]; total: number }) => {
+          this.contacts = res.contacts || [];
+          this.totalContacts = res.total || 0;
+          this.loading = false;
+        },
+        error: () => {
+          this.errorMessage = 'Failed to load contacts';
+          this.loading = false;
+        },
       });
   }
 
@@ -86,40 +94,34 @@ export class AddChatComponent implements OnInit, OnDestroy {
     this.loadContacts();
   }
 
-  public onParticipantSelected(participant: string): void {
-    this.selectedParticipants = this.participantHelper.addParticipant(
-      this.selectedParticipants,
-      participant
-    );
-    this.updateFormParticipants();
-  }
-
   public removeParticipant(participant: string): void {
-    this.selectedParticipants = this.participantHelper.removeParticipant(
-      this.selectedParticipants,
-      participant
-    );
-    this.updateFormParticipants();
-  }
-
-  private updateFormParticipants(): void {
+    const current = this.addChatForm.get('participants')?.value || [];
     this.addChatForm.patchValue({
-      participants: this.selectedParticipants,
+      participants: this.participantHelper.removeParticipant(
+        current,
+        participant
+      ),
     });
   }
 
   public onSubmit(): void {
-    if (this.addChatForm.invalid) {
-      this.formHelper.markFormGroupTouched(this.addChatForm);
+    if (
+      this.addChatForm.invalid ||
+      (this.addChatForm.get('participants')?.value?.length ?? 0) === 0
+    ) {
+      this.addChatForm.markAllAsTouched();
+      this.errorMessage =
+        'Please fill in all required fields and select at least one participant.';
       return;
     }
     this.clearMessages();
     this.loading = true;
-    const chatName: string = this.addChatForm.get('chatName')?.value;
-    const description: string = this.addChatForm.get('description')?.value;
+    const chatName: string = this.addChatForm.get('chatName')?.value?.trim();
+    const description: string =
+      this.addChatForm.get('description')?.value?.trim() || '';
     const creator: string = this.userName;
     const participants: string[] = Array.from(
-      new Set([creator, ...this.selectedParticipants])
+      new Set([creator, ...this.addChatForm.get('participants')?.value])
     );
     const type: chatType =
       participants.length === 2 ? chatType.DM : chatType.GROUP;
@@ -131,14 +133,20 @@ export class AddChatComponent implements OnInit, OnDestroy {
           userName2: participants[1],
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe((exists: boolean) => {
-          if (exists) {
-            this.errorMessage =
-              'Direct message already exists between these users.';
+        .subscribe({
+          next: (exists: boolean) => {
+            if (exists) {
+              this.errorMessage =
+                'Direct message already exists between these users.';
+              this.loading = false;
+              return;
+            }
+            this.createChat(chatName, participants, type, description);
+          },
+          error: () => {
+            this.errorMessage = 'Failed to check if DM exists';
             this.loading = false;
-            return;
-          }
-          this.createChat(chatName, participants, type, description);
+          },
         });
     } else {
       this.createChat(chatName, participants, type, description);
@@ -154,26 +162,37 @@ export class AddChatComponent implements OnInit, OnDestroy {
     this.chatManagement
       .createChatAndUpdateUsers(chatName, participants, type, description)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (result: {
+      .subscribe({
+        next: (result: {
           success: boolean;
           message: string;
           chat?: ChatListItem;
         }) => {
           this.loading = false;
-          this.formHelper.resetForm(this.addChatForm);
-          this.selectedParticipants = [];
-          this.clearMessages();
-          this.onFinished.emit();
-        }
-      );
+          if (result.success) {
+            this.successMessage =
+              result.message || 'Chat created successfully!';
+            this.resetForm();
+            this.onFinished.emit();
+          } else {
+            this.errorMessage = result.message || 'Failed to create chat';
+          }
+        },
+        error: () => {
+          this.loading = false;
+          this.errorMessage = 'Failed to create chat. Please try again.';
+        },
+      });
   }
 
   public onCancel(): void {
-    this.formHelper.resetForm(this.addChatForm);
-    this.selectedParticipants = [];
-    this.clearMessages();
+    this.resetForm();
     this.onFinished.emit();
+  }
+
+  private resetForm(): void {
+    this.addChatForm.reset();
+    this.clearMessages();
   }
 
   private clearMessages(): void {

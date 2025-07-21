@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
-import { CommonDto, CommonConstants } from '../../../../../common';
+import { CommonConstants } from 'common/constatns/common.constants';
+import { CreateMessageDto } from 'common/dto';
 
 @Injectable({ providedIn: 'root' })
 export class ChatSocketService {
@@ -60,19 +61,17 @@ export class ChatSocketService {
     });
   }
 
-  public sendMessage(message: CommonDto.MessageDto.CreateMessageDto): void {
+  public sendMessage(message: CreateMessageDto): void {
     this.socket.emit(
       CommonConstants.GatewayConstants.EVENTS.NEW_MESSAGE,
       message
     );
   }
 
-  public onNewMessage(
-    callback: (message: CommonDto.MessageDto.CreateMessageDto) => void
-  ): void {
+  public onNewMessage(callback: (message: CreateMessageDto) => void): void {
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.NEW_MESSAGE,
-      (msg: CommonDto.MessageDto.CreateMessageDto) => {
+      (msg: CreateMessageDto) => {
         callback(msg);
       }
     );
@@ -169,10 +168,8 @@ export class ChatSocketService {
     });
   }
 
-  public onContactOnlineStatus(
-    callback: (status: CommonDto.ContactDto.ContactOnlineStatus) => void
-  ): () => void {
-    const handler = (status: CommonDto.ContactDto.ContactOnlineStatus) => {
+  public onContactOnlineStatus(callback: (status: any) => void): () => void {
+    const handler = (status: any) => {
       callback(status);
     };
     this.socket.on('contactOnlineStatus', handler);

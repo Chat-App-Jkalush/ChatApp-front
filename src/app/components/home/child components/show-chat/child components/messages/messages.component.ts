@@ -9,7 +9,8 @@ import {
   ViewChild,
   ElementRef,
 } from '@angular/core';
-import { CommonDto, CommonConstants } from '../../../../../../../../../common';
+import { Message } from 'common/dto';
+import { CommonConstants } from 'common/constatns/common.constants';
 import { MessageApiService } from '../../../../../../api/message/messageApi.service';
 import { ChatSocketService } from '../../../../../../services/chat/chatSocket.service';
 
@@ -25,10 +26,8 @@ export class MessagesComponent
   @Input() public chatId: string | null = null;
   @Input() public userName: string = '';
   @ViewChild('messagesScrollContainer') messagesScrollContainer!: ElementRef;
-  public messages: CommonDto.MessageDto.Message[] = [];
-  private socketListener:
-    | ((message: CommonDto.MessageDto.Message) => void)
-    | null = null;
+  public messages: Message[] = [];
+  private socketListener: ((message: Message) => void) | null = null;
 
   constructor(
     private messageApi: MessageApiService,
@@ -39,7 +38,7 @@ export class MessagesComponent
     if (this.chatId) {
       this.loadMessages();
     }
-    this.socketListener = (message: CommonDto.MessageDto.Message): void => {
+    this.socketListener = (message: Message): void => {
       if (this.chatId === message.chatId) {
         message.createdAt = this.parseDate(message.createdAt);
         this.messages.push(message);
@@ -97,7 +96,7 @@ export class MessagesComponent
   public async loadMessages(): Promise<void> {
     try {
       this.messages = await this.messageApi.getAllByChatId(this.chatId!);
-      this.messages.forEach((msg: CommonDto.MessageDto.Message) => {
+      this.messages.forEach((msg: Message) => {
         msg.createdAt = this.parseDate(msg.createdAt);
       });
       setTimeout(() => this.scrollToBottom(), 0);
@@ -107,7 +106,7 @@ export class MessagesComponent
     }
   }
 
-  public renderMessage(message: CommonDto.MessageDto.Message): void {
+  public renderMessage(message: Message): void {
     message.createdAt = this.parseDate(message.createdAt);
     if (this.chatId === message.chatId) {
       this.messages.push(message);

@@ -1,6 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CommonDto, CommonRo } from '../../../../../common';
+import {
+  LoginDto,
+  RegisterDto,
+  UserUpdateDto,
+} from '../../../../../common/dto';
+import { UserResponse } from '../../../../../common/Ro';
 import { Observable } from 'rxjs';
 import { FrontendConstants } from '../../../constants';
 
@@ -10,10 +15,8 @@ import { FrontendConstants } from '../../../constants';
 export class UsersApiService {
   constructor(private client: HttpClient) {}
 
-  public login(
-    credentials: CommonDto.UserDto.LoginDto
-  ): Observable<CommonRo.UserRo.UserResponse> {
-    return this.client.post<CommonRo.UserRo.UserResponse>(
+  public login(credentials: LoginDto): Observable<UserResponse> {
+    return this.client.post<UserResponse>(
       FrontendConstants.ApiEndpoint.BASE +
         FrontendConstants.ApiEndpoint.AUTH.LOGIN,
       credentials,
@@ -23,10 +26,8 @@ export class UsersApiService {
     );
   }
 
-  public register(
-    credentials: CommonDto.UserDto.RegisterDto
-  ): Observable<CommonRo.UserRo.UserResponse> {
-    return this.client.post<CommonRo.UserRo.UserResponse>(
+  public register(credentials: RegisterDto): Observable<UserResponse> {
+    return this.client.post<UserResponse>(
       FrontendConstants.ApiEndpoint.BASE +
         FrontendConstants.ApiEndpoint.AUTH.REGISTER,
       credentials,
@@ -49,11 +50,13 @@ export class UsersApiService {
     );
   }
 
-  public getPaginatedUsers(
-    dto: CommonDto.ContactDto.GetContactsDto
-  ): Observable<{ users: CommonRo.UserRo.UserResponse[]; total: number }> {
+  public getPaginatedUsers(dto: {
+    userName: string;
+    page: number;
+    limit: number;
+  }): Observable<{ users: UserResponse[]; total: number }> {
     return this.client.get<{
-      users: CommonRo.UserRo.UserResponse[];
+      users: UserResponse[];
       total: number;
     }>(
       `${FrontendConstants.ApiEndpoint.BASE}/users/paginated-users?userName=${dto.userName}&page=${dto.page}&pageSize=${dto.limit}`,
@@ -61,10 +64,8 @@ export class UsersApiService {
     );
   }
 
-  public updateUser(
-    profile: CommonDto.UserDto.UserUpdateDto
-  ): Observable<CommonRo.UserRo.UserResponse> {
-    return this.client.put<CommonRo.UserRo.UserResponse>(
+  public updateUser(profile: UserUpdateDto): Observable<UserResponse> {
+    return this.client.put<UserResponse>(
       `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.USERS.UPDATE}`,
       profile,
       { withCredentials: true }

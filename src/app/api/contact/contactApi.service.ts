@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CommonDto, CommonRo } from '../../../../../common';
+import { RemoveContactDto } from '../../../../../common/dto';
+import { User, PaginatedContacts } from '../../../../../common/Ro';
 import { FrontendConstants } from '../../../constants';
 
 @Injectable({
@@ -10,11 +11,8 @@ import { FrontendConstants } from '../../../constants';
 export class ContactApiService {
   constructor(private client: HttpClient) {}
 
-  public addContact(
-    userName: string,
-    contactName: string
-  ): Observable<CommonRo.UserRo.User> {
-    return this.client.post<CommonRo.UserRo.User>(
+  public addContact(userName: string, contactName: string): Observable<User> {
+    return this.client.post<User>(
       `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CONTACTS.ADD}`,
       { userName, contactName },
       { withCredentials: true }
@@ -25,17 +23,15 @@ export class ContactApiService {
     userName: string,
     page: number,
     pageSize: number
-  ): Observable<CommonRo.UserRo.PaginatedContacts> {
-    return this.client.get<CommonRo.UserRo.PaginatedContacts>(
+  ): Observable<PaginatedContacts> {
+    return this.client.get<PaginatedContacts>(
       `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CONTACTS.PAGINATED}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
       { withCredentials: true }
     );
   }
 
-  public removeContact(
-    dto: CommonDto.ContactDto.RemoveContactDto
-  ): Observable<CommonRo.UserRo.User> {
-    return this.client.post<CommonRo.UserRo.User>(
+  public removeContact(dto: RemoveContactDto): Observable<User> {
+    return this.client.post<User>(
       `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CONTACTS.REMOVE}`,
       dto,
       { withCredentials: true }
