@@ -64,10 +64,10 @@
 .content-area {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   background-color: #fff;
   margin: 0;
   padding: 0;
-  direction: rtl;
 }
 
 .content-area > * {
