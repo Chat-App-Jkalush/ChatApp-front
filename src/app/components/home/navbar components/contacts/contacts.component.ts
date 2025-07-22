@@ -11,7 +11,7 @@ import {
   ChatSocketService,
   OnlineStatus,
 } from '../../../../services/chat/chat-socket.service';
-import { ChatApiService } from '../../../../api/chat/chat-api.service';
+import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 
 @Component({
   selector: 'app-contacts',

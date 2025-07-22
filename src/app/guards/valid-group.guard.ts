@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
-import { ChatApiService } from 'app/api/chat/chat-api.service';
+import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 import { RefreshDataService } from 'app/services/refresh/refresh-data.service';
 import { Observable, map, tap } from 'rxjs';
 

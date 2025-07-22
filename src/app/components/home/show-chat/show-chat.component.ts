@@ -8,13 +8,13 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
-import { ChatApiService } from '../../../api/chat/chat-api.service';
 import { RefreshDataService } from '../../../services/refresh/refresh-data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChatSocketService } from '../../../services/chat/chat-socket.service';
 import { MessagesComponent } from './child components/messages/messages.component';
 import { Subscription } from 'rxjs';
 import { ChatListItem } from '../../../models/chat/chat.model';
+import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 
 @Component({
   selector: 'app-show-chat',

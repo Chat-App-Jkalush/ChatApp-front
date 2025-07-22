@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChatListItem } from '../../../../../../models/chat/chat.model';
-import { ChatApiService } from '../../../../../../api/chat/chat-api.service';
+import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 import { RefreshDataService } from '../../../../../../services/refresh/refresh-data.service';
 
 @Component({

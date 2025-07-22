@@ -12,9 +12,9 @@ import { ContactService } from '../../../../services/contact/contact.service';
 import { ChatManagementService } from '../../../../services/chat/chat-managment.service';
 import { chatType } from '../../../../../../../common/enums/chat.enum';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
-import { ChatApiService } from '../../../../api/chat/chat-api.service';
-import { AddChatParticipantHelper } from '../../../../helpers/participent.helper';
+import { AddChatParticipantHelper } from '../../../../services/helpers/participent.helper';
 import { ChatListItem } from '../../../../models/chat/chat.model';
+import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 
 @Component({
   selector: 'app-add-chat',
