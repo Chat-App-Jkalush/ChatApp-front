@@ -7,8 +7,10 @@ import {
 } from '@angular/core';
 import { ContactApiService } from '../../../../api/contact/contact-api.service';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
-import { ChatSocketService } from '../../../../services/chat/chat-socket.service';
-import { RemoveContactDto } from 'common/dto';
+import {
+  ChatSocketService,
+  OnlineStatus,
+} from '../../../../services/chat/chat-socket.service';
 import { ChatApiService } from '../../../../api/chat/chat-api.service';
 
 @Component({
@@ -46,12 +48,13 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   private subscribeToOnlineStatus(): void {
     this.unsubscribeFromOnlineStatus();
+
     this.onlineStatusSubscription = this.chatSocket.onContactOnlineStatus(
-      (data: string): void => {
-        if (this.contacts.includes(data)) {
+      (status: OnlineStatus): void => {
+        if (this.contacts.includes(status.userName)) {
           this.onlineStatuses = {
             ...this.onlineStatuses,
-            [data]: true, // Assuming online status is always true for now
+            [status.userName]: status.isOnline,
           };
         }
       }
