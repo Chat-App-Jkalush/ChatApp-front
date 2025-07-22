@@ -6,6 +6,14 @@
 >
 </mat-paginator>
 
+<div class="search-bar-container">
+  <mat-form-field appearance="outline" class="full-width-search">
+    <input matInput type="search" placeholder="Search chats..." />
+    <button matSuffix mat-icon-button aria-label="Search">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
 <div class="chats-container">
   <app-chat
     *ngFor="let chat of chats; let i = index"

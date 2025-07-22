@@ -29,6 +29,9 @@ export class ChatsComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  public searchTerm: string = '';
+  public searchResults: ChatListItem[] = [];
+
   constructor(
     private refreshDataService: RefreshDataService,
     private chatApi: ChatApiService

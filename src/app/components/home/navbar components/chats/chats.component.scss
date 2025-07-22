@@ -10,3 +10,24 @@
   width: 100%;
   margin-bottom: 8px;
 }
+
+.search-bar-container {
+  width: 100%;
+  margin: 16px 0 8px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.full-width-search {
+  width: 95%;
+  max-width: 600px;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 600px) {
+  .full-width-search {
+    max-width: 100%;
+  }
+}
