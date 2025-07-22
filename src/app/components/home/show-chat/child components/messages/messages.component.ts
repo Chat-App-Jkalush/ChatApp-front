@@ -39,11 +39,9 @@ export class MessagesComponent
       await this.loadMessages();
     }
     this.socketListener = (message: Message): void => {
-      if (!('chatId' in message) || this.chatId === (message as any).chatId) {
-        message.createdAt = this.parseDate(message.createdAt);
-        this.messages.push(message);
-        this.scrollToBottom();
-      }
+      message.createdAt = this.parseDate(message.createdAt);
+      this.messages.push(message);
+      this.scrollToBottom();
     };
     this.chatSocketService.onEvent(
       CommonConstants.GatewayConstants.EVENTS.REPLY,
@@ -112,10 +110,8 @@ export class MessagesComponent
 
   public renderMessage(message: Message): void {
     message.createdAt = this.parseDate(message.createdAt);
-    if (this.chatId === message.chatId) {
-      this.messages.push(message);
-      this.scrollToBottom();
-    }
+    this.messages.push(message);
+    this.scrollToBottom();
   }
 
   private scrollToBottom(): void {
