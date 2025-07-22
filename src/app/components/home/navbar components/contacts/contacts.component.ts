@@ -26,6 +26,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   public pageSize: number = 10;
   public pageIndex: number = 0;
   public onlineStatuses: { [contact: string]: boolean } = {};
+  public searchTerm: string = '';
   private onlineStatusSubscription: (() => void) | null = null;
   @Output() contactRemoved = new EventEmitter<string>();
 
@@ -93,9 +94,20 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.loadContacts();
   }
 
+  public onSearchTermChange(term: string): void {
+    this.searchTerm = term;
+    this.pageIndex = 0;
+    this.loadContacts();
+  }
+
   public loadContacts(): void {
     this.contactApi
-      .getPaginatedContacts(this.userName, this.pageIndex + 1, this.pageSize)
+      .getPaginatedContacts(
+        this.userName,
+        this.pageIndex + 1,
+        this.pageSize,
+        this.searchTerm
+      )
       .subscribe((res: { contacts: string[]; total: number }) => {
         this.contacts = res.contacts;
         this.totalContacts = res.total;

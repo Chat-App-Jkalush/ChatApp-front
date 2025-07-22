@@ -23,12 +23,14 @@ export class ContactApiService {
   public getPaginatedContacts(
     userName: string,
     page: number,
-    pageSize: number
+    pageSize: number,
+    search?: string
   ): Observable<PaginatedContacts> {
-    return this.client.get<PaginatedContacts>(
-      `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CONTACTS.PAGINATED}?userName=${userName}&page=${page}&pageSize=${pageSize}`,
-      { withCredentials: true }
-    );
+    let url = `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CONTACTS.PAGINATED}?userName=${userName}&page=${page}&pageSize=${pageSize}`;
+    if (search) {
+      url += `&search=${encodeURIComponent(search)}`;
+    }
+    return this.client.get<PaginatedContacts>(url, { withCredentials: true });
   }
 
   public removeContact(dto: RemoveContactDto): Observable<User> {
