@@ -9,7 +9,7 @@ import {
   ViewChild,
   ElementRef,
 } from '@angular/core';
-import { Message } from 'common/dto';
+import { Message } from 'common/dto/message/message.dto';
 import { CommonConstants } from 'common/constatns/common.constants';
 import { MessageApiService } from '../../../../../api/message/message-api.service';
 import { ChatSocketService } from '../../../../../services/chat/chat-socket.service';

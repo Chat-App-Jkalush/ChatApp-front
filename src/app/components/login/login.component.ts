@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoginDto } from '../../../../../common/dto';
-import { UserResponse } from '../../../../../common/Ro';
+import { LoginDto } from 'common/dto/user/login.dto';
+import { UserResponse } from 'common/ro/user/user-response.ro';
 import { Router } from '@angular/router';
 import { RefreshDataService } from '../../services/refresh/refresh-data.service';
 import { UserCookieApiService } from '../../api/user/user-cookie-api.service';

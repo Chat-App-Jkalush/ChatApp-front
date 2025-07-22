@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserCookieRo } from '../../../../../common/Ro';
+import { UserCookieRo } from 'common/ro/dataCookie/user-cookie.ro';
 import { FrontendConstants } from '../../../constants';
 
 @Injectable({

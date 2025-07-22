@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { ContactApiService } from '../../../../../../api/contact/contact-api.service';
 import { RefreshDataService } from '../../../../../../services/refresh/refresh-data.service';
-import { RemoveContactDto } from 'common/dto';
+import { RemoveContactDto } from 'common/dto/contact/remove-contact.dto';
 import { ChatSocketService } from '../../../../../../services/chat/chat-socket.service';
 
 @Component({

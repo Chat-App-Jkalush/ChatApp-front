@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  LoginDto,
-  RegisterDto,
-  UserUpdateDto,
-} from '../../../../../common/dto';
-import { UserResponse } from '../../../../../common/Ro';
+import { LoginDto } from 'common/dto/user/login.dto';
+import { RegisterDto } from 'common/dto/user/register.dto';
+import { UserUpdateDto } from 'common/dto/user/update-user.dto';
+import { UserResponse } from 'common/ro/user/user-response.ro';
 import { Observable } from 'rxjs';
 import { FrontendConstants } from '../../../constants';
 

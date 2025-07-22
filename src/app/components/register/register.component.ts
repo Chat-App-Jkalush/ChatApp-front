@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { UserCookieApiService } from '../../api/user/user-cookie-api.service';
 import { RefreshDataService } from '../../services/refresh/refresh-data.service';
 import { UsersApiService } from '../../api/user/users-api.service';
-import { UserResponse } from '../../../../../common/Ro';
+import { UserResponse } from '../../../../../common/ro/user/user-response.ro';
 
 @Component({
   selector: 'app-register',

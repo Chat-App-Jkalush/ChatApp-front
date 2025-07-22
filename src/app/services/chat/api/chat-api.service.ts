@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CreateChatDto, DmExitsDto, DeleteDmDto } from 'common/dto';
-import { ChatRo } from '../../../../../common/Ro';
-import { ChatListItem } from '../../models/chat/chat.model';
-import { FrontendConstants } from '../../../constants';
+import { CreateChatDto } from 'common/dto/chat/create-chat.dto';
+import { DmExitsDto } from 'common/dto/chat/dm-exists.dto';
+import { DeleteDmDto } from 'common/dto/chat/delete-dm.dto';
+import { ChatRo } from 'common/ro/chat/chat.ro';
 import { chatType } from 'common/enums/chat.enum';
+import { ChatListItem } from 'app/models/chat/chat.model';
+import { FrontendConstants } from '../../../../constants';
 
 @Injectable({
   providedIn: 'root',

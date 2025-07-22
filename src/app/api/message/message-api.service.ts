@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Message } from '../../../../../common/dto';
+import { Message } from 'common/dto/message/message.dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FrontendConstants } from '../../../constants';
 

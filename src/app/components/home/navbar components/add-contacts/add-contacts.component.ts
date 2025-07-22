@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ContactApiService } from '../../../../api/contact/contact-api.service';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
 import { UsersApiService } from '../../../../api/user/users-api.service';
-import { UserResponse, User } from 'common/Ro';
+import { UserResponse } from 'common/ro/user/user-response.ro';
+import { User } from 'common/ro/user/user.ro';
 
 @Component({
   selector: 'app-add-contacts',

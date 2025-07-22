@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { CommonConstants } from 'common/constatns/common.constants';
-import { CreateMessageDto } from 'common/dto';
+import { CreateMessageDto } from 'common/dto/message/create-message.dto';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface OnlineStatus {
