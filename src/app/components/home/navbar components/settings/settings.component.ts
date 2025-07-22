@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
 import { Router } from '@angular/router';
-import { UsersApiService } from '../../../../api/user/users-api.service';
+import { UsersApiService } from 'app/services/user/api/users-api.service';
 
 @Component({
   selector: 'app-settings',

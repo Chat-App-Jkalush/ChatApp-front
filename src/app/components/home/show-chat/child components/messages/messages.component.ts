@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { Message } from 'common/dto/message/message.dto';
 import { CommonConstants } from 'common/constatns/common.constants';
-import { MessageApiService } from '../../../../../api/message/message-api.service';
+import { MessageApiService } from 'app/services/message/api/message-api.service';
 import { ChatSocketService } from '../../../../../services/chat/chat-socket.service';
 
 @Component({

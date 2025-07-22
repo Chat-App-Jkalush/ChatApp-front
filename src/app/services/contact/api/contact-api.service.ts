@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { RemoveContactDto } from 'common/dto/contact/remove-contact.dto';
 import { User } from 'common/ro/user/user.ro';
 import { PaginatedContacts } from 'common/ro/user/paginated-contacts.ro';
-import { FrontendConstants } from '../../../constants';
+import { FrontendConstants } from '../../../../constants/frontend.constants';
 
 @Injectable({
   providedIn: 'root',

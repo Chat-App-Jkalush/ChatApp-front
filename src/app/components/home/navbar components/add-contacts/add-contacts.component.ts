@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ContactApiService } from '../../../../api/contact/contact-api.service';
+import { ContactApiService } from 'app/services/contact/api/contact-api.service';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
-import { UsersApiService } from '../../../../api/user/users-api.service';
+import { UsersApiService } from 'app/services/user/api/users-api.service';
 import { UserResponse } from 'common/ro/user/user-response.ro';
 import { User } from 'common/ro/user/user.ro';
 

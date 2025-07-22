@@ -6,7 +6,7 @@ import {
   OnInit,
   OnDestroy,
 } from '@angular/core';
-import { ContactApiService } from '../../../../../../api/contact/contact-api.service';
+import { ContactApiService } from 'app/services/contact/api/contact-api.service';
 import { RefreshDataService } from '../../../../../../services/refresh/refresh-data.service';
 import { RemoveContactDto } from 'common/dto/contact/remove-contact.dto';
 import { ChatSocketService } from '../../../../../../services/chat/chat-socket.service';

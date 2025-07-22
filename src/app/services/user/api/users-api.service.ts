@@ -5,7 +5,7 @@ import { RegisterDto } from 'common/dto/user/register.dto';
 import { UserUpdateDto } from 'common/dto/user/update-user.dto';
 import { UserResponse } from 'common/ro/user/user-response.ro';
 import { Observable } from 'rxjs';
-import { FrontendConstants } from '../../../constants';
+import { FrontendConstants } from '../../../../constants/frontend.constants';
 
 @Injectable({
   providedIn: 'root',
