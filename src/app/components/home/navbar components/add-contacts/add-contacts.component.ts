@@ -4,6 +4,7 @@ import { RefreshDataService } from '../../../../services/refresh/refresh-data.se
 import { UsersApiService } from 'app/services/user/api/users-api.service';
 import { UserResponse } from 'common/ro/user/user-response.ro';
 import { User } from 'common/ro/user/user.ro';
+import { ContactRo } from 'common/ro/contact/contact.ro';
 
 @Component({
   selector: 'app-add-contacts',
@@ -21,7 +22,7 @@ export class AddContactsComponent implements OnInit {
   constructor(
     private usersApiService: UsersApiService,
     private refreshDataService: RefreshDataService,
-    private contactApi: ContactApiService
+    private contactApiService: ContactApiService
   ) {}
 
   public ngOnInit(): void {
@@ -55,10 +56,13 @@ export class AddContactsComponent implements OnInit {
   }
 
   public addContact(userName: string): void {
-    this.contactApi
-      .addContact(this.refreshDataService.userName, userName)
+    this.contactApiService
+      .addContact({
+        userName: this.refreshDataService.userName,
+        contactName: userName,
+      })
       .subscribe({
-        next: (res: User): void => {
+        next: (res: ContactRo): void => {
           console.log('Contact added successfully:', res);
           this.users = this.users.filter(
             (user: UserResponse) => user.userName !== userName
