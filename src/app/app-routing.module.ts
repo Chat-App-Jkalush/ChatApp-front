@@ -6,6 +6,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { HomeComponent } from './components/home/home.component';
 import { ShowChatComponent } from './components/home/show-chat/show-chat.component';
 import { AuthGuard } from './guards/auth-guard.guard';
+import { ValidGroupGuard } from './guards/valid-group.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -15,7 +16,13 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent,
     canActivate: [AuthGuard],
-    children: [{ path: 'chat/:chatId', component: ShowChatComponent }],
+    children: [
+      {
+        path: 'chat/:chatId',
+        component: ShowChatComponent,
+        canActivate: [ValidGroupGuard],
+      },
+    ],
   },
   { path: '**', component: NotFoundComponent },
 ];
