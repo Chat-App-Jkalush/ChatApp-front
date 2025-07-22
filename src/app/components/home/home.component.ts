@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { RefreshDataService } from '../../services/refresh/refreshData.service';
-import { ChatSocketService } from '../../services/chat/chatSocket.service';
+import { RefreshDataService } from '../../services/refresh/refresh-data.service';
+import { ChatSocketService } from '../../services/chat/chat-socket.service';
 import { Router } from '@angular/router';
-import { ChatsComponent } from './child components/chats/chats.component';
-import { MessagesComponent } from './child components/show-chat/child components/messages/messages.component';
+import { MessagesComponent } from './show-chat/child components/messages/messages.component';
+import { ChatsComponent } from './navbar components/chats/chats.component';
 
 @Component({
   selector: 'app-home',

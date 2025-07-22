@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ContactApiService } from '../../api/contact/contactApi.service';
+import { ContactApiService } from '../../api/contact/contact-api.service';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 

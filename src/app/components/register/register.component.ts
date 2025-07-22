@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserCookieApiService } from '../../api/user/userCookieApi.service';
-import { RefreshDataService } from '../../services/refresh/refreshData.service';
-import { UsersApiService } from '../../api/user/usersApi.service';
+import { UserCookieApiService } from '../../api/user/user-cookie-api.service';
+import { RefreshDataService } from '../../services/refresh/refresh-data.service';
+import { UsersApiService } from '../../api/user/users-api.service';
 import { UserResponse } from '../../../../../common/Ro';
 
 @Component({
