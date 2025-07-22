@@ -13,13 +13,13 @@
       type="search"
       placeholder="Search chats..."
       [(ngModel)]="searchTerm"
-      (ngModelChange)="applySearch()"
+      (ngModelChange)="onSearchTermChange($event)"
     />
     <button
       matSuffix
       mat-icon-button
       aria-label="Search"
-      (click)="applySearch()"
+      (click)="onSearchTermChange(searchTerm)"
     >
       <mat-icon>search</mat-icon>
     </button>
@@ -27,7 +27,7 @@
 </div>
 <div class="chats-container">
   <app-chat
-    *ngFor="let chat of searchResults; let i = index"
+    *ngFor="let chat of chats; let i = index"
     [chat]="chat"
     class="chat-item"
     (click)="onChatSelect(i)"

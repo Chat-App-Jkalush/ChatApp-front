@@ -10,6 +10,7 @@ import { RefreshDataService } from '../../../../services/refresh/refresh-data.se
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ChatApiService } from 'app/services/chat/api/chat-api.service';
+import { PaginatedChatsRo } from 'common/ro/chat/paginated-chats.ro';
 
 @Component({
   selector: 'app-chats',
@@ -30,7 +31,6 @@ export class ChatsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   public searchTerm: string = '';
-  public searchResults: ChatListItem[] = [];
 
   constructor(
     private refreshDataService: RefreshDataService,
@@ -54,7 +54,6 @@ export class ChatsComponent implements OnInit, OnDestroy {
       .subscribe((chats: ChatListItem[]) => {
         this.chats = chats;
         this.totalChats = chats.length;
-        this.applySearch();
       });
   }
 
@@ -72,16 +71,20 @@ export class ChatsComponent implements OnInit, OnDestroy {
   public loadChats(): void {
     if (!this.userName) return;
     this.chatApi
-      .getPaginatedChats(this.userName, this.pageIndex + 1, this.pageSize)
-      .subscribe((res: { chats: ChatListItem[]; total: number }) => {
-        this.refreshDataService.setChats(res.chats);
+      .getPaginatedChats(
+        this.userName,
+        this.pageIndex + 1,
+        this.pageSize,
+        this.searchTerm
+      )
+      .subscribe((res: PaginatedChatsRo) => {
+        this.chats = res.chats;
         this.totalChats = res.total;
-        this.applySearch();
       });
   }
 
   public onChatSelect(chatIndex: number): void {
-    this.selectedChat.emit(this.searchResults[chatIndex]);
+    this.selectedChat.emit(this.chats[chatIndex]);
   }
 
   public removeChat(chatId: string): void {
@@ -91,17 +94,11 @@ export class ChatsComponent implements OnInit, OnDestroy {
     if (this.chats.length === 0) {
       this.selectedChat.emit();
     }
-    this.applySearch();
   }
 
-  public applySearch(): void {
-    const term = this.searchTerm.trim().toLowerCase();
-    if (!term) {
-      this.searchResults = this.chats;
-    } else {
-      this.searchResults = this.chats.filter((chat) =>
-        chat.chatName?.toLowerCase().includes(term)
-      );
-    }
+  public onSearchTermChange(term: string): void {
+    this.searchTerm = term;
+    this.pageIndex = 0;
+    this.loadChats();
   }
 }
