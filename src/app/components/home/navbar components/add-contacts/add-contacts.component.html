@@ -5,6 +5,25 @@
   (page)="onPageChange($event)"
 >
 </mat-paginator>
+<div class="search-bar-container">
+  <mat-form-field appearance="outline" class="full-width-search">
+    <input
+      matInput
+      type="search"
+      placeholder="Search users..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearchTermChange($event)"
+    />
+    <button
+      matSuffix
+      mat-icon-button
+      aria-label="Search"
+      (click)="onSearchTermChange(searchTerm)"
+    >
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
 <div class="users-container">
   <app-add-contact
     *ngFor="let user of users"

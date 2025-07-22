@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoginDto } from '../../../../../common/dto';
-import { UserResponse } from '../../../../../common/Ro';
+import { LoginDto } from 'common/dto/user/login.dto';
+import { UserResponse } from 'common/ro/user/user-response.ro';
 import { Router } from '@angular/router';
 import { RefreshDataService } from '../../services/refresh/refresh-data.service';
-import { UserCookieApiService } from '../../api/user/user-cookie-api.service';
-import { UsersApiService } from '../../api/user/users-api.service';
+import { UserCookieApiService } from 'app/services/user/api/user-cookie-api.service';
+import { UsersApiService } from 'app/services/user/api/users-api.service';
 
 @Component({
   selector: 'app-login',

@@ -5,11 +5,12 @@ import {
   Output,
   OnDestroy,
 } from '@angular/core';
-import { ChatApiService } from '../../../../api/chat/chat-api.service';
 import { ChatListItem } from '../../../../models/chat/chat.model';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { ChatApiService } from 'app/services/chat/api/chat-api.service';
+import { PaginatedChatsRo } from 'common/ro/chat/paginated-chats.ro';
 
 @Component({
   selector: 'app-chats',
@@ -28,6 +29,8 @@ export class ChatsComponent implements OnInit, OnDestroy {
   public pageIndex: number = 0;
 
   private destroy$ = new Subject<void>();
+
+  public searchTerm: string = '';
 
   constructor(
     private refreshDataService: RefreshDataService,
@@ -68,9 +71,14 @@ export class ChatsComponent implements OnInit, OnDestroy {
   public loadChats(): void {
     if (!this.userName) return;
     this.chatApi
-      .getPaginatedChats(this.userName, this.pageIndex + 1, this.pageSize)
-      .subscribe((res: { chats: ChatListItem[]; total: number }) => {
-        this.refreshDataService.setChats(res.chats);
+      .getPaginatedChats(
+        this.userName,
+        this.pageIndex + 1,
+        this.pageSize,
+        this.searchTerm
+      )
+      .subscribe((res: PaginatedChatsRo) => {
+        this.chats = res.chats;
         this.totalChats = res.total;
       });
   }
@@ -86,5 +94,11 @@ export class ChatsComponent implements OnInit, OnDestroy {
     if (this.chats.length === 0) {
       this.selectedChat.emit();
     }
+  }
+
+  public onSearchTermChange(term: string): void {
+    this.searchTerm = term;
+    this.pageIndex = 0;
+    this.loadChats();
   }
 }

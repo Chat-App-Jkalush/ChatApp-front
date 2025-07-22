@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ContactApiService } from '../../../../api/contact/contact-api.service';
+import { ContactApiService } from 'app/services/contact/api/contact-api.service';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
-import { UsersApiService } from '../../../../api/user/users-api.service';
-import { UserResponse, User } from 'common/Ro';
+import { UsersApiService } from 'app/services/user/api/users-api.service';
+import { UserResponse } from 'common/ro/user/user-response.ro';
+import { User } from 'common/ro/user/user.ro';
 
 @Component({
   selector: 'app-add-contacts',
@@ -15,6 +16,7 @@ export class AddContactsComponent implements OnInit {
   public totalUsers: number = 0;
   public pageSize: number = 10;
   public pageIndex: number = 0;
+  public searchTerm: string = '';
 
   constructor(
     private usersApiService: UsersApiService,
@@ -32,12 +34,19 @@ export class AddContactsComponent implements OnInit {
     this.loadUsers();
   }
 
+  public onSearchTermChange(term: string): void {
+    this.searchTerm = term;
+    this.pageIndex = 0;
+    this.loadUsers();
+  }
+
   public loadUsers(): void {
     this.usersApiService
       .getPaginatedUsers({
         userName: this.refreshDataService.userName,
         page: this.pageIndex + 1,
         limit: this.pageSize,
+        search: this.searchTerm,
       })
       .subscribe((res: { users: UserResponse[]; total: number }) => {
         this.users = res.users;

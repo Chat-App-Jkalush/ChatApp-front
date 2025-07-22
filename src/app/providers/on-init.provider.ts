@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, Provider } from '@angular/core';
-import { UserCookieApiService } from '../api/user/user-cookie-api.service';
+import { UserCookieApiService } from 'app/services/user/api/user-cookie-api.service';
 import { RefreshDataService } from '../services/refresh/refresh-data.service';
 
 export function onInit(

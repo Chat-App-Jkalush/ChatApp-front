@@ -1,13 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  LoginDto,
-  RegisterDto,
-  UserUpdateDto,
-} from '../../../../../common/dto';
-import { UserResponse } from '../../../../../common/Ro';
+import { LoginDto } from 'common/dto/user/login.dto';
+import { RegisterDto } from 'common/dto/user/register.dto';
+import { UserUpdateDto } from 'common/dto/user/update-user.dto';
+import { UserResponse } from 'common/ro/user/user-response.ro';
 import { Observable } from 'rxjs';
-import { FrontendConstants } from '../../../constants';
+import { FrontendConstants } from '../../../../constants/frontend.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -54,14 +52,16 @@ export class UsersApiService {
     userName: string;
     page: number;
     limit: number;
+    search?: string;
   }): Observable<{ users: UserResponse[]; total: number }> {
+    let url = `${FrontendConstants.ApiEndpoint.BASE}/users/paginated-users?userName=${dto.userName}&page=${dto.page}&pageSize=${dto.limit}`;
+    if (dto.search) {
+      url += `&search=${encodeURIComponent(dto.search)}`;
+    }
     return this.client.get<{
       users: UserResponse[];
       total: number;
-    }>(
-      `${FrontendConstants.ApiEndpoint.BASE}/users/paginated-users?userName=${dto.userName}&page=${dto.page}&pageSize=${dto.limit}`,
-      { withCredentials: true }
-    );
+    }>(url, { withCredentials: true });
   }
 
   public updateUser(profile: UserUpdateDto): Observable<UserResponse> {

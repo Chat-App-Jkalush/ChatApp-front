@@ -5,13 +5,13 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { ContactApiService } from '../../../../api/contact/contact-api.service';
+import { ContactApiService } from 'app/services/contact/api/contact-api.service';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
 import {
   ChatSocketService,
   OnlineStatus,
 } from '../../../../services/chat/chat-socket.service';
-import { ChatApiService } from '../../../../api/chat/chat-api.service';
+import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 
 @Component({
   selector: 'app-contacts',
@@ -26,6 +26,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   public pageSize: number = 10;
   public pageIndex: number = 0;
   public onlineStatuses: { [contact: string]: boolean } = {};
+  public searchTerm: string = '';
   private onlineStatusSubscription: (() => void) | null = null;
   @Output() contactRemoved = new EventEmitter<string>();
 
@@ -93,9 +94,20 @@ export class ContactsComponent implements OnInit, OnDestroy {
     this.loadContacts();
   }
 
+  public onSearchTermChange(term: string): void {
+    this.searchTerm = term;
+    this.pageIndex = 0;
+    this.loadContacts();
+  }
+
   public loadContacts(): void {
     this.contactApi
-      .getPaginatedContacts(this.userName, this.pageIndex + 1, this.pageSize)
+      .getPaginatedContacts(
+        this.userName,
+        this.pageIndex + 1,
+        this.pageSize,
+        this.searchTerm
+      )
       .subscribe((res: { contacts: string[]; total: number }) => {
         this.contacts = res.contacts;
         this.totalContacts = res.total;
