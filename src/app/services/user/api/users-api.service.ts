@@ -52,14 +52,16 @@ export class UsersApiService {
     userName: string;
     page: number;
     limit: number;
+    search?: string;
   }): Observable<{ users: UserResponse[]; total: number }> {
+    let url = `${FrontendConstants.ApiEndpoint.BASE}/users/paginated-users?userName=${dto.userName}&page=${dto.page}&pageSize=${dto.limit}`;
+    if (dto.search) {
+      url += `&search=${encodeURIComponent(dto.search)}`;
+    }
     return this.client.get<{
       users: UserResponse[];
       total: number;
-    }>(
-      `${FrontendConstants.ApiEndpoint.BASE}/users/paginated-users?userName=${dto.userName}&page=${dto.page}&pageSize=${dto.limit}`,
-      { withCredentials: true }
-    );
+    }>(url, { withCredentials: true });
   }
 
   public updateUser(profile: UserUpdateDto): Observable<UserResponse> {

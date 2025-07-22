@@ -16,6 +16,7 @@ export class AddContactsComponent implements OnInit {
   public totalUsers: number = 0;
   public pageSize: number = 10;
   public pageIndex: number = 0;
+  public searchTerm: string = '';
 
   constructor(
     private usersApiService: UsersApiService,
@@ -33,12 +34,19 @@ export class AddContactsComponent implements OnInit {
     this.loadUsers();
   }
 
+  public onSearchTermChange(term: string): void {
+    this.searchTerm = term;
+    this.pageIndex = 0;
+    this.loadUsers();
+  }
+
   public loadUsers(): void {
     this.usersApiService
       .getPaginatedUsers({
         userName: this.refreshDataService.userName,
         page: this.pageIndex + 1,
         limit: this.pageSize,
+        search: this.searchTerm,
       })
       .subscribe((res: { users: UserResponse[]; total: number }) => {
         this.users = res.users;
