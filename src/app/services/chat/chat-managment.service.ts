@@ -24,7 +24,7 @@ export class ChatManagementService {
     description: string
   ): Observable<{ success: boolean; message: string }> {
     return this.chatApi
-      .createChat(chatName, participants, type, description)
+      .createChat({ chatName, participants, type, description })
       .pipe(
         switchMap((res: { chatId: string; chatName: string }) => {
           if (!res || !res.chatId || !res.chatName) {
@@ -33,7 +33,11 @@ export class ChatManagementService {
 
           const updateRequests = participants.map((userName: string) => {
             return this.chatApi
-              .updateUserChats(userName, res.chatId, res.chatName)
+              .updateUserChats({
+                userName,
+                chatId: res.chatId,
+                chatName: res.chatName,
+              })
               .pipe(
                 timeout(this.REQUEST_TIMEOUT),
                 catchError((err) => {

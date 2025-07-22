@@ -49,14 +49,16 @@ export class ChatInfoComponent implements OnInit {
   addParticipant(): void {
     const participant = this.newParticipant.trim();
     if (participant && this.filteredContacts.includes(participant)) {
-      this.chatApi.addUserToChat(participant, this.chat.chatId).subscribe({
-        next: () => {
-          this.participents.push(participant);
-          this.filterContacts();
-          this.newParticipant = '';
-          this.participantsChanged.emit(this.chat.chatId);
-        },
-      });
+      this.chatApi
+        .addUserToChat({ userName: participant, chatId: this.chat.chatId })
+        .subscribe({
+          next: () => {
+            this.participents.push(participant);
+            this.filterContacts();
+            this.newParticipant = '';
+            this.participantsChanged.emit(this.chat.chatId);
+          },
+        });
     }
   }
 

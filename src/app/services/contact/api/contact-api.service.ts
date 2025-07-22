@@ -6,6 +6,7 @@ import { RemoveContactDto } from 'common/dto/contact/remove-contact.dto';
 import { ContactRo } from 'common/ro/contact/contact.ro';
 import { PaginatedContacts } from 'common/ro/user/paginated-contacts.ro';
 import { FrontendConstants } from '../../../../constants/frontend.constants';
+import { GetContactsDto } from 'common/dto/contact/get-contacts.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -22,14 +23,11 @@ export class ContactApiService {
   }
 
   public getPaginatedContacts(
-    userName: string,
-    page: number,
-    pageSize: number,
-    search?: string
+    dto: GetContactsDto
   ): Observable<PaginatedContacts> {
-    let url = `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CONTACTS.PAGINATED}?userName=${userName}&page=${page}&pageSize=${pageSize}`;
-    if (search) {
-      url += `&search=${encodeURIComponent(search)}`;
+    let url = `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CONTACTS.PAGINATED}?userName=${dto.userName}&page=${dto.page}&pageSize=${dto.pageSize}`;
+    if (dto.search) {
+      url += `&search=${encodeURIComponent(dto.search)}`;
     }
     return this.client.get<PaginatedContacts>(url, { withCredentials: true });
   }

@@ -102,12 +102,12 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   public loadContacts(): void {
     this.contactApi
-      .getPaginatedContacts(
-        this.userName,
-        this.pageIndex + 1,
-        this.pageSize,
-        this.searchTerm
-      )
+      .getPaginatedContacts({
+        userName: this.userName,
+        page: this.pageIndex + 1,
+        pageSize: this.pageSize,
+        search: this.searchTerm,
+      })
       .subscribe((res: { contacts: string[]; total: number }) => {
         this.contacts = res.contacts;
         this.totalContacts = res.total;

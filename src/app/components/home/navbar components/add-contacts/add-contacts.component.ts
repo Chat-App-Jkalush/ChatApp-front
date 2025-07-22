@@ -46,7 +46,7 @@ export class AddContactsComponent implements OnInit {
       .getPaginatedUsers({
         userName: this.refreshDataService.userName,
         page: this.pageIndex + 1,
-        limit: this.pageSize,
+        pageSize: this.pageSize,
         search: this.searchTerm,
       })
       .subscribe((res: { users: UserResponse[]; total: number }) => {

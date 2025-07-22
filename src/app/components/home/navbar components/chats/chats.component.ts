@@ -79,12 +79,12 @@ export class ChatsComponent implements OnInit, OnDestroy {
   public loadChats(): void {
     if (!this.userName) return;
     this.chatApi
-      .getPaginatedChats(
-        this.userName,
-        this.pageIndex + 1,
-        this.pageSize,
-        this.searchTerm
-      )
+      .getPaginatedChats({
+        userName: this.userName,
+        page: this.pageIndex + 1,
+        pageSize: this.pageSize,
+        search: this.searchTerm,
+      })
       .subscribe((res: PaginatedChatsRo) => {
         this.chats = res.chats;
         this.totalChats = res.total;
