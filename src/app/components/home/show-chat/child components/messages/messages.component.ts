@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { Message } from 'common/dto/message/message.dto';
 import { CommonConstants } from 'common/constatns/common.constants';
-import { MessageApiService } from 'app/services/message/api/message-api.service';
+import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 import { ChatSocketService } from '../../../../../services/chat/chat-socket.service';
 
 @Component({
@@ -30,16 +30,16 @@ export class MessagesComponent
   private socketListener: ((message: Message) => void) | null = null;
 
   constructor(
-    private messageApi: MessageApiService,
-    private chatSocketService: ChatSocketService
+    private chatSocketService: ChatSocketService,
+    private chatApi: ChatApiService
   ) {}
 
-  public ngOnInit(): void {
+  public async ngOnInit(): Promise<void> {
     if (this.chatId) {
-      this.loadMessages();
+      await this.loadMessages();
     }
     this.socketListener = (message: Message): void => {
-      if (this.chatId === message.chatId) {
+      if (!('chatId' in message) || this.chatId === (message as any).chatId) {
         message.createdAt = this.parseDate(message.createdAt);
         this.messages.push(message);
         this.scrollToBottom();
@@ -51,12 +51,29 @@ export class MessagesComponent
     );
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
+  public async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (changes['chatId']) {
       if (this.chatId) {
-        this.loadMessages();
+        await this.loadMessages();
       }
     }
+  }
+
+  public loadMessages(): void {
+    if (!this.chatId) return;
+    this.chatApi.getChatMessages(this.chatId).subscribe({
+      next: (messages) => {
+        this.messages = messages.map((msg) => ({
+          ...msg,
+          createdAt: this.parseDate(msg.createdAt),
+        }));
+        setTimeout(() => this.scrollToBottom(), 0);
+      },
+      error: (err) => {
+        console.error('Failed to load messages:', err);
+        this.messages = [];
+      },
+    });
   }
 
   public ngAfterViewInit(): void {
@@ -91,19 +108,6 @@ export class MessagesComponent
     }
 
     return new Date();
-  }
-
-  public async loadMessages(): Promise<void> {
-    try {
-      this.messages = await this.messageApi.getAllByChatId(this.chatId!);
-      this.messages.forEach((msg: Message) => {
-        msg.createdAt = this.parseDate(msg.createdAt);
-      });
-      setTimeout(() => this.scrollToBottom(), 0);
-    } catch (error) {
-      this.messages = [];
-      setTimeout(() => this.scrollToBottom(), 0);
-    }
   }
 
   public renderMessage(message: Message): void {

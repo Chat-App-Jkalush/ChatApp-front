@@ -9,6 +9,7 @@ import { chatType } from 'common/enums/chat.enum';
 import { ChatListItem } from 'app/models/chat/chat.model';
 import { FrontendConstants } from '../../../../constants';
 import { PaginatedChatsRo } from 'common/ro/chat/paginated-chats.ro';
+import { Message } from 'common/dto/message/message.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -101,6 +102,13 @@ export class ChatApiService {
     return this.client.post<{ message: string }>(
       `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.DELETE_DM}`,
       dto,
+      { withCredentials: true }
+    );
+  }
+
+  public getChatMessages(chatId: string): Observable<Message[]> {
+    return this.client.get<Message[]>(
+      `${FrontendConstants.ApiEndpoint.BASE}/chats/${chatId}/messages`,
       { withCredentials: true }
     );
   }

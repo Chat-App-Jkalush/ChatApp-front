@@ -11,6 +11,7 @@ import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 import { PaginatedChatsRo } from 'common/ro/chat/paginated-chats.ro';
+import { ChatSocketService } from 'app/services/chat/chat-socket.service';
 
 @Component({
   selector: 'app-chats',
@@ -34,7 +35,8 @@ export class ChatsComponent implements OnInit, OnDestroy {
 
   constructor(
     private refreshDataService: RefreshDataService,
-    private chatApi: ChatApiService
+    private chatApi: ChatApiService,
+    private chatSocketService: ChatSocketService
   ) {}
 
   public ngOnInit(): void {
@@ -55,11 +57,17 @@ export class ChatsComponent implements OnInit, OnDestroy {
         this.chats = chats;
         this.totalChats = chats.length;
       });
+
+    // Listen for JOIN_NEW_CHAT event and reload chats
+    this.chatSocketService.onEvent('joinNewChat', () => {
+      this.loadChats();
+    });
   }
 
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.chatSocketService.removeAllListeners('joinNewChat');
   }
 
   public onPageChange(event: { pageIndex: number; pageSize: number }): void {
