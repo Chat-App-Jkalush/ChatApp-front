@@ -54,6 +54,7 @@ export class ChatsComponent implements OnInit, OnDestroy {
       .subscribe((chats: ChatListItem[]) => {
         this.chats = chats;
         this.totalChats = chats.length;
+        this.applySearch();
       });
   }
 
@@ -75,11 +76,12 @@ export class ChatsComponent implements OnInit, OnDestroy {
       .subscribe((res: { chats: ChatListItem[]; total: number }) => {
         this.refreshDataService.setChats(res.chats);
         this.totalChats = res.total;
+        this.applySearch();
       });
   }
 
   public onChatSelect(chatIndex: number): void {
-    this.selectedChat.emit(this.chats[chatIndex]);
+    this.selectedChat.emit(this.searchResults[chatIndex]);
   }
 
   public removeChat(chatId: string): void {
@@ -88,6 +90,18 @@ export class ChatsComponent implements OnInit, OnDestroy {
     this.totalChats = this.chats.length;
     if (this.chats.length === 0) {
       this.selectedChat.emit();
+    }
+    this.applySearch();
+  }
+
+  public applySearch(): void {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      this.searchResults = this.chats;
+    } else {
+      this.searchResults = this.chats.filter((chat) =>
+        chat.chatName?.toLowerCase().includes(term)
+      );
     }
   }
 }
