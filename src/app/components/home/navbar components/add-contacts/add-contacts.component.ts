@@ -37,6 +37,9 @@ export class AddContactsComponent implements OnInit {
 
   public onSearchTermChange(term: string): void {
     this.searchTerm = term;
+  }
+
+  public onSearchEnter(): void {
     this.pageIndex = 0;
     this.loadUsers();
   }

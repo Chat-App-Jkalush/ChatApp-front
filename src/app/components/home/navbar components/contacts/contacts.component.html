@@ -11,6 +11,7 @@
       matInput
       type="search"
       placeholder="Search contacts..."
+      (keyup.enter)="onSearchEnter()"
       [(ngModel)]="searchTerm"
       (ngModelChange)="onSearchTermChange($event)"
     />
@@ -18,7 +19,7 @@
       matSuffix
       mat-icon-button
       aria-label="Search"
-      (click)="onSearchTermChange(searchTerm)"
+      (click)="onSearchEnter()"
     >
       <mat-icon>search</mat-icon>
     </button>

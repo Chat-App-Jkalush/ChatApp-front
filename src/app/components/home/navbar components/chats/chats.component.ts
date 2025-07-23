@@ -58,7 +58,6 @@ export class ChatsComponent implements OnInit, OnDestroy {
         this.totalChats = chats.length;
       });
 
-    // Listen for JOIN_NEW_CHAT event and reload chats
     this.chatSocketService.onEvent('joinNewChat', () => {
       this.loadChats();
     });
@@ -106,6 +105,8 @@ export class ChatsComponent implements OnInit, OnDestroy {
 
   public onSearchTermChange(term: string): void {
     this.searchTerm = term;
+  }
+  public onSearchEnter(): void {
     this.pageIndex = 0;
     this.loadChats();
   }

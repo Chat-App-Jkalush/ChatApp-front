@@ -96,6 +96,9 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   public onSearchTermChange(term: string): void {
     this.searchTerm = term;
+  }
+
+  public onSearchEnter(): void {
     this.pageIndex = 0;
     this.loadContacts();
   }

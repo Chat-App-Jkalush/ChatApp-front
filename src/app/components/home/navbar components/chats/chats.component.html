@@ -13,13 +13,14 @@
       type="search"
       placeholder="Search chats..."
       [(ngModel)]="searchTerm"
+      (keyup.enter)="onSearchEnter()"
       (ngModelChange)="onSearchTermChange($event)"
     />
     <button
       matSuffix
       mat-icon-button
       aria-label="Search"
-      (click)="onSearchTermChange(searchTerm)"
+      (click)="onSearchEnter()"
     >
       <mat-icon>search</mat-icon>
     </button>
