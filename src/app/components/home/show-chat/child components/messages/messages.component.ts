@@ -10,7 +10,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { Message } from 'common/dto/message/message.dto';
-import { CommonConstants } from 'common/constatns/common.constants';
+import { CommonConstants } from 'common/constants/common.constants';
 import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 import { ChatSocketService } from '../../../../../services/chat/chat-socket.service';
 import { Subscription } from 'rxjs';
