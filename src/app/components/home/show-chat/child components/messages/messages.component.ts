@@ -69,7 +69,6 @@ export class MessagesComponent
         setTimeout(() => this.scrollToBottom(), 0);
       },
       error: (err) => {
-        console.error('Failed to load messages:', err);
         this.messages = [];
       },
     });

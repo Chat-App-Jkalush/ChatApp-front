@@ -2,20 +2,8 @@ import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { CommonConstants } from 'common/constatns/common.constants';
 import { CreateMessageDto } from 'common/dto/message/create-message.dto';
-import {
-  BehaviorSubject,
-  filter,
-  from,
-  fromEvent,
-  map,
-  Observable,
-  of,
-} from 'rxjs';
-
-export interface OnlineStatus {
-  userName: string;
-  isOnline: boolean;
-}
+import { BehaviorSubject, filter, fromEvent, map, Observable } from 'rxjs';
+import { OnlineStatus } from 'app/models/socket/online-status.model';
 
 @Injectable({ providedIn: 'root' })
 export class ChatSocketService {
@@ -134,15 +122,6 @@ export class ChatSocketService {
     );
   }
 
-  public onNewMessage(callback: (message: CreateMessageDto) => void): void {
-    this.socket.on(
-      CommonConstants.GatewayConstants.EVENTS.NEW_MESSAGE,
-      (msg: CreateMessageDto) => {
-        callback(msg);
-      }
-    );
-  }
-
   public onEvent(event: string, callback: (...args: any[]) => void): void {
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, []);
@@ -169,13 +148,6 @@ export class ChatSocketService {
   public removeAllListeners(event: string): void {
     this.socket.removeAllListeners(event);
     this.eventListeners.delete(event);
-  }
-
-  public disconnect(): void {
-    this.socket.disconnect();
-    this.eventListeners.clear();
-    this.onlineUsers.clear();
-    this.onlineStatusSubject.next([]);
   }
 
   public leaveChat(chatId: string, userName: string): void {
@@ -238,39 +210,12 @@ export class ChatSocketService {
     };
   }
 
-  public getListenerCount(event: string): number {
-    return this.eventListeners.get(event)?.length || 0;
-  }
-
-  public getUserOnlineStatus(userName: string): boolean {
-    return this.onlineUsers.has(userName);
-  }
-
-  public getAllOnlineUsers(): string[] {
-    return Array.from(this.onlineUsers);
-  }
-
   private refreshOnlineStatus(): void {
     if (this.socket && this.socket.connected) {
       this.socket.emit(
         CommonConstants.GatewayConstants.EVENTS.GET_ONLINE_USERS,
         {
           contacts: [],
-        }
-      );
-    }
-  }
-
-  public isSocketConnected(): boolean {
-    return this.socket && this.socket.connected;
-  }
-
-  public forceRefreshOnlineStatus(contacts?: string[]): void {
-    if (this.isSocketConnected()) {
-      this.socket.emit(
-        CommonConstants.GatewayConstants.EVENTS.GET_ONLINE_USERS,
-        {
-          contacts: contacts || [],
         }
       );
     }

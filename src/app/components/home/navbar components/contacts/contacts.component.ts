@@ -7,11 +7,9 @@ import {
 } from '@angular/core';
 import { ContactApiService } from 'app/services/contact/api/contact-api.service';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
-import {
-  ChatSocketService,
-  OnlineStatus,
-} from '../../../../services/chat/chat-socket.service';
+import { ChatSocketService } from '../../../../services/chat/chat-socket.service';
 import { ChatApiService } from 'app/services/chat/api/chat-api.service';
+import { OnlineStatus } from 'app/models/socket/online-status.model';
 
 @Component({
   selector: 'app-contacts',

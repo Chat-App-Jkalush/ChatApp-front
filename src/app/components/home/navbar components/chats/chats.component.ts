@@ -5,7 +5,7 @@ import {
   Output,
   OnDestroy,
 } from '@angular/core';
-import { ChatListItem } from '../../../../models/chat/chat.model';
+import { ChatListItem } from '../../../../models/chat/chat-list-item.model';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';

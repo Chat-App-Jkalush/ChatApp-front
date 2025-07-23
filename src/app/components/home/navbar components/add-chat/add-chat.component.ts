@@ -13,7 +13,7 @@ import { ChatManagementService } from '../../../../services/chat/chat-managment.
 import { chatType } from '../../../../../../../common/enums/chat.enum';
 import { RefreshDataService } from '../../../../services/refresh/refresh-data.service';
 import { AddChatParticipantHelper } from '../../../../services/helpers/participent.helper';
-import { ChatListItem } from '../../../../models/chat/chat.model';
+import { ChatListItem } from '../../../../models/chat/chat-list-item.model';
 import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 
 @Component({

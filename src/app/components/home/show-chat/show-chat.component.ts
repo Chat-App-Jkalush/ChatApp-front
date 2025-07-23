@@ -13,7 +13,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChatSocketService } from '../../../services/chat/chat-socket.service';
 import { MessagesComponent } from './child components/messages/messages.component';
 import { Subscription } from 'rxjs';
-import { ChatListItem } from '../../../models/chat/chat.model';
+import { ChatListItem } from '../../../models/chat/chat-list-item.model';
 import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 
 @Component({

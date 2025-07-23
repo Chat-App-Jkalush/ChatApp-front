@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ChatListItem } from '../../models/chat/chat.model';
+import { ChatListItem } from '../../models/chat/chat-list-item.model';
 
 @Injectable({ providedIn: 'root' })
 export class RefreshDataService {
