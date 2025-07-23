@@ -2,7 +2,15 @@ import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { CommonConstants } from 'common/constatns/common.constants';
 import { CreateMessageDto } from 'common/dto/message/create-message.dto';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  filter,
+  from,
+  fromEvent,
+  map,
+  Observable,
+  of,
+} from 'rxjs';
 
 export interface OnlineStatus {
   userName: string;
@@ -103,34 +111,9 @@ export class ChatSocketService {
     return this.socket;
   }
 
-  public joinChats(userName: string): Promise<void> {
-    return new Promise((resolve) => {
-      if (this.joinedChats) {
-        resolve();
-        return;
-      }
-
-      const doJoin = (): void => {
-        this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_CHAT, {
-          userName,
-        });
-        this.joinedChats = true;
-
-        setTimeout(() => {
-          this.refreshOnlineStatus();
-        }, 500);
-
-        resolve();
-      };
-
-      if (this.socket && this.socket.connected) {
-        doJoin();
-      } else {
-        this.socket.once(
-          CommonConstants.GatewayConstants.EVENTS.CONNECT,
-          doJoin
-        );
-      }
+  public joinChats(userName: string): void {
+    this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_CHAT, {
+      userName,
     });
   }
 
@@ -193,58 +176,39 @@ export class ChatSocketService {
     });
   }
 
-  public isOnline(userName: string): Promise<boolean> {
-    return new Promise((resolve) => {
-      const timeout = setTimeout(() => {
-        const isOnlineLocal = this.onlineUsers.has(userName);
-        resolve(isOnlineLocal);
-      }, 5000);
-
-      this.socket.emit(CommonConstants.GatewayConstants.EVENTS.IS_ONLINE, {
-        userName,
-      });
-      this.socket.once(
-        CommonConstants.GatewayConstants.EVENTS.IS_ONLINE_RESULT,
-        (data: { userName: string; isOnline: boolean }) => {
-          clearTimeout(timeout);
-
-          if (data.isOnline) {
-            this.onlineUsers.add(userName);
-          } else {
-            this.onlineUsers.delete(userName);
-          }
-
-          resolve(data.isOnline);
-        }
-      );
+  public isOnline(userName: string): Observable<void> {
+    this.socket.emit(CommonConstants.GatewayConstants.EVENTS.IS_ONLINE, {
+      userName,
     });
+    return fromEvent(
+      this.socket,
+      CommonConstants.GatewayConstants.EVENTS.IS_ONLINE_RESULT
+    ).pipe(
+      filter((data: { isOnline: boolean }) => data.isOnline !== undefined),
+      map((data: { isOnline: boolean }) => {
+        if (data.isOnline) {
+          this.onlineUsers.add(userName);
+        } else {
+          this.onlineUsers.delete(userName);
+        }
+      })
+    );
   }
 
-  public getOnlineContacts(contacts: string[]): Promise<string[]> {
-    return new Promise((resolve) => {
-      const timeout = setTimeout(() => {
-        const onlineFromCache = contacts.filter((contact) =>
-          this.onlineUsers.has(contact)
-        );
-        resolve(onlineFromCache);
-      }, 5000);
-
-      this.socket.emit(
-        CommonConstants.GatewayConstants.EVENTS.GET_ONLINE_USERS,
-        { contacts }
-      );
-      this.socket.once(
-        CommonConstants.GatewayConstants.EVENTS.ONLINE_USERS_LIST,
-        (data: { onlineContacts: string[] }) => {
-          clearTimeout(timeout);
-
-          this.onlineUsers.clear();
-          data.onlineContacts.forEach((user) => this.onlineUsers.add(user));
-
-          resolve(data.onlineContacts);
-        }
-      );
+  public getOnlineContacts(contacts: string[]): Observable<string[]> {
+    this.socket.emit(CommonConstants.GatewayConstants.EVENTS.GET_ONLINE_USERS, {
+      contacts,
     });
+    return fromEvent(
+      this.socket,
+      CommonConstants.GatewayConstants.EVENTS.ONLINE_USERS_LIST
+    ).pipe(
+      map((data: { onlineContacts: string[] }) => {
+        this.onlineUsers.clear();
+        data.onlineContacts.forEach((user) => this.onlineUsers.add(user));
+        return data.onlineContacts;
+      })
+    );
   }
 
   public onContactOnlineStatus(
