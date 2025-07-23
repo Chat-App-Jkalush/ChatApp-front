@@ -2,11 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CreateChatDto } from 'common/dto/chat/create-chat.dto';
-import { DmExitsDto } from 'common/dto/chat/dm-exists.dto';
 import { DeleteDmDto } from 'common/dto/chat/delete-dm.dto';
 import { ChatRo } from 'common/ro/chat/chat.ro';
-import { chatType } from 'common/enums/chat.enum';
-import { ChatListItem } from 'app/models/chat/chat.model';
 import { FrontendConstants } from '../../../../constants';
 import { PaginatedChatsRo } from 'common/ro/chat/paginated-chats.ro';
 import { Message } from 'common/dto/message/message.dto';
@@ -14,6 +11,7 @@ import { GetPaginatedChatsDto } from 'common/dto/chat/get-paginated-chats.dto';
 import { UpdateUserChats } from 'common/dto/chat/update-user-chats.dto';
 import { AddUserToChatDto } from 'common/dto/chat/add-user-to-chat.dto';
 import { LeaveChatDto } from 'common/dto/chat/leave-chat.dto';
+import { DmExistsDto } from '../../../../../../common/dto/chat/dm-exists.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -79,7 +77,7 @@ export class ChatApiService {
     );
   }
 
-  public DmExists(dto: DmExitsDto): Observable<boolean> {
+  public DmExists(dto: DmExistsDto): Observable<boolean> {
     return this.client.post<boolean>(
       `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.CHATS.DM_EXISTS}`,
       dto,
