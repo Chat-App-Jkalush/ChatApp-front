@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
     this.refreshDataService.userName$.subscribe((name: string) => {
       this.userName = name;
       if (this.userName) {
-        this.chatSocketService.joinChats(this.userName);
+        this.chatSocketService.connectToUser(this.userName);
       }
     });
   }

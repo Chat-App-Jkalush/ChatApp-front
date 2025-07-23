@@ -2,7 +2,15 @@ import { Injectable } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { CommonConstants } from 'common/constatns/common.constants';
 import { CreateMessageDto } from 'common/dto/message/create-message.dto';
-import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  filter,
+  from,
+  fromEvent,
+  map,
+  Observable,
+  of,
+} from 'rxjs';
 
 export interface OnlineStatus {
   userName: string;
@@ -12,7 +20,6 @@ export interface OnlineStatus {
 @Injectable({ providedIn: 'root' })
 export class ChatSocketService {
   private socket: Socket;
-  private joinedChats: boolean = false;
   private eventListeners: Map<string, Function[]> = new Map<
     string,
     Function[]
@@ -25,6 +32,7 @@ export class ChatSocketService {
   public contactStatusChange$ = this.contactStatusSubject.asObservable();
 
   private onlineUsers = new Set<string>();
+  private currentChatId: string | null = null;
 
   constructor() {
     this.socket = io(CommonConstants.GatewayConstants.DEFAULT_PORT_ORIGIN, {
@@ -35,7 +43,6 @@ export class ChatSocketService {
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.CONNECT,
       (): void => {
-        this.joinedChats = false;
         this.refreshOnlineStatus();
       }
     );
@@ -43,23 +50,8 @@ export class ChatSocketService {
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.DISCONNECT,
       (reason: string): void => {
-        this.joinedChats = false;
         this.onlineUsers.clear();
         this.onlineStatusSubject.next([]);
-      }
-    );
-
-    this.socket.onAny((event: string, ...args: any[]): void => {});
-
-    this.socket.on(
-      CommonConstants.GatewayConstants.EVENTS.JOIN_NEW_CHAT,
-      (data: { chatId: string } | any) => {
-        if (Array.isArray(data)) {
-          return;
-        }
-        this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_ROOM, {
-          chatId: data.chatId,
-        });
       }
     );
 
@@ -99,39 +91,40 @@ export class ChatSocketService {
     );
   }
 
+  public onEvent$(event: string): Observable<any> {
+    return fromEvent(this.socket, event);
+  }
+
   public getSocket(): Socket {
     return this.socket;
   }
 
-  public joinChats(userName: string): Promise<void> {
-    return new Promise((resolve) => {
-      if (this.joinedChats) {
-        resolve();
-        return;
-      }
-
-      const doJoin = (): void => {
-        this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_CHAT, {
-          userName,
-        });
-        this.joinedChats = true;
-
-        setTimeout(() => {
-          this.refreshOnlineStatus();
-        }, 500);
-
-        resolve();
-      };
-
-      if (this.socket && this.socket.connected) {
-        doJoin();
-      } else {
-        this.socket.once(
-          CommonConstants.GatewayConstants.EVENTS.CONNECT,
-          doJoin
-        );
-      }
+  public connectToUser(userName: string): void {
+    this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_CHAT, {
+      userName,
     });
+  }
+
+  public joinSpecificChat(chatId: string): void {
+    if (this.currentChatId && this.currentChatId !== chatId) {
+      this.socket.emit(CommonConstants.GatewayConstants.EVENTS.LEAVE_CHAT, {
+        chatId: this.currentChatId,
+      });
+    }
+
+    this.currentChatId = chatId;
+    this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_ROOM, {
+      chatId,
+    });
+  }
+
+  public leaveCurrentChat(): void {
+    if (this.currentChatId) {
+      this.socket.emit(CommonConstants.GatewayConstants.EVENTS.LEAVE_CHAT, {
+        chatId: this.currentChatId,
+      });
+      this.currentChatId = null;
+    }
   }
 
   public sendMessage(message: CreateMessageDto): void {
@@ -180,7 +173,6 @@ export class ChatSocketService {
 
   public disconnect(): void {
     this.socket.disconnect();
-    this.joinedChats = false;
     this.eventListeners.clear();
     this.onlineUsers.clear();
     this.onlineStatusSubject.next([]);
@@ -193,58 +185,39 @@ export class ChatSocketService {
     });
   }
 
-  public isOnline(userName: string): Promise<boolean> {
-    return new Promise((resolve) => {
-      const timeout = setTimeout(() => {
-        const isOnlineLocal = this.onlineUsers.has(userName);
-        resolve(isOnlineLocal);
-      }, 5000);
-
-      this.socket.emit(CommonConstants.GatewayConstants.EVENTS.IS_ONLINE, {
-        userName,
-      });
-      this.socket.once(
-        CommonConstants.GatewayConstants.EVENTS.IS_ONLINE_RESULT,
-        (data: { userName: string; isOnline: boolean }) => {
-          clearTimeout(timeout);
-
-          if (data.isOnline) {
-            this.onlineUsers.add(userName);
-          } else {
-            this.onlineUsers.delete(userName);
-          }
-
-          resolve(data.isOnline);
-        }
-      );
+  public isOnline(userName: string): Observable<void> {
+    this.socket.emit(CommonConstants.GatewayConstants.EVENTS.IS_ONLINE, {
+      userName,
     });
+    return fromEvent(
+      this.socket,
+      CommonConstants.GatewayConstants.EVENTS.IS_ONLINE_RESULT
+    ).pipe(
+      filter((data: { isOnline: boolean }) => data.isOnline !== undefined),
+      map((data: { isOnline: boolean }) => {
+        if (data.isOnline) {
+          this.onlineUsers.add(userName);
+        } else {
+          this.onlineUsers.delete(userName);
+        }
+      })
+    );
   }
 
-  public getOnlineContacts(contacts: string[]): Promise<string[]> {
-    return new Promise((resolve) => {
-      const timeout = setTimeout(() => {
-        const onlineFromCache = contacts.filter((contact) =>
-          this.onlineUsers.has(contact)
-        );
-        resolve(onlineFromCache);
-      }, 5000);
-
-      this.socket.emit(
-        CommonConstants.GatewayConstants.EVENTS.GET_ONLINE_USERS,
-        { contacts }
-      );
-      this.socket.once(
-        CommonConstants.GatewayConstants.EVENTS.ONLINE_USERS_LIST,
-        (data: { onlineContacts: string[] }) => {
-          clearTimeout(timeout);
-
-          this.onlineUsers.clear();
-          data.onlineContacts.forEach((user) => this.onlineUsers.add(user));
-
-          resolve(data.onlineContacts);
-        }
-      );
+  public getOnlineContacts(contacts: string[]): Observable<string[]> {
+    this.socket.emit(CommonConstants.GatewayConstants.EVENTS.GET_ONLINE_USERS, {
+      contacts,
     });
+    return fromEvent(
+      this.socket,
+      CommonConstants.GatewayConstants.EVENTS.ONLINE_USERS_LIST
+    ).pipe(
+      map((data: { onlineContacts: string[] }) => {
+        this.onlineUsers.clear();
+        data.onlineContacts.forEach((user) => this.onlineUsers.add(user));
+        return data.onlineContacts;
+      })
+    );
   }
 
   public onContactOnlineStatus(

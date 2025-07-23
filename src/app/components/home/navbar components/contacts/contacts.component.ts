@@ -39,7 +39,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.userName = this.refreshDataService.userName;
-    this.initializeComponent();
+    this.loadContacts();
     this.subscribeToOnlineStatus();
   }
 
@@ -67,25 +67,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
       this.onlineStatusSubscription();
       this.onlineStatusSubscription = null;
     }
-  }
-
-  private async initializeComponent(): Promise<void> {
-    await this.ensureUserJoinedChats();
-    this.loadContacts();
-  }
-
-  private ensureUserJoinedChats(): Promise<void> {
-    return new Promise((resolve) => {
-      if (this.chatSocket.getSocket().connected) {
-        this.chatSocket.joinChats(this.userName);
-        setTimeout(() => resolve(), 100);
-      } else {
-        this.chatSocket.getSocket().once('connect', () => {
-          this.chatSocket.joinChats(this.userName);
-          setTimeout(() => resolve(), 100);
-        });
-      }
-    });
   }
 
   public onPageChange(event: { pageIndex: number; pageSize: number }): void {
@@ -123,7 +104,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
     const contactNames: string[] = this.contacts;
     this.chatSocket
       .getOnlineContacts(contactNames)
-      .then((onlineContacts: string[]) => {
+      .subscribe((onlineContacts: string[]) => {
         const statusMap: { [contact: string]: boolean } = {};
         contactNames.forEach((contact: string) => {
           statusMap[contact] = onlineContacts.includes(contact);

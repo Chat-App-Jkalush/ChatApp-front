@@ -63,9 +63,10 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     const routeSub: Subscription = this.route.paramMap.subscribe(
       (params: ParamMap) => {
         const chatId: string | null = params.get('chatId');
-        if (chatId) {
+        if (chatId && chatId !== this.latestChatId) {
           this.latestChatId = chatId;
           this.loadChat(chatId);
+          this.chatSocketService.joinSpecificChat(chatId);
         }
       }
     );
@@ -74,6 +75,7 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.forEach((sub: Subscription) => sub.unsubscribe());
+    this.chatSocketService.leaveCurrentChat();
   }
 
   private loadChat(chatId: string): void {
@@ -97,7 +99,6 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   public scrollToBottom(): void {
-    //this.cdr.detectChanges();
     if (this.messagesContainer?.nativeElement) {
       try {
         this.messagesContainer.nativeElement.scrollTop =
