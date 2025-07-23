@@ -35,7 +35,6 @@ export class ChatSocketService {
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.CONNECT,
       (): void => {
-        console.log('Socket connected');
         this.joinedChats = false;
         this.refreshOnlineStatus();
       }
@@ -44,32 +43,29 @@ export class ChatSocketService {
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.DISCONNECT,
       (reason: string): void => {
-        console.log('Socket disconnected:', reason);
         this.joinedChats = false;
         this.onlineUsers.clear();
         this.onlineStatusSubject.next([]);
       }
     );
 
-    this.socket.onAny((event: string, ...args: any[]): void => {
-      console.log('Socket event:', event, args);
-    });
+    this.socket.onAny((event: string, ...args: any[]): void => {});
 
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.JOIN_NEW_CHAT,
-      (data: { chatId: string }) => {
+      (data: { chatId: string } | any) => {
+        if (Array.isArray(data)) {
+          return;
+        }
         this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_ROOM, {
           chatId: data.chatId,
         });
-        console.log(`Joined new chat room: ${data.chatId}`);
       }
     );
 
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.CONTACT_ONLINE_STATUS,
       (status: OnlineStatus) => {
-        console.log('Contact status changed:', status);
-
         if (status.isOnline) {
           this.onlineUsers.add(status.userName);
         } else {
@@ -91,8 +87,6 @@ export class ChatSocketService {
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.ONLINE_USERS_LIST,
       (data: { onlineContacts: string[] }) => {
-        console.log('Online contacts received:', data.onlineContacts);
-
         this.onlineUsers.clear();
         data.onlineContacts.forEach((user) => this.onlineUsers.add(user));
 
@@ -121,7 +115,6 @@ export class ChatSocketService {
           userName,
         });
         this.joinedChats = true;
-        console.log(`User ${userName} joined chats`);
 
         setTimeout(() => {
           this.refreshOnlineStatus();
@@ -166,12 +159,6 @@ export class ChatSocketService {
     this.socket.on(event, (...args: any[]): void => {
       callback(...args);
     });
-
-    console.log(
-      `Registered listener for event: ${event}. Total listeners: ${
-        this.eventListeners.get(event)!.length
-      }`
-    );
   }
 
   public removeListener(event: string, callback: Function): void {
@@ -183,16 +170,12 @@ export class ChatSocketService {
       if (index > -1) {
         listeners.splice(index, 1);
       }
-      console.log(
-        `Removed listener for event: ${event}. Remaining listeners: ${listeners.length}`
-      );
     }
   }
 
   public removeAllListeners(event: string): void {
     this.socket.removeAllListeners(event);
     this.eventListeners.delete(event);
-    console.log(`Removed all listeners for event: ${event}`);
   }
 
   public disconnect(): void {
@@ -213,7 +196,6 @@ export class ChatSocketService {
   public isOnline(userName: string): Promise<boolean> {
     return new Promise((resolve) => {
       const timeout = setTimeout(() => {
-        console.log(`Timeout checking if ${userName} is online`);
         const isOnlineLocal = this.onlineUsers.has(userName);
         resolve(isOnlineLocal);
       }, 5000);
@@ -225,7 +207,6 @@ export class ChatSocketService {
         CommonConstants.GatewayConstants.EVENTS.IS_ONLINE_RESULT,
         (data: { userName: string; isOnline: boolean }) => {
           clearTimeout(timeout);
-          console.log(`${userName} is ${data.isOnline ? 'online' : 'offline'}`);
 
           if (data.isOnline) {
             this.onlineUsers.add(userName);
@@ -242,7 +223,6 @@ export class ChatSocketService {
   public getOnlineContacts(contacts: string[]): Promise<string[]> {
     return new Promise((resolve) => {
       const timeout = setTimeout(() => {
-        console.log('Timeout getting online contacts');
         const onlineFromCache = contacts.filter((contact) =>
           this.onlineUsers.has(contact)
         );
@@ -257,7 +237,6 @@ export class ChatSocketService {
         CommonConstants.GatewayConstants.EVENTS.ONLINE_USERS_LIST,
         (data: { onlineContacts: string[] }) => {
           clearTimeout(timeout);
-          console.log('Online contacts received:', data.onlineContacts);
 
           this.onlineUsers.clear();
           data.onlineContacts.forEach((user) => this.onlineUsers.add(user));

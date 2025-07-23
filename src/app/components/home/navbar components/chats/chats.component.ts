@@ -11,6 +11,7 @@ import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 import { PaginatedChatsRo } from 'common/ro/chat/paginated-chats.ro';
+import { ChatSocketService } from 'app/services/chat/chat-socket.service';
 
 @Component({
   selector: 'app-chats',
@@ -34,7 +35,8 @@ export class ChatsComponent implements OnInit, OnDestroy {
 
   constructor(
     private refreshDataService: RefreshDataService,
-    private chatApi: ChatApiService
+    private chatApi: ChatApiService,
+    private chatSocketService: ChatSocketService
   ) {}
 
   public ngOnInit(): void {
@@ -55,11 +57,16 @@ export class ChatsComponent implements OnInit, OnDestroy {
         this.chats = chats;
         this.totalChats = chats.length;
       });
+
+    this.chatSocketService.onEvent('joinNewChat', () => {
+      this.loadChats();
+    });
   }
 
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.chatSocketService.removeAllListeners('joinNewChat');
   }
 
   public onPageChange(event: { pageIndex: number; pageSize: number }): void {
@@ -71,12 +78,12 @@ export class ChatsComponent implements OnInit, OnDestroy {
   public loadChats(): void {
     if (!this.userName) return;
     this.chatApi
-      .getPaginatedChats(
-        this.userName,
-        this.pageIndex + 1,
-        this.pageSize,
-        this.searchTerm
-      )
+      .getPaginatedChats({
+        userName: this.userName,
+        page: this.pageIndex + 1,
+        pageSize: this.pageSize,
+        search: this.searchTerm,
+      })
       .subscribe((res: PaginatedChatsRo) => {
         this.chats = res.chats;
         this.totalChats = res.total;
@@ -98,6 +105,8 @@ export class ChatsComponent implements OnInit, OnDestroy {
 
   public onSearchTermChange(term: string): void {
     this.searchTerm = term;
+  }
+  public onSearchEnter(): void {
     this.pageIndex = 0;
     this.loadChats();
   }

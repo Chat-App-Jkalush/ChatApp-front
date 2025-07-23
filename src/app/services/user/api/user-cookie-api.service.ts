@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserCookieRo } from 'common/ro/dataCookie/user-cookie.ro';
+import { SaveDataCookieDTO } from 'common/dto/dataCookie/save-data-cookie.dto';
+import { LatestChatIdDTO } from 'common/dto/dataCookie/latest-chat-id.dto';
 import { FrontendConstants } from '../../../../constants/frontend.constants';
 
 @Injectable({
@@ -10,13 +12,10 @@ import { FrontendConstants } from '../../../../constants/frontend.constants';
 export class UserCookieApiService {
   constructor(private client: HttpClient) {}
 
-  public saveUserCookie(
-    userDetails: { userName: string },
-    latestChatId?: string
-  ): Observable<UserCookieRo> {
+  public saveUserCookie(dto: SaveDataCookieDTO): Observable<UserCookieRo> {
     return this.client.post<UserCookieRo>(
       `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.DATA_COOKIE.SAVE}`,
-      { ...userDetails, latestChatId },
+      dto,
       { withCredentials: true }
     );
   }
@@ -29,12 +28,11 @@ export class UserCookieApiService {
   }
 
   public setLatestChatId(
-    userName: string,
-    latestChatId: string
+    dto: LatestChatIdDTO
   ): Observable<UserCookieRo | null> {
     return this.client.post<UserCookieRo | null>(
       `${FrontendConstants.ApiEndpoint.BASE}${FrontendConstants.ApiEndpoint.DATA_COOKIE.SET_LATEST_CHAT}`,
-      { userName, latestChatId },
+      dto,
       { withCredentials: true }
     );
   }

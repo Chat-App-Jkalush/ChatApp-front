@@ -134,13 +134,15 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   public leaveChat(): void {
     if (this.chat?.chatId) {
-      this.chatApi.leaveChat(this.userName, this.chat.chatId).subscribe({
-        next: (): void => {
-          this.chatSocketService.leaveChat(this.chat.chatId, this.userName);
-          this.closeInfo();
-          this.router.navigate(['/home']);
-        },
-      });
+      this.chatApi
+        .leaveChat({ userName: this.userName, chatId: this.chat.chatId })
+        .subscribe({
+          next: (): void => {
+            this.chatSocketService.leaveChat(this.chat.chatId, this.userName);
+            this.closeInfo();
+            this.router.navigate(['/home']);
+          },
+        });
     }
   }
 }

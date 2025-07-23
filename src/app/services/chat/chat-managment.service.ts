@@ -23,35 +23,24 @@ export class ChatManagementService {
     type: chatType,
     description: string
   ): Observable<{ success: boolean; message: string }> {
-    console.log('[ChatManagementService] Creating chat with:', {
-      chatName,
-      participants,
-      type,
-      description,
-    });
-
     return this.chatApi
-      .createChat(chatName, participants, type, description)
+      .createChat({ chatName, participants, type, description })
       .pipe(
         switchMap((res: { chatId: string; chatName: string }) => {
-          console.log('[ChatManagementService] Chat created response:', res);
-
           if (!res || !res.chatId || !res.chatName) {
-            console.warn('[ChatManagementService] Invalid chat response');
             return of({ success: false, message: 'Failed to create chat.' });
           }
 
           const updateRequests = participants.map((userName: string) => {
-            console.log(`[ChatManagementService] Updating user: ${userName}`);
             return this.chatApi
-              .updateUserChats(userName, res.chatId, res.chatName)
+              .updateUserChats({
+                userName,
+                chatId: res.chatId,
+                chatName: res.chatName,
+              })
               .pipe(
                 timeout(this.REQUEST_TIMEOUT),
                 catchError((err) => {
-                  console.error(
-                    `[ChatManagementService] Failed to update ${userName}:`,
-                    err
-                  );
                   return of(null);
                 })
               );
@@ -60,11 +49,6 @@ export class ChatManagementService {
           return forkJoin(updateRequests).pipe(
             tap(() => {
               const currentUser = this.refreshDataService.userName;
-              console.log(
-                '[ChatManagementService] Current user is:',
-                currentUser
-              );
-              console.log('[ChatManagementService] Emitting joinNewChat to:');
 
               participants.forEach((userName) => {
                 if (userName !== currentUser) {
@@ -76,9 +60,6 @@ export class ChatManagementService {
                 }
               });
 
-              console.log(
-                `[ChatManagementService] Emitting joinRoom for current user to chat ${res.chatId}`
-              );
               this.chatSocketService.getSocket().emit('joinRoom', {
                 chatId: res.chatId,
               });
@@ -90,10 +71,6 @@ export class ChatManagementService {
               })
             ),
             catchError((err) => {
-              console.error(
-                '[ChatManagementService] Failed to update user chats:',
-                err
-              );
               return of({
                 success: false,
                 message: 'Failed to update user chats.',
@@ -102,7 +79,6 @@ export class ChatManagementService {
           );
         }),
         catchError((err) => {
-          console.error('[ChatManagementService] Failed to create chat:', err);
           return of({
             success: false,
             message: 'Failed to create chat. Please try again.',

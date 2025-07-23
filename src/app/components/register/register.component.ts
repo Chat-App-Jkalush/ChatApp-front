@@ -37,7 +37,7 @@ export class RegisterComponent implements OnInit {
     this.userApi.register(this.registerForm.value).subscribe({
       next: (response: UserResponse) => {
         this.userCookieApi
-          .saveUserCookie({ userName: response.userName })
+          .saveUserCookie({ userName: response.userName, cookie: '' })
           .subscribe({
             next: (): void => {
               this.refreshDataService.setUserName(response.userName);

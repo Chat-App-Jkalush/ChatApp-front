@@ -10,7 +10,6 @@ import { Message } from 'common/dto/message/message.dto';
 export class MessageComponent {
   @Input()
   public message: Message = {
-    chatId: '',
     sender: '',
     content: '',
     createdAt: new Date(),

@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
         this.refreshDataService.setUserName(response.userName);
 
         this.userCookieApi
-          .saveUserCookie({ userName: response.userName })
+          .saveUserCookie({ userName: response.userName, cookie: '' })
           .subscribe({
             next: (): void => {
               this.router.navigate(['/home']);

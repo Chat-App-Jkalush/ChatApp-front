@@ -17,9 +17,6 @@ export function onInit(
         if (data?.userName) {
           refreshDataService.setUserName(data.userName);
         }
-        if (data?.chats) {
-          refreshDataService.setChats(data.chats);
-        }
       })
       .catch(() => {});
   };

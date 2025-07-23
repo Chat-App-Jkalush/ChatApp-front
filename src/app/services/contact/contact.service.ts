@@ -13,7 +13,7 @@ export class ContactService {
     pageSize: number
   ): Observable<{ contacts: string[]; total: number }> {
     return this.contactApi
-      .getPaginatedContacts(userName, pageIndex + 1, pageSize)
+      .getPaginatedContacts({ userName, page: pageIndex + 1, pageSize })
       .pipe(catchError(() => of({ contacts: [], total: 0 })));
   }
 }
