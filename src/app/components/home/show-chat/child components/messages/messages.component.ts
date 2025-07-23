@@ -27,7 +27,9 @@ export class MessagesComponent
   @Input() public userName: string = '';
   @ViewChild('messagesScrollContainer') messagesScrollContainer!: ElementRef;
   public messages: Message[] = [];
-  private socketListener: ((message: Message) => void) | null = null;
+  private socketListener:
+    | ((payload: { chatId: string; message: Message }) => void)
+    | null = null;
 
   constructor(
     private chatSocketService: ChatSocketService,
@@ -38,10 +40,12 @@ export class MessagesComponent
     if (this.chatId) {
       await this.loadMessages();
     }
-    this.socketListener = (message: Message): void => {
-      message.createdAt = this.parseDate(message.createdAt);
-      this.messages.push(message);
-      this.scrollToBottom();
+    this.socketListener = (message: any): void => {
+      if (message.chatId === this.chatId) {
+        message.createdAt = this.parseDate(message.createdAt);
+        this.messages.push(message);
+        this.scrollToBottom();
+      }
     };
     this.chatSocketService.onEvent(
       CommonConstants.GatewayConstants.EVENTS.REPLY,
@@ -93,18 +97,15 @@ export class MessagesComponent
     if (!dateValue) {
       return new Date();
     }
-
     if (dateValue instanceof Date) {
       return dateValue;
     }
-
     if (typeof dateValue === 'string') {
       const parsedDate = new Date(dateValue);
       if (!isNaN(parsedDate.getTime())) {
         return parsedDate;
       }
     }
-
     return new Date();
   }
 

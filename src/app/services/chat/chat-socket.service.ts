@@ -20,7 +20,6 @@ export interface OnlineStatus {
 @Injectable({ providedIn: 'root' })
 export class ChatSocketService {
   private socket: Socket;
-  private joinedChats: boolean = false;
   private eventListeners: Map<string, Function[]> = new Map<
     string,
     Function[]
@@ -33,6 +32,7 @@ export class ChatSocketService {
   public contactStatusChange$ = this.contactStatusSubject.asObservable();
 
   private onlineUsers = new Set<string>();
+  private currentChatId: string | null = null;
 
   constructor() {
     this.socket = io(CommonConstants.GatewayConstants.DEFAULT_PORT_ORIGIN, {
@@ -43,7 +43,6 @@ export class ChatSocketService {
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.CONNECT,
       (): void => {
-        this.joinedChats = false;
         this.refreshOnlineStatus();
       }
     );
@@ -51,23 +50,8 @@ export class ChatSocketService {
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.DISCONNECT,
       (reason: string): void => {
-        this.joinedChats = false;
         this.onlineUsers.clear();
         this.onlineStatusSubject.next([]);
-      }
-    );
-
-    this.socket.onAny((event: string, ...args: any[]): void => {});
-
-    this.socket.on(
-      CommonConstants.GatewayConstants.EVENTS.JOIN_NEW_CHAT,
-      (data: { chatId: string } | any) => {
-        if (Array.isArray(data)) {
-          return;
-        }
-        this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_ROOM, {
-          chatId: data.chatId,
-        });
       }
     );
 
@@ -111,10 +95,32 @@ export class ChatSocketService {
     return this.socket;
   }
 
-  public joinChats(userName: string): void {
+  public connectToUser(userName: string): void {
     this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_CHAT, {
       userName,
     });
+  }
+
+  public joinSpecificChat(chatId: string): void {
+    if (this.currentChatId && this.currentChatId !== chatId) {
+      this.socket.emit(CommonConstants.GatewayConstants.EVENTS.LEAVE_CHAT, {
+        chatId: this.currentChatId,
+      });
+    }
+
+    this.currentChatId = chatId;
+    this.socket.emit(CommonConstants.GatewayConstants.EVENTS.JOIN_ROOM, {
+      chatId,
+    });
+  }
+
+  public leaveCurrentChat(): void {
+    if (this.currentChatId) {
+      this.socket.emit(CommonConstants.GatewayConstants.EVENTS.LEAVE_CHAT, {
+        chatId: this.currentChatId,
+      });
+      this.currentChatId = null;
+    }
   }
 
   public sendMessage(message: CreateMessageDto): void {
@@ -163,7 +169,6 @@ export class ChatSocketService {
 
   public disconnect(): void {
     this.socket.disconnect();
-    this.joinedChats = false;
     this.eventListeners.clear();
     this.onlineUsers.clear();
     this.onlineStatusSubject.next([]);
