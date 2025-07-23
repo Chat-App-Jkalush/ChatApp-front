@@ -14,7 +14,7 @@ export class ChatInfoComponent implements OnInit {
   @Input() userName: string = '';
   @Output() onLeaveChat = new EventEmitter<string>();
   @Output() participantsChanged = new EventEmitter<string>();
-  participents: string[] = [];
+  participants: string[] = [];
   contacts: string[] = [];
   filteredContacts: string[] = [];
   newParticipant: string = '';
@@ -28,7 +28,7 @@ export class ChatInfoComponent implements OnInit {
   ngOnInit(): void {
     this.chatApi.getChatParticipants(this.chat.chatId).subscribe({
       next: (response: { participants: string[] }) => {
-        this.participents = response.participants;
+        this.participants = response.participants;
         this.filterContacts();
       },
     });
@@ -42,7 +42,7 @@ export class ChatInfoComponent implements OnInit {
 
   filterContacts(): void {
     this.filteredContacts = this.contacts.filter(
-      (contact) => !this.participents.includes(contact)
+      (contact) => !this.participants.includes(contact)
     );
   }
 
@@ -53,7 +53,7 @@ export class ChatInfoComponent implements OnInit {
         .addUserToChat({ userName: participant, chatId: this.chat.chatId })
         .subscribe({
           next: () => {
-            this.participents.push(participant);
+            this.participants.push(participant);
             this.filterContacts();
             this.newParticipant = '';
             this.participantsChanged.emit(this.chat.chatId);
