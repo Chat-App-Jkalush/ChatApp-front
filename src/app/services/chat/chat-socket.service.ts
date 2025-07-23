@@ -91,6 +91,10 @@ export class ChatSocketService {
     );
   }
 
+  public onEvent$(event: string): Observable<any> {
+    return fromEvent(this.socket, event);
+  }
+
   public getSocket(): Socket {
     return this.socket;
   }

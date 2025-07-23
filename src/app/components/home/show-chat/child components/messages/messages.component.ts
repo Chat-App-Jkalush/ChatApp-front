@@ -13,6 +13,7 @@ import { Message } from 'common/dto/message/message.dto';
 import { CommonConstants } from 'common/constatns/common.constants';
 import { ChatApiService } from 'app/services/chat/api/chat-api.service';
 import { ChatSocketService } from '../../../../../services/chat/chat-socket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-messages',
@@ -27,9 +28,7 @@ export class MessagesComponent
   @Input() public userName: string = '';
   @ViewChild('messagesScrollContainer') messagesScrollContainer!: ElementRef;
   public messages: Message[] = [];
-  private socketListener:
-    | ((payload: { chatId: string; message: Message }) => void)
-    | null = null;
+  private socketSubscription: Subscription | null = null;
 
   constructor(
     private chatSocketService: ChatSocketService,
@@ -40,17 +39,15 @@ export class MessagesComponent
     if (this.chatId) {
       await this.loadMessages();
     }
-    this.socketListener = (message: any): void => {
-      if (message.chatId === this.chatId) {
-        message.createdAt = this.parseDate(message.createdAt);
-        this.messages.push(message);
-        this.scrollToBottom();
-      }
-    };
-    this.chatSocketService.onEvent(
-      CommonConstants.GatewayConstants.EVENTS.REPLY,
-      this.socketListener
-    );
+    this.socketSubscription = this.chatSocketService
+      .onEvent$(CommonConstants.GatewayConstants.EVENTS.REPLY)
+      .subscribe((message: any) => {
+        if (message.chatId === this.chatId) {
+          message.createdAt = this.parseDate(message.createdAt);
+          this.messages.push(message);
+          this.scrollToBottom();
+        }
+      });
   }
 
   public async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -83,13 +80,8 @@ export class MessagesComponent
   }
 
   public ngOnDestroy(): void {
-    if (this.socketListener) {
-      this.chatSocketService
-        .getSocket()
-        .off(
-          CommonConstants.GatewayConstants.EVENTS.REPLY,
-          this.socketListener
-        );
+    if (this.socketSubscription) {
+      this.socketSubscription.unsubscribe();
     }
   }
 
