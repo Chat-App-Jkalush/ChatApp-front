@@ -4,6 +4,10 @@ import { ChatSocketService } from '../../services/chat/chat-socket.service';
 import { Router } from '@angular/router';
 import { MessagesComponent } from './show-chat/child components/messages/messages.component';
 import { ChatsComponent } from './navbar components/chats/chats.component';
+import { Subscription } from 'rxjs';
+import { CommonConstants } from 'common/constants/common.constants';
+import { MessageInfoDTO } from '../../../../../kafka-microservice/dist/common/dto/message/message-info.dto';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-home',
@@ -17,11 +21,13 @@ export class HomeComponent implements OnInit {
   public chatIds: string[] = [];
   @ViewChild(MessagesComponent) public messagesComponent!: MessagesComponent;
   @ViewChild(ChatsComponent) public chatsComponent!: ChatsComponent;
+  private popMessage: Subscription = new Subscription();
 
   constructor(
     private refreshDataService: RefreshDataService,
     private chatSocketService: ChatSocketService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   public ngOnInit(): void {
@@ -31,6 +37,19 @@ export class HomeComponent implements OnInit {
         this.chatSocketService.connectToUser(this.userName);
       }
     });
+    this.popMessage = this.chatSocketService
+      .onEvent$(CommonConstants.GatewayConstants.EVENTS.POP_MESSAGE)
+      .subscribe((dto: MessageInfoDTO) => {
+        this.snackBar.open(
+          `New message from ${dto.chatName}: ${dto.content}`,
+          'Close',
+          {
+            duration: 5000,
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
+          }
+        );
+      });
   }
 
   public onChatSelected(chat: { chatId: string }): void {

@@ -15,6 +15,7 @@ import { MessagesComponent } from './child components/messages/messages.componen
 import { Subscription } from 'rxjs';
 import { ChatListItem } from '../../../models/chat/chat-list-item.model';
 import { ChatApiService } from 'app/services/chat/api/chat-api.service';
+import { NotificationApiService } from 'app/services/kafka/notification-api.service';
 
 @Component({
   selector: 'app-show-chat',
@@ -43,7 +44,7 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     private chatSocketService: ChatSocketService,
     private route: ActivatedRoute,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private notificationApi: NotificationApiService
   ) {}
 
   public ngOnInit(): void {
@@ -123,6 +124,24 @@ export class ShowChatComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.chatSocketService.sendMessage(messageData);
     this.message.patchValue({ content: '' });
     this.shouldScrollToBottom = true;
+
+    this.chatApi
+      .getChatParticipants(this.chat.chatId)
+      .subscribe((participants) => {
+        const dto = {
+          recipients: participants.participants.map((p: any) => p.userName),
+          chatName: this.chat.chatName,
+          content: messageData.content,
+        };
+        this.notificationApi.popMessage(dto).subscribe(
+          () => {
+            console.log('Pop message sent successfully');
+          },
+          (error) => {
+            console.error('Error sending pop message:', error);
+          }
+        );
+      });
   }
 
   public onInfoClick(): void {

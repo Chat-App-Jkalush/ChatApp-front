@@ -4,6 +4,7 @@ import { CommonConstants } from 'common/constants/common.constants';
 import { CreateMessageDto } from 'common/dto/message/create-message.dto';
 import { BehaviorSubject, filter, fromEvent, map, Observable } from 'rxjs';
 import { OnlineStatus } from 'app/models/socket/online-status.model';
+import { MessageInfoDTO } from '../../../../../kafka-microservice/dist/common/dto/message/message-info.dto';
 
 @Injectable({ providedIn: 'root' })
 export class ChatSocketService {
@@ -27,6 +28,13 @@ export class ChatSocketService {
       transports: ['websocket'],
       withCredentials: true,
     });
+
+    this.socket.on(
+      CommonConstants.GatewayConstants.EVENTS.POP_MESSAGE,
+      (dto: MessageInfoDTO) => {
+        this.handlePopMessage(dto);
+      }
+    );
 
     this.socket.on(
       CommonConstants.GatewayConstants.EVENTS.CONNECT,
@@ -77,6 +85,13 @@ export class ChatSocketService {
         this.onlineStatusSubject.next(onlineUsersList);
       }
     );
+  }
+
+  handlePopMessage(dto: MessageInfoDTO): Observable<MessageInfoDTO> {
+    return new Observable<MessageInfoDTO>((observer) => {
+      observer.next(dto);
+      observer.complete();
+    });
   }
 
   public onEvent$(event: string): Observable<any> {
